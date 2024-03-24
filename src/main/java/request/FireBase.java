@@ -49,7 +49,7 @@ public class FireBase {
         inputStream.close();
         return data;
     }
-    
+
 //    public static void main(String[] args) throws Exception {
 //        FireBase fb = new FireBase();
 //

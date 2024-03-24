@@ -1,10 +1,10 @@
 package Trip;
-import java.time.LocalDate;
+
 public class Trip {
     private Coordinate begin;
     private Coordinate end;
-    private LocalDate begin_date;
-    private LocalDate end_date;
+    private String begin_date;
+    private String end_date;
 
     public Coordinate getBegin() {
         return begin;
@@ -12,10 +12,10 @@ public class Trip {
     public Coordinate getEnd() {
         return end;
     }
-    public LocalDate getBegin_date() {
+    public String getBegin_date() {
         return begin_date;
     }
-    public LocalDate getEnd_date() {
+    public String getEnd_date() {
         return end_date;
     }
     public void setBegin(Coordinate begin) {
@@ -24,14 +24,21 @@ public class Trip {
     public void setEnd(Coordinate end) {
         this.end = end;
     }
-    public void setBegin_date(LocalDate begin_date) {
+    public void setBegin_date(String begin_date) {
         this.begin_date = begin_date;
     }
-    public void setEnd_date(LocalDate end_date) {
+    public void setEnd_date(String end_date) {
         this.end_date = end_date;
     }
 
-    public Trip(Coordinate begin, Coordinate end, LocalDate begin_date, LocalDate end_date) {
+    public Trip() {
+        this.begin = new Coordinate();
+        this.end = new Coordinate();
+        this.begin_date = "";
+        this.end_date = "";
+    }
+
+    public Trip(Coordinate begin, Coordinate end, String begin_date, String end_date) {
         this.begin = begin;
         this.end = end;
         this.begin_date = begin_date;

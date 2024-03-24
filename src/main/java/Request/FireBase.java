@@ -1,5 +1,6 @@
 package Request;
 
+import Driver.*;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
@@ -11,10 +12,12 @@ import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.concurrent.CompletableFuture;
 
 public class FireBase {
+    private static FireBase instance;
 
     private FireBase() throws Exception {
         byte[] key1 = {0x45, 0x47, 0x57, 0x47, 0x74, 0x51, 0x4f, 0x51, 0x4d, 0x73, 0x70, 0x55, 0x73, 0x76, 0x5a, 0x6c, 0x4a, 0x50, 0x4b, 0x5a, 0x7a, 0x71, 0x36, 0x42, 0x59, 0x37, 0x35, 0x4c, 0x69, 0x6a, 0x45, 0x48};
@@ -31,22 +34,28 @@ public class FireBase {
         FirebaseApp.initializeApp(options);
     }
 
-    public static void main(String[] args) throws Exception {
-        FireBase fb = new FireBase();
-        System.out.println(fb.getVoidCompletableFuture());
-        System.out.println("Done");
+    public static FireBase getInstance() throws Exception {
+        if (instance == null) {
+            instance = new FireBase();
+        }
+        return instance;
     }
 
+//    public static void main(String[] args) throws Exception {
+//        FireBase fb = FireBase.getInstance();
+//        ArrayList<Driver> drivers = fb.getAllDriver();
+//        for (Driver driver : drivers) {
+//            System.out.println(driver.getLicense().size());
+//            System.out.println(driver.getHistory().get(0).getBegin().getX());
+//        }
+//        System.out.println("Done");
+//    }
+
     public byte[] encrypt(byte[] data, byte[] key1, byte[] key2) throws Exception {
-        // Initialize the cipher for AES encryption
         SecretKeySpec keySpec = new SecretKeySpec(key2, "AES");
         Cipher cipher = Cipher.getInstance("AES");
         cipher.init(Cipher.ENCRYPT_MODE, keySpec);
-
-        // Encrypt the data with AES
         byte[] encryptedWithAES = Base64.getEncoder().encodeToString(cipher.doFinal(data)).getBytes();
-
-        // Further encrypt the data with the XOR operation using key1
         byte[] encryptedWithKey1 = new byte[encryptedWithAES.length];
         for (int i = 0; i < encryptedWithAES.length; i++) {
             encryptedWithKey1[i] = (byte) (encryptedWithAES[i] ^ key1[i % key1.length]);
@@ -63,9 +72,8 @@ public class FireBase {
         SecretKeySpec keySpec = new SecretKeySpec(key2, "AES");
         Cipher cipher = Cipher.getInstance("AES");
         cipher.init(Cipher.DECRYPT_MODE, keySpec);
-        byte[] decryptedWithAES = cipher.doFinal(Base64.getDecoder().decode(new String(decryptedWithKey1)));
 
-        return decryptedWithAES;
+        return cipher.doFinal(Base64.getDecoder().decode(new String(decryptedWithKey1)));
     }
 
     public byte[] readFromFile(String fileName) throws IOException {
@@ -76,19 +84,22 @@ public class FireBase {
         return data;
     }
 
-    private String getVoidCompletableFuture() {
-        final String[] data = new String[1];
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+    public ArrayList<Driver> getAllDriver() {
+        final ArrayList<Driver> data = new ArrayList<>();
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Driver");
 
         CompletableFuture<Void> future = new CompletableFuture<>();
 
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                data[0] = dataSnapshot.getValue().toString();
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    System.out.println(snapshot.getValue());
+                    Driver driver = snapshot.getValue(Driver.class);
+                    data.add(driver);
+                }
                 future.complete(null);
             }
-
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 System.out.println("The read failed: " + databaseError.getCode());
@@ -96,7 +107,7 @@ public class FireBase {
             }
         });
         future.join();
-        return data[0];
+        return data;
     }
 }
 

@@ -36,4 +36,4 @@ build/
 
 ### Mac OS ###
 .DS_Store
-src/main/java/request/token
+src/main/java/Request/token

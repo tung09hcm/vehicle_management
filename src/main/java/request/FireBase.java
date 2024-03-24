@@ -50,6 +50,8 @@ public class FireBase {
         return data;
     }
 
+<<<<<<< Updated upstream
+<<<<<<<< Updated upstream:src/main/java/request/FireBase.java
 //    public static void main(String[] args) throws Exception {
 //        FireBase fb = new FireBase();
 //
@@ -59,6 +61,22 @@ public class FireBase {
 //        System.out.println("Done");
 //    }
 
+========
+=======
+>>>>>>> Stashed changes
+    public static void main(String[] args) throws Exception {
+        FireBase fb = new FireBase();
+
+//        CompletableFuture<Void> future = fb.getVoidCompletableFuture();
+//        future.join();
+        System.out.println(fb.getVoidCompletableFuture());
+        System.out.println("Done");
+    }
+
+<<<<<<< Updated upstream
+>>>>>>>> Stashed changes:src/main/java/request/fireBase.java
+=======
+>>>>>>> Stashed changes
 
     private String getVoidCompletableFuture() {
         final String[] data = new String[1];

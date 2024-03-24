@@ -1,89 +1,103 @@
 package com.management.vehicle;
-import java.time.LocalDate;
 import Driver.License;
 public class Vehicle {
-    private int distance_cover;
-    private String loai_xe;
-    private double dai;
-    private double rong;
-    private double cao;
-    private String bien_so_xe;
-    private double trong_tai;
+    private int distanceCover;
+    private TypeVehicle type;
     private VehicleStatus status;
+    private double length;
+    private double wide;
+    private double high;
+    private String plateNumber;
+    private double weight;
     private License license;
 
+    public int getDistanceCover() {
+        return distanceCover;
+    }
 
-    public void setLicense(License license) {
-        this.license = license;
+    public void setDistanceCover(int distanceCover) {
+        this.distanceCover = distanceCover;
     }
-    public void setDistance_cover(int distance_cover)
-    {
-        this.distance_cover = distance_cover;
+
+    public TypeVehicle getType() {
+        return type;
     }
-    public void setTrong_tai(double trong_tai) {
-        this.trong_tai = trong_tai;
+
+    public void setType(TypeVehicle type) {
+        this.type = type;
     }
-    public void setBien_so_xe(String bien_so_xe) {
-        this.bien_so_xe = bien_so_xe;
+
+    public double getLength() {
+        return length;
     }
-    public void setCao(double cao) {
-        this.cao = cao;
+
+    public void setLength(double length) {
+        this.length = length;
     }
-    public void setDai(double dai) {
-        this.dai = dai;
+
+    public double getWide() {
+        return wide;
     }
-    public void setLoai_xe(String loai_xe) {
-        this.loai_xe = loai_xe;
+
+    public void setWide(double wide) {
+        this.wide = wide;
     }
-    public void setRong(double rong) {
-        this.rong = rong;
+
+    public double getHigh() {
+        return high;
     }
+
+    public void setHigh(double high) {
+        this.high = high;
+    }
+
+    public String getPlateNumber() {
+        return plateNumber;
+    }
+
+    public void setPlateNumber(String plateNumber) {
+        this.plateNumber = plateNumber;
+    }
+
+    public double getWeight() {
+        return weight;
+    }
+
+    public void setWeight(double weight) {
+        this.weight = weight;
+    }
+
+    public VehicleStatus getStatus() {
+        return status;
+    }
+
     public void setStatus(VehicleStatus status) {
         this.status = status;
     }
 
-    public double getCao() {
-        return cao;
-    }
-    public double getDai() {
-        return dai;
-    }
-    public double getRong() {
-        return rong;
-    }
-    public double getTrong_tai() {
-        return trong_tai;
-    }
-    public int getDistance_cover() {
-        return distance_cover;
-    }
-    public VehicleStatus getStatus() {
-        return status;
-    }
-    public String getBien_so_xe() {
-        return bien_so_xe;
-    }
-    public String getLoai_xe() {
-        return loai_xe;
-    }
     public License getLicense() {
         return license;
     }
 
+    public void setLicense(License license) {
+        this.license = license;
+    }
 
-    public void GETHISTORY() {
+
+    public void getHistory() {
 
     }
-    public void Set_ReIMPLAINT(){}
+    public void setMaintenance(){}
 
-    public Vehicle(int distance_cover, String loai_xe, double dai, double rong, double cao, String bien_so_xe, double trong_tai, VehicleStatus status) {
-        this.distance_cover = distance_cover;
-        this.loai_xe = loai_xe;
-        this.dai = dai;
-        this.rong = rong;
-        this.cao = cao;
-        this.bien_so_xe = bien_so_xe;
-        this.trong_tai = trong_tai;
+    public Vehicle(int distanceCover, TypeVehicle type, double length, double wide, double high, String plateNumber, double weight, VehicleStatus status, License license) {
+        this.distanceCover = distanceCover;
+        this.type = type;
+        this.length = length;
+        this.wide = wide;
+        this.high = high;
+        this.plateNumber = plateNumber;
+        this.weight = weight;
         this.status = status;
+        this.license = license;
     }
 }

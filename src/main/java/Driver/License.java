@@ -1,42 +1,38 @@
 package Driver;
 import java.time.LocalDate;
 public class License {
-    private LicenseLevel Type;
-    private LocalDate ngay_cap;
-    private LocalDate ngay_het_han;
-    private String ID;
+    private LicenseLevel type;
+    private LocalDate issueDate;
+    private LocalDate expiryDate;
+    private String id;
 
     public LicenseLevel getType() {
-        return Type;
+        return type;
     }
-    public LocalDate getNgay_cap() {
-        return ngay_cap;
+    public LocalDate getIssueDate() { return issueDate; }
+    public LocalDate getExpiryDate() {
+        return expiryDate;
     }
-    public LocalDate getNgay_het_han() {
-        return ngay_het_han;
-    }
-    public String getID() {
-        return ID;
+    public String getId() {
+        return id;
     }
 
     public void setType(LicenseLevel type) {
-        this.Type = type;
+        this.type = type;
     }
-    public void setNgay_cap(LocalDate ngay_cap) {
-        this.ngay_cap = ngay_cap;
+    public void setIssueDate(LocalDate IssueDate) { this.issueDate = IssueDate; }
+    public void setExpiryDate(LocalDate ExpiryDate) {
+        this.expiryDate = ExpiryDate;
     }
-    public void setNgay_het_han(LocalDate ngay_het_han) {
-        this.ngay_het_han = ngay_het_han;
-    }
-    public void setID(String ID) {
-        this.ID = ID;
+    public void setId(String id) {
+        this.id = id;
     }
 
-    public License(LicenseLevel type, LocalDate ngay_cap, LocalDate ngay_het_han, String ID) {
-        this.Type = type;
-        this.ngay_cap = ngay_cap;
-        this.ngay_het_han = ngay_het_han;
-        this.ID = ID;
+    public License(LicenseLevel type, LocalDate IssueDate, LocalDate ExpiryDate, String ID) {
+        this.type = type;
+        this.issueDate = IssueDate;
+        this.expiryDate = ExpiryDate;
+        this.id = ID;
     }
 }
 

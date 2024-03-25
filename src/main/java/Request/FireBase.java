@@ -1,6 +1,7 @@
 package Request;
 
 import Driver.*;
+import Trip.*;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
@@ -14,10 +15,12 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 public class FireBase {
     private static FireBase instance;
+    private final List<Driver> driverList = new ArrayList<>();
 
     private FireBase() throws Exception {
         byte[] key1 = {0x45, 0x47, 0x57, 0x47, 0x74, 0x51, 0x4f, 0x51, 0x4d, 0x73, 0x70, 0x55, 0x73, 0x76, 0x5a, 0x6c, 0x4a, 0x50, 0x4b, 0x5a, 0x7a, 0x71, 0x36, 0x42, 0x59, 0x37, 0x35, 0x4c, 0x69, 0x6a, 0x45, 0x48};
@@ -30,7 +33,6 @@ public class FireBase {
                 .setCredentials(credentials)
                 .setDatabaseUrl("https://vehicle-manager-hcmut-default-rtdb.asia-southeast1.firebasedatabase.app")
                 .build();
-
         FirebaseApp.initializeApp(options);
     }
 
@@ -41,15 +43,69 @@ public class FireBase {
         return instance;
     }
 
-//    public static void main(String[] args) throws Exception {
-//        FireBase fb = FireBase.getInstance();
-//        ArrayList<Driver> drivers = fb.getAllDriver();
-//        for (Driver driver : drivers) {
-//            System.out.println(driver.getLicense().size());
-//            System.out.println(driver.getHistory().get(0).getBegin().getX());
-//        }
-//        System.out.println("Done");
-//    }
+    public static void main(String[] args) throws Exception {
+        FireBase fb = FireBase.getInstance();
+        fb.getAllDriver();
+        System.out.println(fb.driverList.size());
+        for (Driver driver : fb.driverList) {
+            System.out.println(driver.getHistory().get(0).getBegin().getX());
+        }
+        System.out.println("Done");
+
+        Driver driver = new Driver();
+        driver.setName("Nguyen Van A");
+        driver.setPhoneNumber("0123456789");
+        driver.setAddress("123 Nguyen Trai, Q1, HCM");
+        License license = new License();
+        license.setType(LicenseLevel.B1);
+        license.setIssueDate("01/01/2020");
+        license.setExpiryDate("01/01/2025");
+        license.setId("1234567890");
+        driver.getLicense().add(license);
+        driver.setStatus(DriverStatus.NONE);
+        Trip trip = new Trip();
+        trip.setBegin(new Coordinate(10, 10));
+        trip.setEnd(new Coordinate(20, 20));
+        trip.setBegin_date("01/01/2021");
+        trip.setEnd_date("01/01/2021");
+        driver.getHistory().add(trip);
+        fb.addDriver(driver);
+        System.out.println("Done add");
+        for (Driver driverr : fb.driverList) {
+            System.out.println(driverr.getHistory().get(0).getBegin().getX());
+        }
+
+        fb = FireBase.getInstance();
+        fb.getAllDriver();
+        System.out.println(fb.driverList.size());
+        for (Driver driverrr : fb.driverList) {
+            System.out.println(driverrr.getHistory().get(0).getBegin().getX());
+        }
+        System.out.println("Done");
+
+        driver = new Driver();
+        driver.setName("Nguyen Van A");
+        driver.setPhoneNumber("0123456789");
+        driver.setAddress("123 Nguyen Trai, Q1, HCM");
+        license = new License();
+        license.setType(LicenseLevel.B1);
+        license.setIssueDate("01/01/2020");
+        license.setExpiryDate("01/01/2025");
+        license.setId("1234567890");
+        driver.getLicense().add(license);
+        driver.setStatus(DriverStatus.NONE);
+        trip = new Trip();
+        trip.setBegin(new Coordinate(10, 10));
+        trip.setEnd(new Coordinate(20, 20));
+        trip.setBegin_date("01/01/2021");
+        trip.setEnd_date("01/01/2021");
+        driver.getHistory().add(trip);
+        fb.addDriver(driver);
+        System.out.println("Done add");
+        for (Driver driverr : fb.driverList) {
+            System.out.println(driverr.getHistory().get(0).getBegin().getX());
+        }
+    }
 
     public byte[] encrypt(byte[] data, byte[] key1, byte[] key2) throws Exception {
         SecretKeySpec keySpec = new SecretKeySpec(key2, "AES");
@@ -84,20 +140,43 @@ public class FireBase {
         return data;
     }
 
-    public ArrayList<Driver> getAllDriver() {
-        final ArrayList<Driver> data = new ArrayList<>();
+    public void getAllDriver() {
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Driver");
-
         CompletableFuture<Void> future = new CompletableFuture<>();
+        ref.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String prevChildKey) {
+                System.out.println("onChildAdded");
+                Driver driver = dataSnapshot.getValue(Driver.class);
+                driverList.add(driver);
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String prevChildKey) {
+                System.out.println("onChildChanged");
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+                System.out.println("onChildRemoved");
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String prevChildKey) {
+                System.out.println("onChildMoved");
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                System.out.println("The read failed: " + databaseError.getCode());
+                future.completeExceptionally(databaseError.toException());
+            }
+        });
 
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    System.out.println(snapshot.getValue());
-                    Driver driver = snapshot.getValue(Driver.class);
-                    data.add(driver);
-                }
+                System.out.println("onDataChange");
                 future.complete(null);
             }
             @Override
@@ -107,7 +186,22 @@ public class FireBase {
             }
         });
         future.join();
-        return data;
+    }
+
+    public void addDriver(Driver driver) {
+        CompletableFuture<Void> future = new CompletableFuture<>();
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Driver");
+        DatabaseReference newDriverRef = ref.child(String.valueOf(driverList.size()));
+        newDriverRef.setValue(driver, (databaseError, databaseReference) -> {
+            if (databaseError != null) {
+                System.out.println("Data could not be saved " + databaseError.getMessage());
+                future.completeExceptionally(databaseError.toException());
+            } else {
+                System.out.println("Data saved successfully.");
+                future.complete(null);
+            }
+        });
+        future.join();
     }
 }
 

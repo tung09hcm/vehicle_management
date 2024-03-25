@@ -141,6 +141,7 @@ public class FireBase {
     }
 
     public void getAllDriver() {
+        if (!driverList.isEmpty()) { return; }
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Driver");
         CompletableFuture<Void> future = new CompletableFuture<>();
         ref.addChildEventListener(new ChildEventListener() {

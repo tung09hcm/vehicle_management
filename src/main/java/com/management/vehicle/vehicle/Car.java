@@ -1,7 +1,7 @@
 package com.management.vehicle.vehicle;
 import com.management.vehicle.driver.*;
 
-public class XeThue extends Vehicle {
+public class Car extends Vehicle {
     private String Customername;
     private String CustomerphoneNumber;
     private String Customerid;
@@ -57,7 +57,7 @@ public class XeThue extends Vehicle {
         this.returnDate = returnDate;
     }
 
-    public XeThue(int distanceCover, TypeVehicle type, double length, double wide, double high, String plateNumber, double weight, VehicleStatus status, License license, String customername, String customerphoneNumber, String customerid, String customeraddress, String rentalDate, String returnDate) {
+    public Car(int distanceCover, TypeVehicle type, double length, double wide, double high, String plateNumber, double weight, VehicleStatus status, License license, String customername, String customerphoneNumber, String customerid, String customeraddress, String rentalDate, String returnDate) {
         super(distanceCover, type, length, wide, high, plateNumber, weight, status, license);
         Customername = customername;
         CustomerphoneNumber = customerphoneNumber;

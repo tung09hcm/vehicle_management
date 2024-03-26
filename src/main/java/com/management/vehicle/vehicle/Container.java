@@ -1,5 +1,5 @@
 package com.management.vehicle.vehicle;
-import com.management.vehicle.driver.License;
+import com.management.vehicle.driver.LicenseLevel;
 
 public class Container extends Vehicle{
     private String LoaiHanghoa;
@@ -21,9 +21,10 @@ public class Container extends Vehicle{
         KhoiLuongHangHoa = khoiLuongHangHoa;
     }
 
-    public Container(int distanceCover, TypeVehicle type, double length, double wide, double high, String plateNumber, double weight, VehicleStatus status, License license, String loaiHanghoa, double khoiLuongHangHoa) {
-        super(distanceCover, type, length, wide, high, plateNumber, weight, status, license);
+    public Container(String DriverID,int distanceCover, TypeVehicle type, double length, double wide, double high, String plateNumber, double weight, VehicleStatus status, LicenseLevel license, String loaiHanghoa, double khoiLuongHangHoa) {
+        super(DriverID,distanceCover, type, length, wide, high, plateNumber, weight, status, license);
         LoaiHanghoa = loaiHanghoa;
         KhoiLuongHangHoa = khoiLuongHangHoa;
     }
 }
+

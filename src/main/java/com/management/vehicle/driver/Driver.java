@@ -8,6 +8,7 @@ public class Driver {
     private String name;
     private String phoneNumber;
     private String address;
+    private String RecentPlateNumber = "null";
     private String id;
     public List<License> getLicense() {
         return license;
@@ -51,12 +52,30 @@ public class Driver {
     public void setStatus(DriverStatus status) {
         this.status = status;
     }
+
+    public String getRecentPlateNumber() {
+        return RecentPlateNumber;
+    }
+
+    public void setRecentPlateNumber(String recentPlateNumber) {
+        RecentPlateNumber = recentPlateNumber;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
     public void setHistory(List<Trip> history) {
         this.history = history;
     }
     public boolean equals(Driver driver) {
         return this.id.equals(driver.id);
     }
+
     public Driver() {
         this.name = "";
         this.phoneNumber = "";
@@ -66,13 +85,16 @@ public class Driver {
         this.history = new ArrayList<>();
         this.id = "";
     }
-    public Driver(String name, String phoneNumber, String address, List<License> license, DriverStatus status, List<Trip> history, String id) {
+
+    public Driver(String name, String phoneNumber, String address, String recentPlateNumber, String id, List<License> license, DriverStatus status, List<Trip> history) {
         this.name = name;
         this.phoneNumber = phoneNumber;
         this.address = address;
+        RecentPlateNumber = recentPlateNumber;
+        this.id = id;
         this.license = license;
         this.status = status;
         this.history = history;
-        this.id = id;
     }
 }
+

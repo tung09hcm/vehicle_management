@@ -1,6 +1,4 @@
-package com.management.vehicle;
-
-import com.management.vehicle.LicenseLevel;
+package com.management.vehicle.license;
 
 public class License {
     private LicenseLevel type;

@@ -1,5 +1,5 @@
 package com.management.vehicle.driver;
-import com.management.vehicle.License;
+import com.management.vehicle.license.License;
 import com.management.vehicle.trip.Trip;
 
 import java.util.ArrayList;

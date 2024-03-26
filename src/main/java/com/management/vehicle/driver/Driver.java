@@ -54,6 +54,11 @@ public class Driver {
     public void setHistory(List<Trip> history) {
         this.history = history;
     }
+    public boolean isIDEquals(Driver a, Driver b)
+    {
+        if(a.id == b.id) return true;
+        else return false;
+    }
 
     public Driver() {
         this.name = "";

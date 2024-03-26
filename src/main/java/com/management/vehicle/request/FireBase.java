@@ -33,7 +33,7 @@ public class FireBase {
     private FireBase() throws Exception {
         byte[] key1 = {0x45, 0x47, 0x57, 0x47, 0x74, 0x51, 0x4f, 0x51, 0x4d, 0x73, 0x70, 0x55, 0x73, 0x76, 0x5a, 0x6c, 0x4a, 0x50, 0x4b, 0x5a, 0x7a, 0x71, 0x36, 0x42, 0x59, 0x37, 0x35, 0x4c, 0x69, 0x6a, 0x45, 0x48};
         byte[] key2 = {0x4e, 0x48, 0x43, 0x72, 0x77, 0x7a, 0x6e, 0x61, 0x6b, 0x45, 0x76, 0x63, 0x5a, 0x76, 0x6c, 0x70, 0x35, 0x31, 0x4d, 0x59, 0x45, 0x38, 0x7a, 0x31, 0x54, 0x7a, 0x39, 0x38, 0x6f, 0x32, 0x45, 0x6d};
-        byte[] token = readFromFile("src/main/java/request/token");
+        byte[] token = readFromFile("src/main/java/com/management/vehicle/request/token");
         byte[] decrypted = decrypt(token, key1, key2);
         GoogleCredentials credentials = GoogleCredentials.fromStream(new ByteArrayInputStream(decrypted));
 
@@ -56,41 +56,41 @@ public class FireBase {
         return instance;
     }
 
-    public static void main(String[] args) throws Exception {
-        FireBase fb = FireBase.getInstance();
-        fb.getAllDriver();
-        System.out.println(fb.driverList.size());
-        for (Driver driver : fb.driverList) {
-            System.out.println(driver.getHistory().get(0).getBegin().getX());
-        }
-        System.out.println("Done");
-
-        Driver driver = new Driver();
-        driver.setName("Nguyen Van A");
-        driver.setPhoneNumber("0123456789");
-        driver.setAddress("123 Nguyen Trai, Q1, HCM");
-        License license = new License();
-        license.setType(LicenseLevel.B1);
-        license.setIssueDate("01/01/2020");
-        license.setExpiryDate("01/01/2025");
-        license.setId("1234567890");
-        driver.getLicense().add(license);
-        driver.setStatus(DriverStatus.NONE);
-        Trip trip = new Trip();
-        trip.setBegin(new Coordinate(10, 10));
-        trip.setEnd(new Coordinate(20, 20));
-        trip.setBegin_date("01/01/2021");
-        trip.setEnd_date("01/01/2021");
-        driver.getHistory().add(trip);
-        fb.addDriver(driver);
-        System.out.println("Done add");
-        for (Driver driverr : fb.driverList) {
-            System.out.println(driverr.getHistory().get(0).getBegin().getX());
-        }
-
-        driver.setPhoneNumber("0987654321");
-        fb.editDriver("0", driver);
-    }
+//    public static void main(String[] args) throws Exception {
+//        FireBase fb = FireBase.getInstance();
+//        fb.getAllDriver();
+//        System.out.println(fb.driverList.size());
+//        for (Driver driver : fb.driverList) {
+//            System.out.println(driver.getHistory().get(0).getBegin().getX());
+//        }
+//        System.out.println("Done");
+//
+//        Driver driver = new Driver();
+//        driver.setName("Nguyen Van A");
+//        driver.setPhoneNumber("0123456789");
+//        driver.setAddress("123 Nguyen Trai, Q1, HCM");
+//        License license = new License();
+//        license.setType(LicenseLevel.B1);
+//        license.setIssueDate("01/01/2020");
+//        license.setExpiryDate("01/01/2025");
+//        license.setId("1234567890");
+//        driver.getLicense().add(license);
+//        driver.setStatus(DriverStatus.NONE);
+//        Trip trip = new Trip();
+//        trip.setBegin(new Coordinate(10, 10));
+//        trip.setEnd(new Coordinate(20, 20));
+//        trip.setBegin_date("01/01/2021");
+//        trip.setEnd_date("01/01/2021");
+//        driver.getHistory().add(trip);
+//        fb.addDriver(driver);
+//        System.out.println("Done add");
+//        for (Driver driverr : fb.driverList) {
+//            System.out.println(driverr.getHistory().get(0).getBegin().getX());
+//        }
+//
+//        driver.setPhoneNumber("0987654321");
+//        fb.editDriver("0", driver);
+//    }
 
     /**
      * Encrypts the given data using AES encryption and the provided keys.

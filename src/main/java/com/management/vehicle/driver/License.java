@@ -1,5 +1,7 @@
 package com.management.vehicle.driver;
 
+import com.management.vehicle.LicenseLevel;
+
 public class License {
     private LicenseLevel type;
     private String issueDate;

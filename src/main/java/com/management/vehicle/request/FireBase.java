@@ -7,7 +7,7 @@ import com.google.firebase.database.*;
 import com.management.vehicle.driver.Driver;
 import com.management.vehicle.driver.DriverStatus;
 import com.management.vehicle.driver.License;
-import com.management.vehicle.driver.LicenseLevel;
+import com.management.vehicle.LicenseLevel;
 import com.management.vehicle.trip.Coordinate;
 import com.management.vehicle.trip.Trip;
 

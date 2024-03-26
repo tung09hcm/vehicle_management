@@ -1,5 +1,5 @@
 package com.management.vehicle.vehicle;
-import com.management.vehicle.driver.LicenseLevel;
+import com.management.vehicle.LicenseLevel;
 
 public class Container extends Vehicle{
     private String LoaiHanghoa;

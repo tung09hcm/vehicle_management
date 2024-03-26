@@ -1,4 +1,4 @@
-package com.management.vehicle.driver;
+package com.management.vehicle;
 
 // Enum cho các cấp bậc
 public enum LicenseLevel {

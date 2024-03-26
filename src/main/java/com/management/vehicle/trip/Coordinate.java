@@ -1,4 +1,4 @@
-package Trip;
+package com.management.vehicle.trip;
 
 public class Coordinate {
     private double x;

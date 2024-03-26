@@ -1,5 +1,6 @@
-package com.management.vehicle;
-import Driver.License;
+package com.management.vehicle.vehicle;
+import com.management.vehicle.driver.License;
+
 public class Vehicle {
     private int distanceCover;
     private TypeVehicle type;

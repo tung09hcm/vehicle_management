@@ -13,18 +13,18 @@ import java.util.regex.Pattern;
 
 public class MapRequest {
 
-//    public static void main(String[] args) throws IOException {
-//        MapRequest mapRequest = new MapRequest();
-//        DistanceMatrix response = mapRequest.getDistancematrix("Trường THPT Long Khánh", "THPT dầu giây");
-//        if (response == null) {
-//            System.out.println("Không tìm thấy đường đi");
-//            return;
-//        }
-//        System.out.println(response.getOrigin_addresses());
-//        System.out.println(response.getDestination_addresses());
-//        System.out.println(response.getDistance());
-//        System.out.println(response.getDuration());
-//    }
+    public static void main(String[] args) throws IOException {
+        MapRequest mapRequest = new MapRequest();
+        DistanceMatrix response = mapRequest.getDistancematrix("Trường THPT Long Khánh", "THPT dầu giây");
+        if (response == null) {
+            System.out.println("Không tìm thấy đường đi");
+            return;
+        }
+        System.out.println(response.getOrigin_addresses());
+        System.out.println(response.getDestination_addresses());
+        System.out.println(response.getDistance());
+        System.out.println(response.getDuration());
+    }
 
     public DistanceMatrix getDistancematrix(String origin, String destination) throws IOException {
         HttpsURLConnection urlConnection = getHttpsURLConnection("https://api.distancematrix.ai//maps/api/distancematrix/json?origins=" + URLEncoder.encode(origin, StandardCharsets.UTF_8) + "&destinations=" + URLEncoder.encode(destination, StandardCharsets.UTF_8) + "&key=M0ioJlnrcQDFRJj55TzUAnndyWkwwEsLyUnHZ5DpzPIvq3qb2befP8Hr1nytAZpH");
@@ -51,7 +51,11 @@ public class MapRequest {
         urlConnection.setRequestMethod("GET");
         urlConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
         urlConnection.setConnectTimeout(5000);
-        urlConnection.connect();
+        try {
+            urlConnection.connect();
+        } catch (IOException e) {
+            System.out.println("Không thể kết nối đến máy chủ");
+        }
         return urlConnection;
     }
 

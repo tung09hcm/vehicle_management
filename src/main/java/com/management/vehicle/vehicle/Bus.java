@@ -3,7 +3,7 @@ import com.management.vehicle.driver.*;
 
 
 
-public class XeKhach extends Vehicle {
+public class Bus extends Vehicle {
     private int NumberOfSeat;
     private double PricePerSeat;
     private int NumberOfCustomer = 0;
@@ -28,7 +28,7 @@ public class XeKhach extends Vehicle {
         NumberOfCustomer = numberOfCustomer;
     }
 
-    public XeKhach(int distanceCover, TypeVehicle type, double length, double wide, double high, String plateNumber, double weight, VehicleStatus status, License license, int numberOfSeat, double pricePerSeat, int numberOfCustomer) {
+    public Bus(int distanceCover, TypeVehicle type, double length, double wide, double high, String plateNumber, double weight, VehicleStatus status, License license, int numberOfSeat, double pricePerSeat, int numberOfCustomer) {
         super(distanceCover, type, length, wide, high, plateNumber, weight, status, license);
         NumberOfSeat = numberOfSeat;
         PricePerSeat = pricePerSeat;

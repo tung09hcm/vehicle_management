@@ -1,7 +1,7 @@
 package com.management.vehicle.vehicle;
 import com.management.vehicle.driver.License;
 
-public class XeContainer extends Vehicle{
+public class Container extends Vehicle{
     private String LoaiHanghoa;
     private double KhoiLuongHangHoa;
 
@@ -21,7 +21,7 @@ public class XeContainer extends Vehicle{
         KhoiLuongHangHoa = khoiLuongHangHoa;
     }
 
-    public XeContainer(int distanceCover, TypeVehicle type, double length, double wide, double high, String plateNumber, double weight, VehicleStatus status, License license, String loaiHanghoa, double khoiLuongHangHoa) {
+    public Container(int distanceCover, TypeVehicle type, double length, double wide, double high, String plateNumber, double weight, VehicleStatus status, License license, String loaiHanghoa, double khoiLuongHangHoa) {
         super(distanceCover, type, length, wide, high, plateNumber, weight, status, license);
         LoaiHanghoa = loaiHanghoa;
         KhoiLuongHangHoa = khoiLuongHangHoa;

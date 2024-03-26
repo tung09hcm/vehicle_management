@@ -152,7 +152,7 @@ public class FireBase {
      */
     public void getAllDriver() {
         if (!driverList.isEmpty()) { return; }
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("com/management/vehicle/driver");
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Driver");
         CompletableFuture<Void> future = new CompletableFuture<>();
         ref.addChildEventListener(new ChildEventListener() {
             @Override
@@ -205,7 +205,7 @@ public class FireBase {
      */
     public void addDriver(Driver driver) {
         CompletableFuture<Void> future = new CompletableFuture<>();
-        DatabaseReference newDriverRef = FirebaseDatabase.getInstance().getReference("com/management/vehicle/driver").child(String.valueOf(driverList.size()));
+        DatabaseReference newDriverRef = FirebaseDatabase.getInstance().getReference("Driver").child(String.valueOf(driverList.size()));
         newDriverRef.setValue(driver, (databaseError, databaseReference) -> {
             if (databaseError != null) {
                 System.out.println("Data could not be saved " + databaseError.getMessage());
@@ -224,7 +224,7 @@ public class FireBase {
      */
     public void deleteDriver(String id) {
         CompletableFuture<Void> future = new CompletableFuture<>();
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("com/management/vehicle/driver").child(id);
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Driver").child(id);
         ref.removeValue((databaseError, databaseReference) -> {
             if (databaseError != null) {
                 System.out.println("Data could not be removed " + databaseError.getMessage());
@@ -244,7 +244,7 @@ public class FireBase {
      */
     public void editDriver(String id, Driver driver) {
         CompletableFuture<Void> future = new CompletableFuture<>();
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("com/management/vehicle/driver").child(id);
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Driver").child(id);
         ref.setValue(driver, (databaseError, databaseReference) -> {
             if (databaseError != null) {
                 System.out.println("Data could not be edited " + databaseError.getMessage());

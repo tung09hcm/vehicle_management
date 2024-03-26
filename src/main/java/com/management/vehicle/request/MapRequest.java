@@ -1,4 +1,4 @@
-package Request;
+package com.management.vehicle.request;
 
 import javax.net.ssl.HttpsURLConnection;
 import java.io.BufferedReader;
@@ -15,7 +15,7 @@ public class MapRequest {
 
     public static void main(String[] args) throws IOException {
         MapRequest mapRequest = new MapRequest();
-        DistanceMatrix response = mapRequest.getDistancematrix("Trường THPT Long Khánh", "kí túc xá khu a");
+        DistanceMatrix response = mapRequest.getDistancematrix("Trường THPT Long Khánh", "THPT dầu giây");
         if (response == null) {
             System.out.println("Không tìm thấy đường đi");
             return;
@@ -25,6 +25,7 @@ public class MapRequest {
         System.out.println(response.getDistance());
         System.out.println(response.getDuration());
     }
+
     public DistanceMatrix getDistancematrix(String origin, String destination) throws IOException {
         HttpsURLConnection urlConnection = getHttpsURLConnection("https://api.distancematrix.ai//maps/api/distancematrix/json?origins=" + URLEncoder.encode(origin, StandardCharsets.UTF_8) + "&destinations=" + URLEncoder.encode(destination, StandardCharsets.UTF_8) + "&key=M0ioJlnrcQDFRJj55TzUAnndyWkwwEsLyUnHZ5DpzPIvq3qb2befP8Hr1nytAZpH");
         DistanceMatrix responseBody;

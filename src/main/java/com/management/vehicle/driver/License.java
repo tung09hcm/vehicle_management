@@ -1,5 +1,5 @@
-package Driver;
-import java.time.LocalDateTime;
+package com.management.vehicle.driver;
+
 public class License {
     private LicenseLevel type;
     private String issueDate;

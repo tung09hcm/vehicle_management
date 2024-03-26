@@ -1,5 +1,6 @@
-package Driver;
-import Trip.*;
+package com.management.vehicle.driver;
+import com.management.vehicle.trip.Trip;
+
 import java.util.ArrayList;
 import java.util.List;
 

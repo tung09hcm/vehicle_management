@@ -1,4 +1,4 @@
-package com.management.vehicle;
+package com.management.vehicle.vehicle;
 
 public enum TypeVehicle {
     car,

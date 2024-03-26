@@ -1,4 +1,4 @@
-package com.management.vehicle;
+package com.management.vehicle.vehicle;
 public enum VehicleStatus {
     NONE("none"),      // Giá trị 1
     ON_DUTY("on duty"), // Giá trị 2

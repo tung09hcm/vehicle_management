@@ -1,4 +1,4 @@
-package Driver;
+package com.management.vehicle.driver;
 
 public enum DriverStatus {
     NONE,

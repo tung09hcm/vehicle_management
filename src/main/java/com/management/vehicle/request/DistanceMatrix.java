@@ -1,4 +1,4 @@
-package Request;
+package com.management.vehicle.request;
 
 public class DistanceMatrix {
     private String destination_addresses;

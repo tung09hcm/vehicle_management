@@ -1,5 +1,5 @@
 package com.management.vehicle.vehicle;
-import com.management.vehicle.LicenseLevel;
+import com.management.vehicle.license.LicenseLevel;
 
 
 public class Truck extends Vehicle{

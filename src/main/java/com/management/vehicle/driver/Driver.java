@@ -8,7 +8,7 @@ public class Driver {
     private String name;
     private String phoneNumber;
     private String address;
-
+    private String id;
     public List<License> getLicense() {
         return license;
     }
@@ -62,13 +62,15 @@ public class Driver {
         this.license = new ArrayList<>();
         this.status = DriverStatus.NONE;
         this.history = new ArrayList<>();
+        this.id = "";
     }
-    public Driver(String name, String phoneNumber, String address, List<License> license, DriverStatus status, List<Trip> history) {
+    public Driver(String name, String phoneNumber, String address, List<License> license, DriverStatus status, List<Trip> history, String id) {
         this.name = name;
         this.phoneNumber = phoneNumber;
         this.address = address;
         this.license = license;
         this.status = status;
         this.history = history;
+        this.id = id;
     }
 }

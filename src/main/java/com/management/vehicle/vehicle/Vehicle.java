@@ -1,16 +1,17 @@
 package com.management.vehicle.vehicle;
-import com.management.vehicle.driver.License;
+import com.management.vehicle.LicenseLevel;
 
 public class Vehicle {
     private int distanceCover;
     private TypeVehicle type;
     private VehicleStatus status;
+    private String DriverID = "null";
     private double length;
     private double wide;
     private double high;
     private String plateNumber;
     private double weight;
-    private License license;
+    private LicenseLevel license;
 
     public int getDistanceCover() {
         return distanceCover;
@@ -76,21 +77,28 @@ public class Vehicle {
         this.status = status;
     }
 
-    public License getLicense() {
+    public LicenseLevel getLicense() {
         return license;
     }
 
-    public void setLicense(License license) {
+    public void setLicense(LicenseLevel license) {
         this.license = license;
     }
 
+    public String getDriverID() {
+        return DriverID;
+    }
+
+    public void setDriverID(String driverID) {
+        DriverID = driverID;
+    }
 
     public void getHistory() {
 
     }
     public void setMaintenance(){}
 
-    public Vehicle(int distanceCover, TypeVehicle type, double length, double wide, double high, String plateNumber, double weight, VehicleStatus status, License license) {
+    public Vehicle(String DriverID,int distanceCover, TypeVehicle type, double length, double wide, double high, String plateNumber, double weight, VehicleStatus status, LicenseLevel license) {
         this.distanceCover = distanceCover;
         this.type = type;
         this.length = length;
@@ -100,5 +108,7 @@ public class Vehicle {
         this.weight = weight;
         this.status = status;
         this.license = license;
+        DriverID = DriverID;
     }
 }
+

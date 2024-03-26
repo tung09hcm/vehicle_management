@@ -85,38 +85,8 @@ public class FireBase {
             System.out.println(driverr.getHistory().get(0).getBegin().getX());
         }
 
-        fb = FireBase.getInstance();
-        fb.getAllDriver();
-        System.out.println(fb.driverList.size());
-        for (Driver driverrr : fb.driverList) {
-            System.out.println(driverrr.getHistory().get(0).getBegin().getX());
-        }
-        System.out.println("Done");
-
-        driver = new Driver();
-        driver.setName("Nguyen Van A");
-        driver.setPhoneNumber("0123456789");
-        driver.setAddress("123 Nguyen Trai, Q1, HCM");
-        license = new License();
-        license.setType(LicenseLevel.B1);
-        license.setIssueDate("01/01/2020");
-        license.setExpiryDate("01/01/2025");
-        license.setId("1234567890");
-        driver.getLicense().add(license);
-        driver.setStatus(DriverStatus.NONE);
-        trip = new Trip();
-        trip.setBegin(new Coordinate(10, 10));
-        trip.setEnd(new Coordinate(20, 20));
-        trip.setBegin_date("01/01/2021");
-        trip.setEnd_date("01/01/2021");
-        driver.getHistory().add(trip);
-        fb.addDriver(driver);
-        System.out.println("Done add");
-        for (Driver driverr : fb.driverList) {
-            System.out.println(driverr.getHistory().get(0).getBegin().getX());
-        }
-        fb.deleteDriver(driver);
-        System.out.println("Done delete");
+        driver.setPhoneNumber("0987654321");
+        fb.editDriver("0", driver);
     }
 
     /**
@@ -232,8 +202,7 @@ public class FireBase {
      */
     public void addDriver(Driver driver) {
         CompletableFuture<Void> future = new CompletableFuture<>();
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Driver");
-        DatabaseReference newDriverRef = ref.child(String.valueOf(driverList.size()));
+        DatabaseReference newDriverRef = FirebaseDatabase.getInstance().getReference("Driver").child(String.valueOf(driverList.size()));
         newDriverRef.setValue(driver, (databaseError, databaseReference) -> {
             if (databaseError != null) {
                 System.out.println("Data could not be saved " + databaseError.getMessage());
@@ -246,33 +215,33 @@ public class FireBase {
         future.join();
     }
 
-    public void deleteDriver(Driver driver) {
+    public void deleteDriver(String id) {
         CompletableFuture<Void> future = new CompletableFuture<>();
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Driver");
-        ref.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                System.out.println("delete");
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    snapshot.getRef().removeValue((databaseError, databaseReference) -> {
-                        if (databaseError != null) {
-                            System.out.println("Data could not be removed " + databaseError.getMessage());
-                        } else {
-                            System.out.println("Data removed successfully.");
-                        }
-                    });
-                }
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Driver").child(id);
+        ref.removeValue((databaseError, databaseReference) -> {
+            if (databaseError != null) {
+                System.out.println("Data could not be removed " + databaseError.getMessage());
+                future.completeExceptionally(databaseError.toException());
+            } else {
+                System.out.println("Data removed successfully.");
                 future.complete(null);
             }
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                System.out.println("The read failed: " + databaseError.getCode());
+        });
+        future.join();
+    }
+
+    public void editDriver(String id, Driver driver) {
+        CompletableFuture<Void> future = new CompletableFuture<>();
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Driver").child(id);
+        ref.setValue(driver, (databaseError, databaseReference) -> {
+            if (databaseError != null) {
+                System.out.println("Data could not be edited " + databaseError.getMessage());
                 future.completeExceptionally(databaseError.toException());
+            } else {
+                System.out.println("Data edited successfully.");
+                future.complete(null);
             }
         });
         future.join();
     }
 }
-
-
-

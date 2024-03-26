@@ -1,5 +1,5 @@
 package com.management.vehicle.vehicle;
-import com.management.vehicle.driver.*;
+import com.management.vehicle.LicenseLevel;
 
 
 public class Truck extends Vehicle{
@@ -22,10 +22,11 @@ public class Truck extends Vehicle{
         KhoiLuongHangHoa = khoiLuongHangHoa;
     }
 
-    public Truck(int distanceCover, TypeVehicle type, double length, double wide, double high, String plateNumber, double weight, VehicleStatus status, License license, String loaiHanghoa, double khoiLuongHangHoa) {
-        super(distanceCover, type, length, wide, high, plateNumber, weight, status, license);
+    public Truck(String DriverID,int distanceCover, TypeVehicle type, double length, double wide, double high, String plateNumber, double weight, VehicleStatus status, LicenseLevel license, String loaiHanghoa, double khoiLuongHangHoa) {
+        super(DriverID,distanceCover, type, length, wide, high, plateNumber, weight, status, license);
         LoaiHanghoa = loaiHanghoa;
         KhoiLuongHangHoa = khoiLuongHangHoa;
     }
 
 }
+

@@ -22,6 +22,11 @@ public class FireBase {
     private static FireBase instance;
     private final List<Driver> driverList = new ArrayList<>();
 
+    /**
+     * Private constructor to initialize the Firebase connection.
+     * It reads the token from a file, decrypts it and uses it to authenticate with Firebase.
+     * @throws Exception if there's an error during the decryption or Firebase initialization.
+     */
     private FireBase() throws Exception {
         byte[] key1 = {0x45, 0x47, 0x57, 0x47, 0x74, 0x51, 0x4f, 0x51, 0x4d, 0x73, 0x70, 0x55, 0x73, 0x76, 0x5a, 0x6c, 0x4a, 0x50, 0x4b, 0x5a, 0x7a, 0x71, 0x36, 0x42, 0x59, 0x37, 0x35, 0x4c, 0x69, 0x6a, 0x45, 0x48};
         byte[] key2 = {0x4e, 0x48, 0x43, 0x72, 0x77, 0x7a, 0x6e, 0x61, 0x6b, 0x45, 0x76, 0x63, 0x5a, 0x76, 0x6c, 0x70, 0x35, 0x31, 0x4d, 0x59, 0x45, 0x38, 0x7a, 0x31, 0x54, 0x7a, 0x39, 0x38, 0x6f, 0x32, 0x45, 0x6d};
@@ -36,6 +41,11 @@ public class FireBase {
         FirebaseApp.initializeApp(options);
     }
 
+    /**
+     * Singleton pattern to get the instance of the FireBase class.
+     * @return the instance of the FireBase class.
+     * @throws Exception if there's an error during the initialization.
+     */
     public static FireBase getInstance() throws Exception {
         if (instance == null) {
             instance = new FireBase();
@@ -105,8 +115,18 @@ public class FireBase {
         for (Driver driverr : fb.driverList) {
             System.out.println(driverr.getHistory().get(0).getBegin().getX());
         }
+        fb.deleteDriver(driver);
+        System.out.println("Done delete");
     }
 
+    /**
+     * Encrypts the given data using AES encryption and the provided keys.
+     * @param data the data to be encrypted.
+     * @param key1 the first key for the encryption.
+     * @param key2 the second key for the encryption.
+     * @return the encrypted data.
+     * @throws Exception if there's an error during the encryption.
+     */
     public byte[] encrypt(byte[] data, byte[] key1, byte[] key2) throws Exception {
         SecretKeySpec keySpec = new SecretKeySpec(key2, "AES");
         Cipher cipher = Cipher.getInstance("AES");
@@ -120,6 +140,14 @@ public class FireBase {
         return encryptedWithKey1;
     }
 
+    /**
+     * Decrypts the given data using AES decryption and the provided keys.
+     * @param data the data to be decrypted.
+     * @param key1 the first key for the decryption.
+     * @param key2 the second key for the decryption.
+     * @return the decrypted data.
+     * @throws Exception if there's an error during the decryption.
+     */
     public byte[] decrypt(byte[] data, byte[] key1, byte[] key2) throws Exception {
         byte[] decryptedWithKey1 = new byte[data.length];
         for (int i = 0; i < data.length; i++) {
@@ -132,6 +160,12 @@ public class FireBase {
         return cipher.doFinal(Base64.getDecoder().decode(new String(decryptedWithKey1)));
     }
 
+    /**
+     * Reads the content of a file and returns it as a byte array.
+     * @param fileName the name of the file to be read.
+     * @return the content of the file as a byte array.
+     * @throws IOException if there's an error during the file reading.
+     */
     public byte[] readFromFile(String fileName) throws IOException {
         FileInputStream inputStream = new FileInputStream(fileName);
         byte[] data = new byte[inputStream.available()];
@@ -140,6 +174,9 @@ public class FireBase {
         return data;
     }
 
+    /**
+     * Retrieves all drivers from Firebase and stores them in the driverList.
+     */
     public void getAllDriver() {
         if (!driverList.isEmpty()) { return; }
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Driver");
@@ -189,6 +226,10 @@ public class FireBase {
         future.join();
     }
 
+    /**
+     * Adds a driver to Firebase.
+     * @param driver The driver to be added.
+     */
     public void addDriver(Driver driver) {
         CompletableFuture<Void> future = new CompletableFuture<>();
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Driver");
@@ -200,6 +241,33 @@ public class FireBase {
             } else {
                 System.out.println("Data saved successfully.");
                 future.complete(null);
+            }
+        });
+        future.join();
+    }
+
+    public void deleteDriver(Driver driver) {
+        CompletableFuture<Void> future = new CompletableFuture<>();
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Driver");
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                System.out.println("delete");
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    snapshot.getRef().removeValue((databaseError, databaseReference) -> {
+                        if (databaseError != null) {
+                            System.out.println("Data could not be removed " + databaseError.getMessage());
+                        } else {
+                            System.out.println("Data removed successfully.");
+                        }
+                    });
+                }
+                future.complete(null);
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                System.out.println("The read failed: " + databaseError.getCode());
+                future.completeExceptionally(databaseError.toException());
             }
         });
         future.join();

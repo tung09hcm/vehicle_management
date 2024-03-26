@@ -1,6 +1,5 @@
 package com.management.vehicle.vehicle;
-import com.management.vehicle.driver.*;
-
+import com.management.vehicle.driver.LicenseLevel;
 
 
 public class Bus extends Vehicle {
@@ -28,11 +27,12 @@ public class Bus extends Vehicle {
         NumberOfCustomer = numberOfCustomer;
     }
 
-    public Bus(int distanceCover, TypeVehicle type, double length, double wide, double high, String plateNumber, double weight, VehicleStatus status, License license, int numberOfSeat, double pricePerSeat, int numberOfCustomer) {
-        super(distanceCover, type, length, wide, high, plateNumber, weight, status, license);
+    public Bus(String DriverID,int distanceCover, TypeVehicle type, double length, double wide, double high, String plateNumber, double weight, VehicleStatus status, LicenseLevel license, int numberOfSeat, double pricePerSeat, int numberOfCustomer) {
+        super(DriverID,distanceCover, type, length, wide, high, plateNumber, weight, status, license);
         NumberOfSeat = numberOfSeat;
         PricePerSeat = pricePerSeat;
         NumberOfCustomer = numberOfCustomer;
     }
 
 }
+

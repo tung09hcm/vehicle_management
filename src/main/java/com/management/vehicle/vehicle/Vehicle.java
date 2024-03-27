@@ -5,7 +5,7 @@ public class Vehicle {
     private int distanceCover;
     private TypeVehicle type;
     private VehicleStatus status;
-    private String DriverID = "null";
+    private String driverID ;
     private double length;
     private double wide;
     private double high;
@@ -86,11 +86,11 @@ public class Vehicle {
     }
 
     public String getDriverID() {
-        return DriverID;
+        return driverID;
     }
 
     public void setDriverID(String driverID) {
-        DriverID = driverID;
+        driverID = driverID;
     }
 
     public void getHistory() {
@@ -98,7 +98,7 @@ public class Vehicle {
     }
     public void setMaintenance(){}
 
-    public Vehicle(String DriverID,int distanceCover, TypeVehicle type, double length, double wide, double high, String plateNumber, double weight, VehicleStatus status, LicenseLevel license) {
+    public Vehicle(String driverID,int distanceCover, TypeVehicle type, double length, double wide, double high, String plateNumber, double weight, VehicleStatus status, LicenseLevel license) {
         this.distanceCover = distanceCover;
         this.type = type;
         this.length = length;
@@ -108,7 +108,7 @@ public class Vehicle {
         this.weight = weight;
         this.status = status;
         this.license = license;
-        DriverID = DriverID;
+        driverID = driverID;
     }
 }
 

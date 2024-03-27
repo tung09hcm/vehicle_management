@@ -2,7 +2,7 @@ package com.management.vehicle.vehicle;
 import com.management.vehicle.license.LicenseLevel;
 
 
-public class Bus extends Vehicle {
+public class    Bus extends Vehicle {
     private int NumberOfSeat;
     private double PricePerSeat;
     private int NumberOfCustomer = 0;

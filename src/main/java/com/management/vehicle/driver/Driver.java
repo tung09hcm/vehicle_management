@@ -9,7 +9,7 @@ public class Driver {
     private String name;
     private String phoneNumber;
     private String address;
-    private String RecentPlateNumber = "null";
+    private String recentPlateNumber ;
     private String id;
     public List<License> getLicense() {
         return license;
@@ -55,11 +55,11 @@ public class Driver {
     }
 
     public String getRecentPlateNumber() {
-        return RecentPlateNumber;
+        return recentPlateNumber;
     }
 
     public void setRecentPlateNumber(String recentPlateNumber) {
-        RecentPlateNumber = recentPlateNumber;
+        recentPlateNumber = recentPlateNumber;
     }
 
     public String getId() {
@@ -91,7 +91,7 @@ public class Driver {
         this.name = name;
         this.phoneNumber = phoneNumber;
         this.address = address;
-        RecentPlateNumber = recentPlateNumber;
+        recentPlateNumber = recentPlateNumber;
         this.id = id;
         this.license = license;
         this.status = status;

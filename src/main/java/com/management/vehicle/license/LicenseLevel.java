@@ -8,5 +8,6 @@ public enum LicenseLevel {
     C,
     D,
     E,
-    F
+    F,
+    FC
 }

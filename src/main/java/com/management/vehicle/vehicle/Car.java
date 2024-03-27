@@ -66,5 +66,16 @@ public class Car extends Vehicle {
         this.rentalDate = rentalDate;
         this.returnDate = returnDate;
     }
+    public Car()
+    {
+        super();
+        this.setLicense(LicenseLevel.B1);
+        Customername = "";
+        CustomerphoneNumber = "";
+        Customerid = "";
+        Customeraddress = "";
+        this.rentalDate = "";
+        this.returnDate = "";
+    }
 
 }

@@ -2,29 +2,37 @@ package com.management.vehicle.vehicle;
 import com.management.vehicle.license.LicenseLevel;
 
 public class Container extends Vehicle{
-    private String LoaiHanghoa;
-    private double KhoiLuongHangHoa;
+    private String goodsType;
+    private double goodsWeight;
 
-    public String getLoaiHanghoa() {
-        return LoaiHanghoa;
+    public String getGoodsType() {
+        return goodsType;
     }
 
     public double getKhoiLuongHangHoa() {
-        return KhoiLuongHangHoa;
+        return goodsWeight;
     }
 
-    public void setLoaiHanghoa(String loaiHanghoa) {
-        LoaiHanghoa = loaiHanghoa;
+    public void setGoodsType(String goodsType) {
+        this.goodsType = goodsType;
     }
 
-    public void setKhoiLuongHangHoa(double khoiLuongHangHoa) {
-        KhoiLuongHangHoa = khoiLuongHangHoa;
+    public void setGoodsWeight(double goodsWeight) {
+        this.goodsWeight = goodsWeight;
     }
 
-    public Container(String DriverID,int distanceCover, TypeVehicle type, double length, double wide, double high, String plateNumber, double weight, VehicleStatus status, LicenseLevel license, String loaiHanghoa, double khoiLuongHangHoa) {
+    public Container(String DriverID, int distanceCover, TypeVehicle type, double length, double wide, double high, String plateNumber, double weight, VehicleStatus status, LicenseLevel license, String goodsType, double goodsWeight ){
         super(DriverID,distanceCover, type, length, wide, high, plateNumber, weight, status, license);
-        LoaiHanghoa = loaiHanghoa;
-        KhoiLuongHangHoa = khoiLuongHangHoa;
+        goodsType = goodsType;
+        goodsWeight = goodsWeight;
+    }
+
+    public Container()
+    {
+        super();
+        this.setLicense(LicenseLevel.FC);
+        goodsType = "";
+        goodsWeight = 0;
     }
 }
 

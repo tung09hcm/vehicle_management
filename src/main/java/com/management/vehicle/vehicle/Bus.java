@@ -33,6 +33,14 @@ public class    Bus extends Vehicle {
         PricePerSeat = pricePerSeat;
         NumberOfCustomer = numberOfCustomer;
     }
+    public Bus()
+    {
+        super();
+        this.setLicense(LicenseLevel.E);
+        NumberOfSeat = 0;
+        PricePerSeat = 0;
+        NumberOfCustomer = 0;
+    }
 
 }
 

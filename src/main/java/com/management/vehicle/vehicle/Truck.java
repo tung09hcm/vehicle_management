@@ -3,29 +3,37 @@ import com.management.vehicle.license.LicenseLevel;
 
 
 public class Truck extends Vehicle{
-    private String LoaiHanghoa;
-    private double KhoiLuongHangHoa;
+    private String goodsType;
+    private double goodsWeight;
 
-    public String getLoaiHanghoa() {
-        return LoaiHanghoa;
+    public String getGoodsType() {
+        return goodsType;
     }
 
-    public double getKhoiLuongHangHoa() {
-        return KhoiLuongHangHoa;
+    public void setGoodsType(String goodsType) {
+        this.goodsType = goodsType;
     }
 
-    public void setLoaiHanghoa(String loaiHanghoa) {
-        LoaiHanghoa = loaiHanghoa;
+    public double getGoodsWeight() {
+        return goodsWeight;
     }
 
-    public void setKhoiLuongHangHoa(double khoiLuongHangHoa) {
-        KhoiLuongHangHoa = khoiLuongHangHoa;
+    public void setGoodsWeight(double goodsWeight) {
+        this.goodsWeight = goodsWeight;
     }
 
-    public Truck(String DriverID,int distanceCover, TypeVehicle type, double length, double wide, double high, String plateNumber, double weight, VehicleStatus status, LicenseLevel license, String loaiHanghoa, double khoiLuongHangHoa) {
-        super(DriverID,distanceCover, type, length, wide, high, plateNumber, weight, status, license);
-        LoaiHanghoa = loaiHanghoa;
-        KhoiLuongHangHoa = khoiLuongHangHoa;
+    public Truck(String driverID, int distanceCover, TypeVehicle type, double length, double wide, double high, String plateNumber, double weight, VehicleStatus status, LicenseLevel license, String goodsType, double goodsWeight) {
+        super(driverID, distanceCover, type, length, wide, high, plateNumber, weight, status, license);
+        this.goodsType = goodsType;
+        this.goodsWeight = goodsWeight;
+    }
+
+    public Truck()
+    {
+        super();
+        this.setLicense(LicenseLevel.F);
+        this.goodsType = "";
+        this.goodsWeight = 0;
     }
 
 }

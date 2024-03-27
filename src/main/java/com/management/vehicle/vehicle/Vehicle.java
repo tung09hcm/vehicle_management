@@ -110,5 +110,19 @@ public class Vehicle {
         this.license = license;
         driverID = driverID;
     }
+    public Vehicle()
+    {
+        this.distanceCover = 0;
+        this.type = TypeVehicle.NONE;
+        this.length = 0;
+        this.wide = 0;
+        this.high = 0;
+        this.plateNumber = "";
+        this.weight = 0;
+        this.status = VehicleStatus.NONE;
+        this.license = LicenseLevel.NONE;
+        driverID = "";
+    }
+
 }
 

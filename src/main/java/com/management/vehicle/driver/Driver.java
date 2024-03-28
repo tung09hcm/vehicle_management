@@ -59,7 +59,7 @@ public class Driver {
     }
 
     public void setRecentPlateNumber(String recentPlateNumber) {
-        recentPlateNumber = recentPlateNumber;
+        this.recentPlateNumber = recentPlateNumber;
     }
 
     public String getId() {
@@ -84,6 +84,7 @@ public class Driver {
         this.license = new ArrayList<>();
         this.status = DriverStatus.NONE;
         this.history = new ArrayList<>();
+        this.recentPlateNumber = "";
         this.id = "";
     }
 
@@ -91,7 +92,7 @@ public class Driver {
         this.name = name;
         this.phoneNumber = phoneNumber;
         this.address = address;
-        recentPlateNumber = recentPlateNumber;
+        this.recentPlateNumber = recentPlateNumber;
         this.id = id;
         this.license = license;
         this.status = status;

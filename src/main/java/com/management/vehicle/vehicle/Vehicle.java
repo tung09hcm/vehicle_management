@@ -90,7 +90,7 @@ public class Vehicle {
     }
 
     public void setDriverID(String driverID) {
-        driverID = driverID;
+        this.driverID = driverID;
     }
 
     public void getHistory() {
@@ -108,7 +108,7 @@ public class Vehicle {
         this.weight = weight;
         this.status = status;
         this.license = license;
-        driverID = driverID;
+        this.driverID = driverID;
     }
     public Vehicle()
     {
@@ -121,7 +121,7 @@ public class Vehicle {
         this.weight = 0;
         this.status = VehicleStatus.NONE;
         this.license = LicenseLevel.NONE;
-        driverID = "";
+        this.driverID = "";
     }
 
 }

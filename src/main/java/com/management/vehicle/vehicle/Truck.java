@@ -1,5 +1,8 @@
 package com.management.vehicle.vehicle;
 import com.management.vehicle.license.LicenseLevel;
+import com.management.vehicle.trip.Trip;
+
+import java.util.List;
 
 
 public class Truck extends Vehicle{
@@ -22,8 +25,8 @@ public class Truck extends Vehicle{
         this.goodsWeight = goodsWeight;
     }
 
-    public Truck(String driverID, int distanceCover, TypeVehicle type, double length, double wide, double high, String plateNumber, double weight, VehicleStatus status, LicenseLevel license, String goodsType, double goodsWeight) {
-        super(driverID, distanceCover, type, length, wide, high, plateNumber, weight, status, license);
+    public Truck(List<Trip> history,String driverID, int distanceCover, TypeVehicle type, double length, double wide, double high, String plateNumber, double weight, VehicleStatus status, LicenseLevel license, String goodsType, double goodsWeight) {
+        super(history,driverID, distanceCover, type, length, wide, high, plateNumber, weight, status, license);
         this.goodsType = goodsType;
         this.goodsWeight = goodsWeight;
     }

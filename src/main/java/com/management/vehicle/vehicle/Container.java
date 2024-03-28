@@ -1,5 +1,8 @@
 package com.management.vehicle.vehicle;
 import com.management.vehicle.license.LicenseLevel;
+import com.management.vehicle.trip.Trip;
+
+import java.util.List;
 
 public class Container extends Vehicle{
     private String goodsType;
@@ -21,8 +24,8 @@ public class Container extends Vehicle{
         this.goodsWeight = goodsWeight;
     }
 
-    public Container(String DriverID, int distanceCover, TypeVehicle type, double length, double wide, double high, String plateNumber, double weight, VehicleStatus status, LicenseLevel license, String goodsType, double goodsWeight ){
-        super(DriverID,distanceCover, type, length, wide, high, plateNumber, weight, status, license);
+    public Container(List<Trip> history,String DriverID, int distanceCover, TypeVehicle type, double length, double wide, double high, String plateNumber, double weight, VehicleStatus status, LicenseLevel license, String goodsType, double goodsWeight ){
+        super(history,DriverID,distanceCover, type, length, wide, high, plateNumber, weight, status, license);
         goodsType = goodsType;
         goodsWeight = goodsWeight;
     }

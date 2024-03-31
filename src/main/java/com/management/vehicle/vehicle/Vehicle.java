@@ -1,5 +1,9 @@
 package com.management.vehicle.vehicle;
 import com.management.vehicle.license.LicenseLevel;
+import com.management.vehicle.trip.Trip;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Vehicle {
     private int distanceCover;
@@ -12,6 +16,7 @@ public class Vehicle {
     private String plateNumber;
     private double weight;
     private LicenseLevel license;
+    private List<Trip> history;
 
     public int getDistanceCover() {
         return distanceCover;
@@ -93,12 +98,16 @@ public class Vehicle {
         this.driverID = driverID;
     }
 
+    public void setHistory(List<Trip> history) {
+        this.history = history;
+    }
+
     public void getHistory() {
 
     }
     public void setMaintenance(){}
 
-    public Vehicle(String driverID,int distanceCover, TypeVehicle type, double length, double wide, double high, String plateNumber, double weight, VehicleStatus status, LicenseLevel license) {
+    public Vehicle(List<Trip> history,String driverID,int distanceCover, TypeVehicle type, double length, double wide, double high, String plateNumber, double weight, VehicleStatus status, LicenseLevel license) {
         this.distanceCover = distanceCover;
         this.type = type;
         this.length = length;
@@ -109,6 +118,7 @@ public class Vehicle {
         this.status = status;
         this.license = license;
         this.driverID = driverID;
+        this.history = history;
     }
     public Vehicle()
     {
@@ -122,6 +132,7 @@ public class Vehicle {
         this.status = VehicleStatus.NONE;
         this.license = LicenseLevel.NONE;
         this.driverID = "";
+        this.history = new ArrayList<>();
     }
 
 }

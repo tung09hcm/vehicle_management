@@ -1,5 +1,8 @@
 package com.management.vehicle.vehicle;
 import com.management.vehicle.license.LicenseLevel;
+import com.management.vehicle.trip.Trip;
+
+import java.util.List;
 
 public class Car extends Vehicle {
     private String Customername;
@@ -57,8 +60,8 @@ public class Car extends Vehicle {
         this.returnDate = returnDate;
     }
 
-    public Car(String DriverID,int distanceCover, TypeVehicle type, double length, double wide, double high, String plateNumber, double weight, VehicleStatus status, LicenseLevel license, String customername, String customerphoneNumber, String customerid, String customeraddress, String rentalDate, String returnDate) {
-        super(DriverID,distanceCover, type, length, wide, high, plateNumber, weight, status, license);
+    public Car(List<Trip> history,String DriverID, int distanceCover, TypeVehicle type, double length, double wide, double high, String plateNumber, double weight, VehicleStatus status, LicenseLevel license, String customername, String customerphoneNumber, String customerid, String customeraddress, String rentalDate, String returnDate) {
+        super(history,DriverID,distanceCover, type, length, wide, high, plateNumber, weight, status, license);
         Customername = customername;
         CustomerphoneNumber = customerphoneNumber;
         Customerid = customerid;

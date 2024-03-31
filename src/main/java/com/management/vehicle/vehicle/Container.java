@@ -24,7 +24,7 @@ public class Container extends Vehicle{
         this.goodsWeight = goodsWeight;
     }
 
-    public Container(List<Trip> history,String DriverID, int distanceCover, TypeVehicle type, double length, double wide, double high, String plateNumber, double weight, VehicleStatus status, LicenseLevel license, String goodsType, double goodsWeight ){
+    public Container(List<String> history,String DriverID, int distanceCover, TypeVehicle type, double length, double wide, double high, String plateNumber, double weight, VehicleStatus status, LicenseLevel license, String goodsType, double goodsWeight ){
         super(history,DriverID,distanceCover, type, length, wide, high, plateNumber, weight, status, license);
         goodsType = goodsType;
         goodsWeight = goodsWeight;

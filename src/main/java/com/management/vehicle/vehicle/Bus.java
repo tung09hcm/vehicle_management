@@ -30,7 +30,7 @@ public class    Bus extends Vehicle {
         NumberOfCustomer = numberOfCustomer;
     }
 
-    public Bus(List<Trip> history, String DriverID, int distanceCover, TypeVehicle type, double length, double wide, double high, String plateNumber, double weight, VehicleStatus status, LicenseLevel license, int numberOfSeat, double pricePerSeat, int numberOfCustomer) {
+    public Bus(List<String> history, String DriverID, int distanceCover, TypeVehicle type, double length, double wide, double high, String plateNumber, double weight, VehicleStatus status, LicenseLevel license, int numberOfSeat, double pricePerSeat, int numberOfCustomer) {
         super(history,DriverID,distanceCover, type, length, wide, high, plateNumber, weight, status, license);
         NumberOfSeat = numberOfSeat;
         PricePerSeat = pricePerSeat;

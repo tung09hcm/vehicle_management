@@ -16,7 +16,7 @@ public class Vehicle {
     private String plateNumber;
     private double weight;
     private LicenseLevel license;
-    private List<Trip> history;
+    private List<String> history;
 
     public int getDistanceCover() {
         return distanceCover;
@@ -98,16 +98,16 @@ public class Vehicle {
         this.driverID = driverID;
     }
 
-    public void setHistory(List<Trip> history) {
+    public void setHistory(List<String> history) {
         this.history = history;
     }
 
-    public void getHistory() {
-
+    public List<String> getHistory() {
+        return history;
     }
     public void setMaintenance(){}
 
-    public Vehicle(List<Trip> history,String driverID,int distanceCover, TypeVehicle type, double length, double wide, double high, String plateNumber, double weight, VehicleStatus status, LicenseLevel license) {
+    public Vehicle(List<String> history,String driverID,int distanceCover, TypeVehicle type, double length, double wide, double high, String plateNumber, double weight, VehicleStatus status, LicenseLevel license) {
         this.distanceCover = distanceCover;
         this.type = type;
         this.length = length;

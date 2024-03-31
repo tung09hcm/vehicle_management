@@ -5,10 +5,6 @@ import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.database.*;
 import com.management.vehicle.driver.Driver;
-import com.management.vehicle.driver.DriverStatus;
-import com.management.vehicle.license.License;
-import com.management.vehicle.license.LicenseLevel;
-import com.management.vehicle.trip.Coordinate;
 import com.management.vehicle.trip.Trip;
 import com.management.vehicle.vehicle.Vehicle;
 
@@ -73,6 +69,20 @@ public class FireBase {
 //        fb.editDriver(driver);
         fb.getAllVehicle();
         System.out.println(fb.vehicleList.size());
+        for (Vehicle vehicle : fb.vehicleList) {
+            System.out.println(vehicle.getPlateNumber());
+            if (!vehicle.getHistory().isEmpty()) {
+                System.out.println(fb.getTrip(vehicle.getHistory().get(0)).getBegin_date());
+            }
+        }
+        System.out.println("Done");
+        Trip trip = new Trip();
+        trip.setTripID("1");
+        trip.setBegin_date("2021-10-10");
+        trip.setEnd_date("2021-10-11");
+        trip.setDriverID("1");
+        trip.setPlateNumber("60B1 12435");
+        fb.addTrip(trip);
     }
 
     /**
@@ -334,6 +344,40 @@ public class FireBase {
                 future.completeExceptionally(databaseError.toException());
             } else {
                 System.out.println("Data edited successfully.");
+                future.complete(null);
+            }
+        });
+        future.join();
+    }
+
+    public Trip getTrip(String tripID) {
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Trip").child(tripID);
+        CompletableFuture<Trip> future = new CompletableFuture<>();
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                System.out.println("onDataChange");
+                Trip trip = dataSnapshot.getValue(Trip.class);
+                future.complete(trip);
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                System.out.println("The read failed: " + databaseError.getCode());
+                future.completeExceptionally(databaseError.toException());
+            }
+        });
+        return future.join();
+    }
+
+    public void addTrip(Trip trip) {
+        CompletableFuture<Void> future = new CompletableFuture<>();
+        DatabaseReference newTripRef = FirebaseDatabase.getInstance().getReference("Trip").child(trip.getTripID());
+        newTripRef.setValue(trip, (databaseError, databaseReference) -> {
+            if (databaseError != null) {
+                System.out.println("Data could not be saved " + databaseError.getMessage());
+                future.completeExceptionally(databaseError.toException());
+            } else {
+                System.out.println("Data saved successfully.");
                 future.complete(null);
             }
         });

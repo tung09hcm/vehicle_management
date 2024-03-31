@@ -10,6 +10,7 @@ import com.management.vehicle.license.License;
 import com.management.vehicle.license.LicenseLevel;
 import com.management.vehicle.trip.Coordinate;
 import com.management.vehicle.trip.Trip;
+import com.management.vehicle.vehicle.Vehicle;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
@@ -24,6 +25,7 @@ import java.util.concurrent.CompletableFuture;
 public class FireBase {
     private static FireBase instance;
     private final List<Driver> driverList = new ArrayList<>();
+    private final List<Vehicle> vehicleList = new ArrayList<>();
 
     /**
      * Private constructor to initialize the Firebase connection.
@@ -58,38 +60,19 @@ public class FireBase {
 
     public static void main(String[] args) throws Exception {
         FireBase fb = FireBase.getInstance();
-        fb.getAllDriver();
-        System.out.println(fb.driverList.size());
-        for (Driver driver : fb.driverList) {
-            System.out.println(driver.getHistory().get(0).getBegin().getX());
-        }
-        System.out.println("Done");
-
-        Driver driver = new Driver();
-        driver.setName("Nguyen Van A");
-        driver.setPhoneNumber("0123456789");
-        driver.setAddress("123 Nguyen Trai, Q1, HCM");
-        License license = new License();
-        license.setType(LicenseLevel.B1);
-        license.setIssueDate("01/01/2020");
-        license.setExpiryDate("01/01/2025");
-        license.setId("1234567890");
-        driver.getLicense().add(license);
-        driver.setStatus(DriverStatus.NONE);
-        Trip trip = new Trip();
-        trip.setBegin(new Coordinate(10, 10));
-        trip.setEnd(new Coordinate(20, 20));
-        trip.setBegin_date("01/01/2021");
-        trip.setEnd_date("01/01/2021");
-        driver.getHistory().add(trip);
-        fb.addDriver(driver);
-        System.out.println("Done add");
-        for (Driver driverr : fb.driverList) {
-            System.out.println(driverr.getHistory().get(0).getBegin().getX());
-        }
-
-        driver.setPhoneNumber("0987654321");
-        fb.editDriver("0", driver);
+//        fb.getAllDriver();
+//        System.out.println(fb.driverList.size());
+//        for (Driver driver : fb.driverList) {
+//            System.out.println(driver.getName());
+//        }
+//        System.out.println("Done");
+//
+//        Driver driver = fb.driverList.get(0);
+//        System.out.println(driver.getName());
+//        driver.setRecentPlateNumber("60B1 12435");
+//        fb.editDriver(driver);
+        fb.getAllVehicle();
+        System.out.println(fb.vehicleList.size());
     }
 
     /**
@@ -239,13 +222,113 @@ public class FireBase {
 
     /**
      * Edits a driver in Firebase.
-     * @param id The id of the driver to be edited.
      * @param driver The new driver information.
      */
-    public void editDriver(String id, Driver driver) {
+    public void editDriver(Driver driver) {
         CompletableFuture<Void> future = new CompletableFuture<>();
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Driver").child(id);
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Driver").child(driver.getId());
         ref.setValue(driver, (databaseError, databaseReference) -> {
+            if (databaseError != null) {
+                System.out.println("Data could not be edited " + databaseError.getMessage());
+                future.completeExceptionally(databaseError.toException());
+            } else {
+                System.out.println("Data edited successfully.");
+                future.complete(null);
+            }
+        });
+        future.join();
+    }
+
+    /**
+     * Retrieves all vehicles from Firebase and stores them in the vehicleList.
+     */
+    public void getAllVehicle() {
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Vehicle");
+        CompletableFuture<Void> future = new CompletableFuture<>();
+        ref.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String prevChildKey) {
+                System.out.println("onChildAdded");
+                Vehicle vehicle = dataSnapshot.getValue(Vehicle.class);
+                vehicleList.add(vehicle);
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String prevChildKey) {
+                System.out.println("onChildChanged");
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+                System.out.println("onChildRemoved");
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String prevChildKey) {
+                System.out.println("onChildMoved");
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                System.out.println("The read failed: " + databaseError.getCode());
+                future.completeExceptionally(databaseError.toException());
+            }
+        });
+
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                System.out.println("onDataChange");
+                future.complete(null);
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                System.out.println("The read failed: " + databaseError.getCode());
+                future.completeExceptionally(databaseError.toException());
+            }
+        });
+        future.join();
+    }
+
+
+    public void addVehicle(Vehicle vehicle) {
+        CompletableFuture<Void> future = new CompletableFuture<>();
+        DatabaseReference newVehicleRef = FirebaseDatabase.getInstance().getReference("Vehicle").child(vehicle.getPlateNumber());
+        newVehicleRef.setValue(vehicle, (databaseError, databaseReference) -> {
+            if (databaseError != null) {
+                System.out.println("Data could not be saved " + databaseError.getMessage());
+                future.completeExceptionally(databaseError.toException());
+            } else {
+                System.out.println("Data saved successfully.");
+                future.complete(null);
+            }
+        });
+        future.join();
+    }
+
+    public void deleteVehicle(String plateNumber) {
+        CompletableFuture<Void> future = new CompletableFuture<>();
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Vehicle").child(plateNumber);
+        ref.removeValue((databaseError, databaseReference) -> {
+            if (databaseError != null) {
+                System.out.println("Data could not be removed " + databaseError.getMessage());
+                future.completeExceptionally(databaseError.toException());
+            } else {
+                System.out.println("Data removed successfully.");
+                future.complete(null);
+            }
+        });
+        future.join();
+    }
+
+    public void editVehicle(String plateNumberOld, Vehicle vehicle) {
+        CompletableFuture<Void> future = new CompletableFuture<>();
+        if (!plateNumberOld.equals(vehicle.getPlateNumber())) {
+            deleteVehicle(plateNumberOld);
+            addVehicle(vehicle);
+        }
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Vehicle").child(plateNumberOld);
+        ref.setValue(vehicle, (databaseError, databaseReference) -> {
             if (databaseError != null) {
                 System.out.println("Data could not be edited " + databaseError.getMessage());
                 future.completeExceptionally(databaseError.toException());

@@ -2,9 +2,36 @@ package com.management.vehicle.trip;
 
 public class Trip {
     private Coordinate begin;
+    private String tripID;
     private Coordinate end;
     private String begin_date;
     private String end_date;
+    private String plateNumber;
+    private String driverID;
+
+    public String getTripID() {
+        return tripID;
+    }
+
+    public void setTripID(String tripID) {
+        this.tripID = tripID;
+    }
+
+    public String getPlateNumber() {
+        return plateNumber;
+    }
+
+    public void setPlateNumber(String plateNumber) {
+        this.plateNumber = plateNumber;
+    }
+
+    public String getDriverID() {
+        return driverID;
+    }
+
+    public void setDriverID(String driverID) {
+        this.driverID = driverID;
+    }
 
     public Coordinate getBegin() {
         return begin;
@@ -36,12 +63,18 @@ public class Trip {
         this.end = new Coordinate();
         this.begin_date = "";
         this.end_date = "";
+        this.driverID = "";
+        this.plateNumber = "";
+        this.tripID = "";
     }
 
-    public Trip(Coordinate begin, Coordinate end, String begin_date, String end_date) {
+    public Trip(String tripID, String driverID, String plateNumber,Coordinate begin, Coordinate end, String begin_date, String end_date) {
         this.begin = begin;
         this.end = end;
         this.begin_date = begin_date;
         this.end_date = end_date;
+        this.plateNumber = plateNumber;
+        this.driverID = driverID;
+        this.tripID = tripID;
     }
 }

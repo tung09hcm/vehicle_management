@@ -1,4 +1,5 @@
 package com.management.vehicle.driver;
+import com.management.vehicle.license.License;
 import com.management.vehicle.trip.Trip;
 
 import java.util.ArrayList;
@@ -8,7 +9,8 @@ public class Driver {
     private String name;
     private String phoneNumber;
     private String address;
-
+    private String recentPlateNumber ;
+    private String id;
     public List<License> getLicense() {
         return license;
     }
@@ -19,7 +21,7 @@ public class Driver {
 
     private List<License> license;
     private DriverStatus status;
-    private List<Trip> history;
+    private List<String> history;
 
     public String getName() {
         return name;
@@ -34,7 +36,7 @@ public class Driver {
     public DriverStatus getStatus() {
         return status;
     }
-    public List<Trip> getHistory() {
+    public List<String> getHistory() {
         return history;
     }
 
@@ -51,8 +53,28 @@ public class Driver {
     public void setStatus(DriverStatus status) {
         this.status = status;
     }
-    public void setHistory(List<Trip> history) {
+
+    public String getRecentPlateNumber() {
+        return recentPlateNumber;
+    }
+
+    public void setRecentPlateNumber(String recentPlateNumber) {
+        this.recentPlateNumber = recentPlateNumber;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public void setHistory(List<String> history) {
         this.history = history;
+    }
+    public boolean equals(Driver driver) {
+        return this.id.equals(driver.id);
     }
 
     public Driver() {
@@ -62,13 +84,20 @@ public class Driver {
         this.license = new ArrayList<>();
         this.status = DriverStatus.NONE;
         this.history = new ArrayList<>();
+        this.recentPlateNumber = "";
+        this.id = "";
+        this.history = new ArrayList<>();
     }
-    public Driver(String name, String phoneNumber, String address, List<License> license, DriverStatus status, List<Trip> history) {
+
+    public Driver(String name, String phoneNumber, String address, String recentPlateNumber, String id, List<License> license, DriverStatus status, List<String> history) {
         this.name = name;
         this.phoneNumber = phoneNumber;
         this.address = address;
+        this.recentPlateNumber = recentPlateNumber;
+        this.id = id;
         this.license = license;
         this.status = status;
         this.history = history;
     }
 }
+

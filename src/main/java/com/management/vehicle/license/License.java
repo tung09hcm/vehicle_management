@@ -1,4 +1,4 @@
-package com.management.vehicle.driver;
+package com.management.vehicle.license;
 
 public class License {
     private LicenseLevel type;

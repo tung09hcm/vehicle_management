@@ -1,16 +1,22 @@
 package com.management.vehicle.vehicle;
-import com.management.vehicle.driver.License;
+import com.management.vehicle.license.LicenseLevel;
+import com.management.vehicle.trip.Trip;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Vehicle {
     private int distanceCover;
     private TypeVehicle type;
     private VehicleStatus status;
+    private String driverID ;
     private double length;
     private double wide;
     private double high;
     private String plateNumber;
     private double weight;
-    private License license;
+    private LicenseLevel license;
+    private List<String> history;
 
     public int getDistanceCover() {
         return distanceCover;
@@ -76,21 +82,32 @@ public class Vehicle {
         this.status = status;
     }
 
-    public License getLicense() {
+    public LicenseLevel getLicense() {
         return license;
     }
 
-    public void setLicense(License license) {
+    public void setLicense(LicenseLevel license) {
         this.license = license;
     }
 
+    public String getDriverID() {
+        return driverID;
+    }
 
-    public void getHistory() {
+    public void setDriverID(String driverID) {
+        this.driverID = driverID;
+    }
 
+    public void setHistory(List<String> history) {
+        this.history = history;
+    }
+
+    public List<String> getHistory() {
+        return history;
     }
     public void setMaintenance(){}
 
-    public Vehicle(int distanceCover, TypeVehicle type, double length, double wide, double high, String plateNumber, double weight, VehicleStatus status, License license) {
+    public Vehicle(List<String> history,String driverID,int distanceCover, TypeVehicle type, double length, double wide, double high, String plateNumber, double weight, VehicleStatus status, LicenseLevel license) {
         this.distanceCover = distanceCover;
         this.type = type;
         this.length = length;
@@ -100,5 +117,23 @@ public class Vehicle {
         this.weight = weight;
         this.status = status;
         this.license = license;
+        this.driverID = driverID;
+        this.history = history;
     }
+    public Vehicle()
+    {
+        this.distanceCover = 0;
+        this.type = TypeVehicle.NONE;
+        this.length = 0;
+        this.wide = 0;
+        this.high = 0;
+        this.plateNumber = "";
+        this.weight = 0;
+        this.status = VehicleStatus.NONE;
+        this.license = LicenseLevel.NONE;
+        this.driverID = "";
+        this.history = new ArrayList<>();
+    }
+
 }
+

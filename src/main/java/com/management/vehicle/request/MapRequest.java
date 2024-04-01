@@ -51,7 +51,11 @@ public class MapRequest {
         urlConnection.setRequestMethod("GET");
         urlConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
         urlConnection.setConnectTimeout(5000);
-        urlConnection.connect();
+        try {
+            urlConnection.connect();
+        } catch (IOException e) {
+            System.out.println("Không thể kết nối đến máy chủ");
+        }
         return urlConnection;
     }
 

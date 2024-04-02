@@ -6,7 +6,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Vehicle {
-    private int distanceCover;
+    private double distanceCoverFromLastRepair;
+    private String last_repair_date;
+    private double distanceCover;
     private TypeVehicle type;
     private VehicleStatus status;
     private String driverID ;
@@ -17,12 +19,28 @@ public class Vehicle {
     private double weight;
     private LicenseLevel license;
     private List<String> history;
+    public double getDistanceCoverFromLastRepair() {
+        return distanceCoverFromLastRepair;
+    }
 
-    public int getDistanceCover() {
+    public void setDistanceCoverFromLastRepair(double distanceCoverFromLastRepair) {
+        this.distanceCoverFromLastRepair = distanceCoverFromLastRepair;
+    }
+
+    public String getLast_repair_date() {
+        return last_repair_date;
+    }
+
+    public void setLast_repair_date(String last_repair_date) {
+        this.last_repair_date = last_repair_date;
+    }
+
+
+    public double getDistanceCover() {
         return distanceCover;
     }
 
-    public void setDistanceCover(int distanceCover) {
+    public void setDistanceCover(double distanceCover) {
         this.distanceCover = distanceCover;
     }
 
@@ -107,7 +125,7 @@ public class Vehicle {
     }
     public void setMaintenance(){}
 
-    public Vehicle(List<String> history,String driverID,int distanceCover, TypeVehicle type, double length, double wide, double high, String plateNumber, double weight, VehicleStatus status, LicenseLevel license) {
+    public Vehicle(String last_repair_date, double distanceCoverFromLastRepair,List<String> history,String driverID,int distanceCover, TypeVehicle type, double length, double wide, double high, String plateNumber, double weight, VehicleStatus status, LicenseLevel license) {
         this.distanceCover = distanceCover;
         this.type = type;
         this.length = length;
@@ -119,6 +137,8 @@ public class Vehicle {
         this.license = license;
         this.driverID = driverID;
         this.history = history;
+        this.distanceCoverFromLastRepair = distanceCoverFromLastRepair;
+        this.last_repair_date = last_repair_date;
     }
     public Vehicle()
     {
@@ -133,6 +153,8 @@ public class Vehicle {
         this.license = LicenseLevel.NONE;
         this.driverID = "";
         this.history = new ArrayList<>();
+        this.distanceCoverFromLastRepair = 0;
+        this.last_repair_date = "";
     }
 
 }

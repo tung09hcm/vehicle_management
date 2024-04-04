@@ -9,6 +9,8 @@ public class Trip {
     private String plateNumber;
     private String driverID;
 
+    private double Revenue;
+
     public String getTripID() {
         return tripID;
     }
@@ -57,6 +59,12 @@ public class Trip {
     public void setEnd_date(String end_date) {
         this.end_date = end_date;
     }
+    public double getRevenue() {
+        return Revenue;
+    }
+    public void setRevenue(double revenue) {
+        Revenue = revenue;
+    }
 
     public Trip() {
         this.begin = new Coordinate();
@@ -66,15 +74,8 @@ public class Trip {
         this.driverID = "";
         this.plateNumber = "";
         this.tripID = "";
+        this.Revenue = 0;
     }
 
-    public Trip(String tripID, String driverID, String plateNumber,Coordinate begin, Coordinate end, String begin_date, String end_date) {
-        this.begin = begin;
-        this.end = end;
-        this.begin_date = begin_date;
-        this.end_date = end_date;
-        this.plateNumber = plateNumber;
-        this.driverID = driverID;
-        this.tripID = tripID;
-    }
+
 }

@@ -12,6 +12,7 @@ public class Car extends Vehicle {
     private String rentalDate;
     private String returnDate;
 
+
     public String getCustomername() {
         return Customername;
     }
@@ -60,15 +61,6 @@ public class Car extends Vehicle {
         this.returnDate = returnDate;
     }
 
-    public Car(List<String> history,String DriverID, int distanceCover, TypeVehicle type, double length, double wide, double high, String plateNumber, double weight, VehicleStatus status, LicenseLevel license, String customername, String customerphoneNumber, String customerid, String customeraddress, String rentalDate, String returnDate) {
-        super(history,DriverID,distanceCover, type, length, wide, high, plateNumber, weight, status, license);
-        Customername = customername;
-        CustomerphoneNumber = customerphoneNumber;
-        Customerid = customerid;
-        Customeraddress = customeraddress;
-        this.rentalDate = rentalDate;
-        this.returnDate = returnDate;
-    }
     public Car()
     {
         super();

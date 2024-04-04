@@ -1,19 +1,24 @@
 package com.management.vehicle.trip;
 
 public class Trip {
-    public void Print()
-    {
-        System.out.println("--------------------------");
-        System.out.println("begin: " + begin);
-        System.out.println("tripID: " + tripID);
-        System.out.println("end: " + end);
-        System.out.println("begin_date: " + begin_date);
-        System.out.println("end_date: " + end_date);
-        System.out.println("plateNumber: " + plateNumber);
-        System.out.println("driverID: " + driverID);
-        System.out.println("Revenue: " + Revenue);
-        System.out.println("--------------------------");
+    @Override
+    public String toString() {
+        StringBuilder buffer = new StringBuilder();
+
+        buffer.append("--------------------------\n");
+        buffer.append("begin: ").append(begin).append("\n");
+        buffer.append("tripID: ").append(tripID).append("\n");
+        buffer.append("end: ").append(end).append("\n");
+        buffer.append("begin_date: ").append(begin_date).append("\n");
+        buffer.append("end_date: ").append(end_date).append("\n");
+        buffer.append("plateNumber: ").append(plateNumber).append("\n");
+        buffer.append("driverID: ").append(driverID).append("\n");
+        buffer.append("Revenue: ").append(Revenue).append("\n");
+        buffer.append("--------------------------\n");
+        System.out.println(buffer.toString());
+        return buffer.toString();
     }
+
     private Coordinate begin;
     private String tripID;
     private Coordinate end;

@@ -1,28 +1,32 @@
 package com.management.vehicle.driver;
 import com.management.vehicle.license.License;
-import com.management.vehicle.trip.Trip;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Driver {
-    public void Print()
+    @Override
+    public String toString()
     {
-        System.out.println("--------------------------");
-        System.out.println("name: " + name);
-        System.out.println("phoneNumber: " + phoneNumber);
-        System.out.println("address: " + address);
-        System.out.println("recentPlateNumber: " + recentPlateNumber);
-        System.out.println("id: " + id);
-        System.out.println("license: " + license);
-        System.out.println("status: " + status);
-        System.out.println("history: " + history);
-        System.out.println("--------------------------");
+        StringBuilder buffer = new StringBuilder();
+
+        buffer.append("--------------------------\n");
+        buffer.append("name: ").append(name).append("\n");
+        buffer.append("phoneNumber: ").append(phoneNumber).append("\n");
+        buffer.append("address: ").append(address).append("\n");
+        buffer.append("recentPlateNumber: ").append(recentPlateNumber).append("\n");
+        buffer.append("id: ").append(id).append("\n");
+        buffer.append("license: ").append(license).append("\n");
+        buffer.append("status: ").append(status).append("\n");
+        buffer.append("history: ").append(history).append("\n");
+        buffer.append("--------------------------\n");
+        System.out.println(buffer.toString());
+        return buffer.toString();
     }
     private String name;
     private String phoneNumber;
     private String address;
-    private String recentPlateNumber ;
+    private String recentPlateNumber;
     private String id;
     public List<License> getLicense() {
         return license;

@@ -6,24 +6,29 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Vehicle {
-    public void Print()
-    {
-        System.out.println("--------------------------");
-        System.out.println("distanceCoverFromLastRepair: " + distanceCoverFromLastRepair);
-        System.out.println("last_repair_date: " + last_repair_date);
-        System.out.println("distanceCover: " + distanceCover);
-        System.out.println("type: " + type);
-        System.out.println("status: " + status);
-        System.out.println("driverID: " + driverID);
-        System.out.println("length: " + length);
-        System.out.println("wide: " + wide);
-        System.out.println("high: " + high);
-        System.out.println("plateNumber: " + plateNumber);
-        System.out.println("weight: " + weight);
-        System.out.println("license: " + license);
-        System.out.println("history: " + history);
-        System.out.println("--------------------------");
+    @Override
+    public String toString() {
+        StringBuilder buffer = new StringBuilder();
+
+        buffer.append("--------------------------\n");
+        buffer.append("distanceCoverFromLastRepair: ").append(distanceCoverFromLastRepair).append("\n");
+        buffer.append("last_repair_date: ").append(last_repair_date).append("\n");
+        buffer.append("distanceCover: ").append(distanceCover).append("\n");
+        buffer.append("type: ").append(type).append("\n");
+        buffer.append("status: ").append(status).append("\n");
+        buffer.append("driverID: ").append(driverID).append("\n");
+        buffer.append("length: ").append(length).append("\n");
+        buffer.append("wide: ").append(wide).append("\n");
+        buffer.append("high: ").append(high).append("\n");
+        buffer.append("plateNumber: ").append(plateNumber).append("\n");
+        buffer.append("weight: ").append(weight).append("\n");
+        buffer.append("license: ").append(license).append("\n");
+        buffer.append("history: ").append(history).append("\n");
+        buffer.append("--------------------------\n");
+        System.out.println(buffer.toString());
+        return buffer.toString();
     }
+
     private double distanceCoverFromLastRepair;
     private String last_repair_date;
     private double distanceCover;

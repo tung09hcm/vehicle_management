@@ -6,6 +6,24 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Vehicle {
+    public void Print()
+    {
+        System.out.println("--------------------------");
+        System.out.println("distanceCoverFromLastRepair: " + distanceCoverFromLastRepair);
+        System.out.println("last_repair_date: " + last_repair_date);
+        System.out.println("distanceCover: " + distanceCover);
+        System.out.println("type: " + type);
+        System.out.println("status: " + status);
+        System.out.println("driverID: " + driverID);
+        System.out.println("length: " + length);
+        System.out.println("wide: " + wide);
+        System.out.println("high: " + high);
+        System.out.println("plateNumber: " + plateNumber);
+        System.out.println("weight: " + weight);
+        System.out.println("license: " + license);
+        System.out.println("history: " + history);
+        System.out.println("--------------------------");
+    }
     private double distanceCoverFromLastRepair;
     private String last_repair_date;
     private double distanceCover;
@@ -156,6 +174,7 @@ public class Vehicle {
         this.distanceCoverFromLastRepair = 0;
         this.last_repair_date = "";
     }
+
 
 }
 

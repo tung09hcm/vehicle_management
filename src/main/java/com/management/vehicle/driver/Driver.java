@@ -6,6 +6,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Driver {
+    public void Print()
+    {
+        System.out.println("--------------------------");
+        System.out.println("name: " + name);
+        System.out.println("phoneNumber: " + phoneNumber);
+        System.out.println("address: " + address);
+        System.out.println("recentPlateNumber: " + recentPlateNumber);
+        System.out.println("id: " + id);
+        System.out.println("license: " + license);
+        System.out.println("status: " + status);
+        System.out.println("history: " + history);
+        System.out.println("--------------------------");
+    }
     private String name;
     private String phoneNumber;
     private String address;

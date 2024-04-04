@@ -25,7 +25,7 @@ public class Vehicle {
         buffer.append("license: ").append(license).append("\n");
         buffer.append("history: ").append(history).append("\n");
         buffer.append("--------------------------\n");
-        System.out.println(buffer.toString());
+
         return buffer.toString();
     }
 

@@ -1,30 +1,27 @@
 package com.management.vehicle.trip;
 
 public class Coordinate {
-    private double x;
-    private double y;
-
+    private double lng;
+    private double lat;
     public Coordinate() {
-        x = 0;
-        y = 0;
+        lng = 0;
+        lat = 0;
     }
-
     public Coordinate(double x, double y) {
-        this.x = x;
-        this.y = y;
+        this.lng = x;
+        this.lat = y;
     }
 
-    public double getX() {
-        return x;
+    public double getLng() {
+        return lng;
     }
-    public double getY() {
-        return y;
+    public double getLat() {
+        return lat;
     }
-    public void setX(double x) {
-        this.x = x;
+    public void setLng(double x) {
+        this.lng = x;
     }
-
-    public void setY(double y) {
-        this.y = y;
+    public void setLat(double y) {
+        this.lat = y;
     }
 }

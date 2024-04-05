@@ -1,41 +1,54 @@
 package com.management.vehicle.request;
 
+import com.management.vehicle.trip.Coordinate;
+
+import java.util.List;
+
 public class DistanceMatrix {
-    private String destination_addresses;
-    private String origin_addresses;
-    private String distance;
-    private String duration;
+    private String destinationAddresses;
+    private String originAddresses;
+    private double distance;
+    private int duration;
+    private List<Coordinate> coordinates;
     public DistanceMatrix() {
     }
-    public String getDestination_addresses() {
-        return destination_addresses;
+    public String getDestinationAddresses() {
+        return destinationAddresses;
     }
 
-    public void setDestination_addresses(String destination_addresses) {
-        this.destination_addresses = destination_addresses;
+    public void setDestinationAddresses(String destinationAddresses) {
+        this.destinationAddresses = destinationAddresses;
     }
 
-    public String getOrigin_addresses() {
-        return origin_addresses;
+    public String getOriginAddresses() {
+        return originAddresses;
     }
 
-    public void setOrigin_addresses(String origin_addresses) {
-        this.origin_addresses = origin_addresses;
+    public void setOriginAddresses(String originAddresses) {
+        this.originAddresses = originAddresses;
     }
 
-    public String getDistance() {
+    public double getDistance() {
         return distance;
     }
 
-    public void setDistance(String distance) {
+    public void setDistance(double distance) {
         this.distance = distance;
     }
 
-    public String getDuration() {
+    public int getDuration() {
         return duration;
     }
 
-    public void setDuration(String duration) {
+    public void setDuration(int duration) {
         this.duration = duration;
+    }
+
+    public List<Coordinate> getCoordinates() {
+        return coordinates;
+    }
+
+    public void setCoordinates(List<Coordinate> coordinates) {
+        this.coordinates = coordinates;
     }
 }

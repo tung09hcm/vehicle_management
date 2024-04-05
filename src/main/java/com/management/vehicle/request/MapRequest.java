@@ -1,5 +1,8 @@
 package com.management.vehicle.request;
 
+import com.management.vehicle.request.struct.GeocodingResponse;
+import com.management.vehicle.request.struct.Hit;
+
 import javax.net.ssl.HttpsURLConnection;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -7,42 +10,83 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.util.Objects;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import com.google.gson.Gson;
+import com.management.vehicle.request.struct.RouteRequest;
+import com.management.vehicle.request.struct.RouteResponse;
+import com.management.vehicle.trip.Coordinate;
+
 
 public class MapRequest {
 
+    private String apikey = "1f717283-be2f-4b3c-a647-b9e3e26567ff";
+
     public static void main(String[] args) throws IOException {
         MapRequest mapRequest = new MapRequest();
-        DistanceMatrix response = mapRequest.getDistancematrix("Trường THPT Long Khánh", "THPT dầu giây");
-        if (response == null) {
+        List<Hit> hits = mapRequest.getCoordinateList("thpt dầu giây");
+        for (Hit hit : hits) {
+            System.out.println(hit.getName() + " " + hit.getPoint().getLat() + " " + hit.getPoint().getLng());
+        }
+
+        DistanceMatrix distanceMatrix = mapRequest.getDistanceMatrix("Trường THPT Long Khánh", "THPT dầu giây");
+        if (distanceMatrix == null) {
             System.out.println("Not found");
             return;
         }
-        System.out.println(response.getOrigin_addresses());
-        System.out.println(response.getDestination_addresses());
-        System.out.println(response.getDistance());
-        System.out.println(response.getDuration());
+        System.out.println(distanceMatrix.getOriginAddresses());
+        System.out.println(distanceMatrix.getDestinationAddresses());
+        System.out.println(distanceMatrix.getDistance());
+        System.out.println(distanceMatrix.getDuration());
+        for (Coordinate coordinate : distanceMatrix.getCoordinates()) {
+            System.out.println(coordinate.getLat() + " " + coordinate.getLng());
+        }
     }
 
-    public DistanceMatrix getDistancematrix(String origin, String destination) throws IOException {
-        HttpsURLConnection urlConnection = getHttpsURLConnection("https://api.distancematrix.ai//maps/api/distancematrix/json?origins=" + URLEncoder.encode(origin, StandardCharsets.UTF_8) + "&destinations=" + URLEncoder.encode(destination, StandardCharsets.UTF_8) + "&key=M0ioJlnrcQDFRJj55TzUAnndyWkwwEsLyUnHZ5DpzPIvq3qb2befP8Hr1nytAZpH");
-        DistanceMatrix responseBody;
+    public DistanceMatrix getDistanceMatrix(String fromAddress, String toAddress) throws IOException {
+        DistanceMatrix distanceMatrix = new DistanceMatrix();
+        List<Hit> fromCoordinateList = getCoordinateList(fromAddress);
+        List<Hit> toCoordinateList = getCoordinateList(toAddress);
+        if (fromCoordinateList.isEmpty() || toCoordinateList.isEmpty()) {
+            return null;
+        }
+        List fromCoordinate = fromCoordinateList.get(0).getPointList();
+        List toCoordinate = toCoordinateList.get(0).getPointList();
+
+        RouteRequest routeRequest = new RouteRequest();
+        routeRequest.setPoints(List.of(fromCoordinate, toCoordinate));
+
+        Gson gson = new Gson();
+        String body = gson.toJson(routeRequest);
+        HttpsURLConnection urlConnection = postHttpsURLConnection("https://graphhopper.com/api/1/route?key=" + apikey, body);
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
+        RouteResponse response = gson.fromJson(bufferedReader.readLine(), RouteResponse.class);
+        List<Coordinate> coordinates = new ArrayList<>();
+        for (List<Double> point : response.getPaths().get(0).getPoints().getCoordinates()) {
+            coordinates.add(new Coordinate(point.get(1), point.get(0)));
+        }
+
+        distanceMatrix.setOriginAddresses(fromCoordinateList.get(0).getName());
+        distanceMatrix.setDestinationAddresses(toCoordinateList.get(0).getName());
+        distanceMatrix.setDistance(response.getPaths().get(0).getDistance());
+        distanceMatrix.setDuration(response.getPaths().get(0).getTime());
+        distanceMatrix.setCoordinates(coordinates);
+        return distanceMatrix;
+    }
+
+    private List<Hit> getCoordinateList(String address) throws IOException {
+        HttpsURLConnection urlConnection = getHttpsURLConnection("https://graphhopper.com/api/1/geocode?q=" + URLEncoder.encode(address, StandardCharsets.UTF_8) + "&key=" + apikey);
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
         StringBuilder response = new StringBuilder();
-        String line;
-        while ((line = bufferedReader.readLine()) != null) {
-            response.append(line);
+        String data;
+        while ((data = bufferedReader.readLine()) != null) {
+            response.append(data);
         }
-        System.out.println(response);
-        if (response.indexOf("ZERO_RESULTS") != -1) return null;
-        responseBody = new DistanceMatrix();
-        responseBody.setOrigin_addresses(regex("\\\"origin_addresses\\\":\\[\\\"(.*?)\\\"\\]",response.toString()));
-        responseBody.setDestination_addresses(regex("\\\"destination_addresses\\\":\\[\\\"(.*?)\\\"\\]",response.toString()));
-        responseBody.setDistance(regex("\\\"distance\\\":\\{\\\"text\\\":\\\"(.*?)\\\",\\\"value\\\":\\d+\\}",response.toString()));
-        responseBody.setDuration(secToTime(Integer.parseInt(Objects.requireNonNull(regex("\"duration\":\\{\"text\":\"[^\"]+\",\"value\":(\\d+)", response.toString())))));
-        return responseBody;
+        Gson gson = new Gson();
+        GeocodingResponse geocodingResponse = gson.fromJson(response.toString(), GeocodingResponse.class);
+        return geocodingResponse.getHits();
     }
     private HttpsURLConnection getHttpsURLConnection(String urlString) throws IOException {
         URL url = new URL(urlString);
@@ -51,6 +95,22 @@ public class MapRequest {
         urlConnection.setRequestMethod("GET");
         urlConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
         urlConnection.setConnectTimeout(5000);
+        try {
+            urlConnection.connect();
+        } catch (IOException e) {
+            System.out.println("Connection failed");
+        }
+        return urlConnection;
+    }
+
+    private HttpsURLConnection postHttpsURLConnection(String urlString, String body) throws IOException {
+        URL url = new URL(urlString);
+        HttpsURLConnection urlConnection = (HttpsURLConnection) url.openConnection();
+        urlConnection.setDoOutput(true);
+        urlConnection.setRequestMethod("POST");
+        urlConnection.setRequestProperty("Content-Type", "application/json");
+        urlConnection.setConnectTimeout(5000);
+        urlConnection.getOutputStream().write(body.getBytes());
         try {
             urlConnection.connect();
         } catch (IOException e) {

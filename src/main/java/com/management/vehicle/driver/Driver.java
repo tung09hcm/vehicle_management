@@ -20,7 +20,7 @@ public class Driver {
         buffer.append("status: ").append(status).append("\n");
         buffer.append("history: ").append(history).append("\n");
         buffer.append("--------------------------\n");
-        System.out.println(buffer.toString());
+
         return buffer.toString();
     }
     private String name;

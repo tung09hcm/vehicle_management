@@ -14,11 +14,12 @@ public class Trip {
         buffer.append("plateNumber: ").append(plateNumber).append("\n");
         buffer.append("driverID: ").append(driverID).append("\n");
         buffer.append("Revenue: ").append(Revenue).append("\n");
+        buffer.append("Distance: ").append(distanceCover).append("\n");
         buffer.append("--------------------------\n");
-        System.out.println(buffer.toString());
+
         return buffer.toString();
     }
-
+    private double distanceCover;
     private Coordinate begin;
     private String tripID;
     private Coordinate end;
@@ -28,6 +29,14 @@ public class Trip {
     private String driverID;
 
     private double Revenue;
+
+    public double getDistanceCover() {
+        return distanceCover;
+    }
+
+    public void setDistanceCover(double distanceCover) {
+        this.distanceCover = distanceCover;
+    }
 
     public String getTripID() {
         return tripID;
@@ -85,6 +94,7 @@ public class Trip {
     }
 
     public Trip() {
+        this.distanceCover = 0;
         this.begin = new Coordinate();
         this.end = new Coordinate();
         this.begin_date = "";

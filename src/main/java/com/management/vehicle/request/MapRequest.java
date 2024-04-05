@@ -17,7 +17,7 @@ public class MapRequest {
         MapRequest mapRequest = new MapRequest();
         DistanceMatrix response = mapRequest.getDistancematrix("Trường THPT Long Khánh", "THPT dầu giây");
         if (response == null) {
-            System.out.println("Không tìm thấy đường đi");
+            System.out.println("Not found");
             return;
         }
         System.out.println(response.getOrigin_addresses());
@@ -54,7 +54,7 @@ public class MapRequest {
         try {
             urlConnection.connect();
         } catch (IOException e) {
-            System.out.println("Không thể kết nối đến máy chủ");
+            System.out.println("Connection failed");
         }
         return urlConnection;
     }

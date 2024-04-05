@@ -1,6 +1,6 @@
 package com.management.vehicle.role;
 
-public enum role {
+public enum Role {
     USER,
     ADMIN
 }

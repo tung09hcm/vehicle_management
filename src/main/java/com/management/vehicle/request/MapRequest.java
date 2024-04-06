@@ -19,41 +19,24 @@ import com.management.vehicle.request.struct.RouteRequest;
 import com.management.vehicle.request.struct.RouteResponse;
 import com.management.vehicle.trip.Coordinate;
 
-
 public class MapRequest {
+    private String apikey;
+    public MapRequest() throws Exception {
+        FireBase fb = FireBase.getInstance();
+        apikey = fb.getAPIKey();
+        System.out.println(apikey);
+    }
 
-    private String apikey = "1f717283-be2f-4b3c-a647-b9e3e26567ff";
-
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws Exception {
         MapRequest mapRequest = new MapRequest();
         List<Hit> hits = mapRequest.getCoordinateList("thpt dầu giây");
         for (Hit hit : hits) {
             System.out.println(hit.getName() + " " + hit.getPoint().getLat() + " " + hit.getPoint().getLng());
         }
-
-        DistanceMatrix distanceMatrix = mapRequest.getDistanceMatrix("Trường THPT Long Khánh", "Bách khoa hcm cơ sở 2");
-        if (distanceMatrix == null) {
-            System.out.println("Not found");
-            return;
-        }
-        System.out.println(distanceMatrix.getOriginAddresses());
-        System.out.println(distanceMatrix.getDestinationAddresses());
-        System.out.println(distanceMatrix.getDistance());
-        System.out.println(distanceMatrix.getDuration());
-        for (Coordinate coordinate : distanceMatrix.getCoordinates()) {
-            System.out.println(coordinate.getLat() + " " + coordinate.getLng());
-        }
     }
 
-    public DistanceMatrix getDistanceMatrix(String fromAddress, String toAddress) throws IOException {
-        DistanceMatrix distanceMatrix = new DistanceMatrix();
-        List<Hit> fromCoordinateList = getCoordinateList(fromAddress);
-        List<Hit> toCoordinateList = getCoordinateList(toAddress);
-        if (fromCoordinateList.isEmpty() || toCoordinateList.isEmpty()) {
-            return null;
-        }
-        List fromCoordinate = fromCoordinateList.get(0).getPointList();
-        List toCoordinate = toCoordinateList.get(0).getPointList();
+    public RouteMatrix getDistanceMatrix(List fromCoordinate, List toCoordinate) throws IOException {
+        RouteMatrix distanceMatrix = new RouteMatrix();
 
         RouteRequest routeRequest = new RouteRequest();
         routeRequest.setPoints(List.of(fromCoordinate, toCoordinate));
@@ -68,8 +51,6 @@ public class MapRequest {
             coordinates.add(new Coordinate(point.get(0), point.get(1)));
         }
 
-        distanceMatrix.setOriginAddresses(fromCoordinateList.get(0).getName());
-        distanceMatrix.setDestinationAddresses(toCoordinateList.get(0).getName());
         distanceMatrix.setDistance(response.getPaths().get(0).getDistance());
         distanceMatrix.setDuration(response.getPaths().get(0).getTime());
         distanceMatrix.setCoordinates(coordinates);

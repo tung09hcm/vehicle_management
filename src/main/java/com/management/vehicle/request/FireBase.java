@@ -14,23 +14,19 @@ import com.management.vehicle.vehicle.Vehicle;
 import com.management.vehicle.vehicle.VehicleStatus;
 import com.management.vehicle.role.Role;
 
-import javax.crypto.Cipher;
-import javax.crypto.spec.SecretKeySpec;
+import java.awt.desktop.SystemSleepEvent;
 import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 public class FireBase {
     private static FireBase instance;
+    private final Security security = new Security();
     private final List<Driver> driverList = new ArrayList<>();
     private final List<Vehicle> vehicleList = new ArrayList<>();
-
-    byte[] key1 = {0x45, 0x47, 0x57, 0x47, 0x74, 0x51, 0x4f, 0x51, 0x4d, 0x73, 0x70, 0x55, 0x73, 0x76, 0x5a, 0x6c, 0x4a, 0x50, 0x4b, 0x5a, 0x7a, 0x71, 0x36, 0x42, 0x59, 0x37, 0x35, 0x4c, 0x69, 0x6a, 0x45, 0x48};
-    byte[] key2 = {0x4e, 0x48, 0x43, 0x72, 0x77, 0x7a, 0x6e, 0x61, 0x6b, 0x45, 0x76, 0x63, 0x5a, 0x76, 0x6c, 0x70, 0x35, 0x31, 0x4d, 0x59, 0x45, 0x38, 0x7a, 0x31, 0x54, 0x7a, 0x39, 0x38, 0x6f, 0x32, 0x45, 0x6d};
 
     /**
      * Private constructor to initialize the Firebase connection.
@@ -39,7 +35,7 @@ public class FireBase {
      */
     private FireBase() throws Exception {
         byte[] token = readFromFile("src/main/java/com/management/vehicle/request/token");
-        byte[] decrypted = decrypt(token, key1, key2);
+        byte[] decrypted = security.decrypt(token);
         GoogleCredentials credentials = GoogleCredentials.fromStream(new ByteArrayInputStream(decrypted));
 
         FirebaseOptions options = new FirebaseOptions.Builder()
@@ -63,94 +59,16 @@ public class FireBase {
 
     public static void main(String[] args) throws Exception {
         FireBase fb = FireBase.getInstance();
-//        fb.getAllDriver();
-//        System.out.println(fb.driverList.size());
-//        for (Driver driver : fb.driverList) {
-//            System.out.println(driver.getName());
-//        }
-//        System.out.println("Done");
-//
-//        Driver driver = fb.driverList.get(0);
-//        System.out.println(driver.getName());
-//        driver.setRecentPlateNumber("60B1 12435");
-//        fb.editDriver(driver);
-
-//        fb.getAllDriver();
-//        for (Driver driver : fb.driverList) {
-//            System.out.println(driver.toString());
-//        }
-//
         fb.getAllVehicle();
         for (Vehicle vehicle : fb.vehicleList) {
             System.out.println(vehicle.toString());
         }
-//        fb.addAccount("admin", "Admin@!124834ksdfgrei", "admin");
         if (fb.login("admin", "Admin@!124834ksdfgrei") == Role.ADMIN) {
             System.out.println("Login successfully");
         } else {
             System.out.println("Login failed");
         }
-    }
-
-    /**
-     * Encrypts the given data using AES encryption and the provided keys.
-     * @param data the data to be encrypted.
-     * @param key1 the first key for the encryption.
-     * @param key2 the second key for the encryption.
-     * @return the encrypted data.
-     * @throws Exception if there's an error during the encryption.
-     */
-    private byte[] encrypt(byte[] data, byte[] key1, byte[] key2) throws Exception {
-        SecretKeySpec keySpec = new SecretKeySpec(key2, "AES");
-        Cipher cipher = Cipher.getInstance("AES");
-        cipher.init(Cipher.ENCRYPT_MODE, keySpec);
-        byte[] encryptedWithAES = Base64.getEncoder().encodeToString(cipher.doFinal(data)).getBytes();
-        byte[] encryptedWithKey1 = new byte[encryptedWithAES.length];
-        for (int i = 0; i < encryptedWithAES.length; i++) {
-            encryptedWithKey1[i] = (byte) (encryptedWithAES[i] ^ key1[i % key1.length]);
-        }
-
-        return encryptedWithKey1;
-    }
-
-    /**
-     * Decrypts the given data using AES decryption and the provided keys.
-     * @param data the data to be decrypted.
-     * @param key1 the first key for the decryption.
-     * @param key2 the second key for the decryption.
-     * @return the decrypted data.
-     * @throws Exception if there's an error during the decryption.
-     */
-    private byte[] decrypt(byte[] data, byte[] key1, byte[] key2) throws Exception {
-        byte[] decryptedWithKey1 = new byte[data.length];
-        for (int i = 0; i < data.length; i++) {
-            decryptedWithKey1[i] = (byte) (data[i] ^ key1[i % key1.length]);
-        }
-        SecretKeySpec keySpec = new SecretKeySpec(key2, "AES");
-        Cipher cipher = Cipher.getInstance("AES");
-        cipher.init(Cipher.DECRYPT_MODE, keySpec);
-
-        return cipher.doFinal(Base64.getDecoder().decode(new String(decryptedWithKey1)));
-    }
-
-    private String bytesToHex(byte[] bytes) {
-        StringBuilder hexString = new StringBuilder(2 * bytes.length);
-        for (byte b : bytes) {
-            String hex = Integer.toHexString(0xff & b);
-            if (hex.length() == 1) {
-                hexString.append('0');
-            }
-            hexString.append(hex);
-        }
-        return hexString.toString();
-    }
-
-    private byte[] hexToBytes(String hex) {
-        byte[] bytes = new byte[hex.length() / 2];
-        for (int i = 0; i < hex.length(); i += 2) {
-            bytes[i / 2] = (byte) ((Character.digit(hex.charAt(i), 16) << 4) + Character.digit(hex.charAt(i + 1), 16));
-        }
-        return bytes;
+        System.out.println(fb.security.bytesToHex(fb.security.encrypt("1f717283-be2f-4b3c-a647-b9e3e26567ff".getBytes())));
     }
 
     /**
@@ -505,7 +423,7 @@ public class FireBase {
     }
 
     public void addAccount(String username, String password, String role) throws Exception {
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("User").child(bytesToHex(encrypt(username.getBytes(), key1, key2))).child(bytesToHex(encrypt(password.getBytes(), key2, key1)));
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("User").child(security.bytesToHex(security.encrypt(username.getBytes()))).child(security.bytesToHex(security.encrypt(password.getBytes())));
         CompletableFuture<Void> future = new CompletableFuture<>();
         ref.setValue(role, (databaseError, databaseReference) -> {
             if (databaseError != null) {
@@ -519,7 +437,7 @@ public class FireBase {
     }
 
     public Role login(String username, String password) throws Exception {
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("User").child(bytesToHex(encrypt(username.getBytes(), key1, key2))).child(bytesToHex(encrypt(password.getBytes(), key2, key1)));
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("User").child(security.bytesToHex(security.encrypt(username.getBytes()))).child(security.bytesToHex(security.encrypt(password.getBytes())));
         CompletableFuture<Role> future = new CompletableFuture<>();
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -529,6 +447,30 @@ public class FireBase {
                 System.out.println(role);
                 future.complete(role);
             }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                System.out.println("The read failed: " + databaseError.getCode());
+                future.completeExceptionally(databaseError.toException());
+            }
+        });
+        return future.join();
+    }
+
+    public String getAPIKey() {
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("API").child("graphhopper");
+        CompletableFuture<String> future = new CompletableFuture<>();
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                System.out.println("onDataChange");
+                String key = dataSnapshot.getValue(String.class);
+                try {
+                    future.complete(security.byteToString(security.decrypt(security.hexToBytes(key))));
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 System.out.println("The read failed: " + databaseError.getCode());

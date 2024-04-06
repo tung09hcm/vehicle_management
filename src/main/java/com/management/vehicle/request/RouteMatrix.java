@@ -4,28 +4,11 @@ import com.management.vehicle.trip.Coordinate;
 
 import java.util.List;
 
-public class DistanceMatrix {
-    private String destinationAddresses;
-    private String originAddresses;
+public class RouteMatrix {
     private double distance;
     private int duration;
     private List<Coordinate> coordinates;
-    public DistanceMatrix() {
-    }
-    public String getDestinationAddresses() {
-        return destinationAddresses;
-    }
-
-    public void setDestinationAddresses(String destinationAddresses) {
-        this.destinationAddresses = destinationAddresses;
-    }
-
-    public String getOriginAddresses() {
-        return originAddresses;
-    }
-
-    public void setOriginAddresses(String originAddresses) {
-        this.originAddresses = originAddresses;
+    public RouteMatrix() {
     }
 
     public double getDistance() {

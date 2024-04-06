@@ -18,12 +18,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MapRequest {
+    public static MapRequest instance;
     private String apikey;
 
-    public MapRequest() throws Exception {
+    private MapRequest() throws Exception {
         FireBase fb = FireBase.getInstance();
         apikey = fb.getAPIKey();
-        System.out.println(apikey);
+    }
+
+    public static MapRequest getInstance() throws Exception {
+        if (instance == null) {
+            instance = new MapRequest();
+        }
+        return instance;
     }
 
     /**
@@ -77,11 +84,13 @@ public class MapRequest {
     }
 
     /**
-     * Retrieves a list of hits (possible matches) for a given address using the GraphHopper Geocoding API.
+     * Creates and returns a HttpsURLConnection object for a given URL string.
+     * The connection is configured to use the GET method, and has a connection timeout of 5000 milliseconds.
+     * The "Content-Type" request property is set to "application/x-www-form-urlencoded".
      *
-     * @param address The address to be geocoded.
-     * @return A list of Hit objects, each representing a possible match for the given address.
-     * @throws IOException If an I/O error occurs when creating the URL connection or reading from it.
+     * @param urlString The URL string for which the connection is to be created.
+     * @return A HttpsURLConnection object configured with the provided URL string.
+     * @throws IOException If an I/O error occurs when creating the URL connection or attempting to connect.
      */
     private HttpsURLConnection getHttpsURLConnection(String urlString) throws IOException {
         URL url = new URL(urlString);

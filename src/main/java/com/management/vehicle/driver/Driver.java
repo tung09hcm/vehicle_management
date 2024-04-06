@@ -28,15 +28,17 @@ public class Driver {
     private String address;
     private String recentPlateNumber;
     private String id;
-    public List<License> getLicense() {
+    private String licensetoken;
+    private String expirydate;
+    public License getLicense() {
         return license;
     }
 
-    public void setLicense(List<License> license) {
+    public void setLicense(License license) {
         this.license = license;
     }
 
-    private List<License> license;
+    private License license;
     private DriverStatus status;
     private List<String> history;
 
@@ -48,6 +50,22 @@ public class Driver {
     }
     public String getAddress() {
         return address;
+    }
+
+    public String getLicensetoken() {
+        return licensetoken;
+    }
+
+    public void setLicensetoken(String licensetoken) {
+        this.licensetoken = licensetoken;
+    }
+
+    public String getExpirydate() {
+        return expirydate;
+    }
+
+    public void setExpirydate(String expirydate) {
+        this.expirydate = expirydate;
     }
 
     public DriverStatus getStatus() {
@@ -98,15 +116,17 @@ public class Driver {
         this.name = "";
         this.phoneNumber = "";
         this.address = "";
-        this.license = new ArrayList<>();
+        this.license = new License();
         this.status = DriverStatus.NONE;
         this.history = new ArrayList<>();
         this.recentPlateNumber = "";
         this.id = "";
         this.history = new ArrayList<>();
+        this.licensetoken = "";
+        this.expirydate = "";
     }
 
-    public Driver(String name, String phoneNumber, String address, String recentPlateNumber, String id, List<License> license, DriverStatus status, List<String> history) {
+    public Driver(String name, String phoneNumber, String address, String recentPlateNumber, String id, License license, DriverStatus status, List<String> history) {
         this.name = name;
         this.phoneNumber = phoneNumber;
         this.address = address;

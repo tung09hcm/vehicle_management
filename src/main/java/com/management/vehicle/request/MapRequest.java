@@ -31,7 +31,7 @@ public class MapRequest {
             System.out.println(hit.getName() + " " + hit.getPoint().getLat() + " " + hit.getPoint().getLng());
         }
 
-        DistanceMatrix distanceMatrix = mapRequest.getDistanceMatrix("Trường THPT Long Khánh", "THPT dầu giây");
+        DistanceMatrix distanceMatrix = mapRequest.getDistanceMatrix("Trường THPT Long Khánh", "Bách khoa hcm cơ sở 2");
         if (distanceMatrix == null) {
             System.out.println("Not found");
             return;
@@ -65,7 +65,7 @@ public class MapRequest {
         RouteResponse response = gson.fromJson(bufferedReader.readLine(), RouteResponse.class);
         List<Coordinate> coordinates = new ArrayList<>();
         for (List<Double> point : response.getPaths().get(0).getPoints().getCoordinates()) {
-            coordinates.add(new Coordinate(point.get(1), point.get(0)));
+            coordinates.add(new Coordinate(point.get(0), point.get(1)));
         }
 
         distanceMatrix.setOriginAddresses(fromCoordinateList.get(0).getName());

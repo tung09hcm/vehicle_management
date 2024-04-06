@@ -10,6 +10,7 @@ public class Security {
 
     /**
      * Encrypts the given data using AES encryption and the provided keys.
+     *
      * @param data the data to be encrypted.
      * @return the encrypted data.
      * @throws Exception if there's an error during the encryption.
@@ -29,6 +30,7 @@ public class Security {
 
     /**
      * Decrypts the given data using AES decryption and the provided keys.
+     *
      * @param data the data to be decrypted.
      * @return the decrypted data.
      * @throws Exception if there's an error during the decryption.
@@ -47,6 +49,7 @@ public class Security {
 
     /**
      * Converts a byte array to a hexadecimal string.
+     *
      * @param bytes the byte array to be converted.
      * @return a string representing the hexadecimal value of the byte array.
      */
@@ -64,6 +67,7 @@ public class Security {
 
     /**
      * Converts a hexadecimal string to a byte array.
+     *
      * @param hex the hexadecimal string to be converted.
      * @return a byte array representing the value of the hexadecimal string.
      */
@@ -77,6 +81,7 @@ public class Security {
 
     /**
      * Converts a byte array to a string.
+     *
      * @param bytes the byte array to be converted.
      * @return a string representing the value of the byte array.
      */

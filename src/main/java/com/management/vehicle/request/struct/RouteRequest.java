@@ -1,7 +1,5 @@
 package com.management.vehicle.request.struct;
 
-import com.management.vehicle.trip.Coordinate;
-
 import java.util.ArrayList;
 import java.util.List;
 

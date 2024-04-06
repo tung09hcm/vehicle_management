@@ -8,6 +8,7 @@ public class RouteMatrix {
     private double distance;
     private int duration;
     private List<Coordinate> coordinates;
+
     public RouteMatrix() {
     }
 

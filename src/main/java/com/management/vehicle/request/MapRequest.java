@@ -1,7 +1,11 @@
 package com.management.vehicle.request;
 
+import com.google.gson.Gson;
 import com.management.vehicle.request.struct.GeocodingResponse;
 import com.management.vehicle.request.struct.Hit;
+import com.management.vehicle.request.struct.RouteRequest;
+import com.management.vehicle.request.struct.RouteResponse;
+import com.management.vehicle.trip.Coordinate;
 
 import javax.net.ssl.HttpsURLConnection;
 import java.io.BufferedReader;
@@ -12,29 +16,24 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import com.google.gson.Gson;
-import com.management.vehicle.request.struct.RouteRequest;
-import com.management.vehicle.request.struct.RouteResponse;
-import com.management.vehicle.trip.Coordinate;
 
 public class MapRequest {
     private String apikey;
+
     public MapRequest() throws Exception {
         FireBase fb = FireBase.getInstance();
         apikey = fb.getAPIKey();
         System.out.println(apikey);
     }
 
-    public static void main(String[] args) throws Exception {
-        MapRequest mapRequest = new MapRequest();
-        List<Hit> hits = mapRequest.getCoordinateList("thpt dầu giây");
-        for (Hit hit : hits) {
-            System.out.println(hit.getName() + " " + hit.getPoint().getLat() + " " + hit.getPoint().getLng());
-        }
-    }
-
+    /**
+     * Retrieves the distance matrix between two sets of coordinates.
+     *
+     * @param fromCoordinate A list of origin coordinates.
+     * @param toCoordinate   A list of destination coordinates.
+     * @return A RouteMatrix object containing the distance, duration, and coordinates of the route.
+     * @throws IOException If an I/O error occurs when creating the URL connection or reading from it.
+     */
     public RouteMatrix getDistanceMatrix(List fromCoordinate, List toCoordinate) throws IOException {
         RouteMatrix distanceMatrix = new RouteMatrix();
 
@@ -57,6 +56,13 @@ public class MapRequest {
         return distanceMatrix;
     }
 
+    /**
+     * Retrieves a list of hits (possible matches) for a given address using the GraphHopper Geocoding API.
+     *
+     * @param address The address to be geocoded.
+     * @return A list of Hit objects, each representing a possible match for the given address.
+     * @throws IOException If an I/O error occurs when creating the URL connection or reading from it.
+     */
     private List<Hit> getCoordinateList(String address) throws IOException {
         HttpsURLConnection urlConnection = getHttpsURLConnection("https://graphhopper.com/api/1/geocode?q=" + URLEncoder.encode(address, StandardCharsets.UTF_8) + "&key=" + apikey);
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
@@ -69,6 +75,14 @@ public class MapRequest {
         GeocodingResponse geocodingResponse = gson.fromJson(response.toString(), GeocodingResponse.class);
         return geocodingResponse.getHits();
     }
+
+    /**
+     * Retrieves a list of hits (possible matches) for a given address using the GraphHopper Geocoding API.
+     *
+     * @param address The address to be geocoded.
+     * @return A list of Hit objects, each representing a possible match for the given address.
+     * @throws IOException If an I/O error occurs when creating the URL connection or reading from it.
+     */
     private HttpsURLConnection getHttpsURLConnection(String urlString) throws IOException {
         URL url = new URL(urlString);
         HttpsURLConnection urlConnection = (HttpsURLConnection) url.openConnection();
@@ -84,6 +98,16 @@ public class MapRequest {
         return urlConnection;
     }
 
+    /**
+     * Creates and returns a HttpsURLConnection object for a given URL string.
+     * The connection is configured to use the POST method, and has a connection timeout of 5000 milliseconds.
+     * The provided body content is written to the connection's output stream.
+     *
+     * @param urlString The URL string for which the connection is to be created.
+     * @param body      The body content to be written to the connection's output stream.
+     * @return A HttpsURLConnection object configured with the provided URL string and body content.
+     * @throws IOException If an I/O error occurs when creating the URL connection, writing to its output stream, or attempting to connect.
+     */
     private HttpsURLConnection postHttpsURLConnection(String urlString, String body) throws IOException {
         URL url = new URL(urlString);
         HttpsURLConnection urlConnection = (HttpsURLConnection) url.openConnection();
@@ -98,31 +122,5 @@ public class MapRequest {
             System.out.println("Connection failed");
         }
         return urlConnection;
-    }
-
-    private String regex(String regex, String input) {
-        Pattern pattern = Pattern.compile(regex);
-        Matcher matcher = pattern.matcher(input);
-        if (matcher.find()) {
-            if (regex.equals("\\d+")) {
-                StringBuilder resultBuilder = new StringBuilder(matcher.group());
-                while (matcher.find()) {
-                    resultBuilder.append(matcher.group());
-                }
-                return resultBuilder.toString();
-            }
-            return matcher.group(1);
-        }
-        return null;
-    }
-
-    private String secToTime(int sec) {
-        int hours = sec / 3600;
-        int minutes = (sec % 3600) / 60;
-        int seconds = sec % 60;
-        if (hours == 0) {
-            return minutes + " phút " + seconds + " giây";
-        }
-        return hours + " giờ " + minutes + " phút " + seconds + " giây";
     }
 }

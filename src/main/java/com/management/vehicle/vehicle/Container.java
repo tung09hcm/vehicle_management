@@ -31,7 +31,7 @@ public class Container extends Vehicle{
         this.setLicense(LicenseLevel.FC);
         goodsType = "";
         goodsWeight = 0;
-        setMaintenanceCycleInMonths(120);
+        setMaintenanceCycleInDays(120);
         setMaintenanceCycleInKilometers(8500);
     }
 }

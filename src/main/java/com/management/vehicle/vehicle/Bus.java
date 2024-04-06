@@ -43,7 +43,7 @@ public class Bus extends Vehicle {
         NumberOfSeat = 0;
         PricePerSeat = 0;
         NumberOfCustomer = 0;
-        setMaintenanceCycleInMonths(90);
+        setMaintenanceCycleInDays(90);
         setMaintenanceCycleInKilometers(4000);
     }
 

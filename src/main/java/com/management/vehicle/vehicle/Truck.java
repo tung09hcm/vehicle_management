@@ -31,6 +31,8 @@ public class Truck extends Vehicle{
         this.setLicense(LicenseLevel.F);
         this.goodsType = "";
         this.goodsWeight = 0;
+        setMaintenanceCycleInMonths(180);
+        setMaintenanceCycleInKilometers(8000);
     }
 
 

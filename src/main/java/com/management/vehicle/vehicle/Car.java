@@ -71,6 +71,8 @@ public class Car extends Vehicle {
         Customeraddress = "";
         this.rentalDate = "";
         this.returnDate = "";
+        setMaintenanceCycleInMonths(120);
+        setMaintenanceCycleInKilometers(5000);
     }
 
 }

@@ -1,0 +1,9 @@
+.InforVehicle {
+    -fx-background-radius: 0 0 30 30;
+}
+.standardField {
+    -fx-background-radius: 30 0 0 0;
+}
+.moreField {
+    -fx-background-radius: 0 30 0 0;
+}

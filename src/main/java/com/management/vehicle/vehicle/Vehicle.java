@@ -44,13 +44,19 @@ public class Vehicle {
     }
     public void alertMaintenance() {
         if(getMaintenanceCycleInKilometers() <= getDistanceCoverFromLastRepair()
-                || subDate() >= getMaintenanceCycleInMonths())
+                || subDate() >= getMaintenanceCycleInDays())
         {
             // to do
         }
     }
+    public String guessMaintenanceDate() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate date = LocalDate.parse(last_repair_date, formatter);
+        long daysFromLastRepair = Math.round(distanceCoverFromLastRepair/maintenanceCycleInKilometers*maintenanceCycleInDays);
+        return date.plusDays(daysFromLastRepair).format(formatter);
+    }
     private int maintenanceCycleInKilometers;
-    private int maintenanceCycleInMonths;
+    private int maintenanceCycleInDays;
     private double distanceCoverFromLastRepair;
     private String last_repair_date;
     private int maitain_period;
@@ -74,12 +80,12 @@ public class Vehicle {
         this.maintenanceCycleInKilometers = maintenanceCycleInKilometers;
     }
 
-    public int getMaintenanceCycleInMonths() {
-        return maintenanceCycleInMonths;
+    public int getMaintenanceCycleInDays() {
+        return maintenanceCycleInDays;
     }
 
-    public void setMaintenanceCycleInMonths(int maintenanceCycleInMonths) {
-        this.maintenanceCycleInMonths = maintenanceCycleInMonths;
+    public void setMaintenanceCycleInDays(int maintenanceCycleInDays) {
+        this.maintenanceCycleInDays = maintenanceCycleInDays;
     }
 
     public double getDistanceCoverFromLastRepair() {
@@ -231,7 +237,7 @@ public class Vehicle {
         this.last_repair_date = LocalDate.now().toString();
         this.maitain_period = 0;
         this.maintenanceCycleInKilometers = 0;
-        this.maintenanceCycleInMonths = 0;
+        this.maintenanceCycleInDays = 0;
     }
 
 

@@ -25,12 +25,6 @@ public class Truck extends Vehicle{
         this.goodsWeight = goodsWeight;
     }
 
-    public Truck(List<String> history,String driverID, int distanceCover, TypeVehicle type, double length, double wide, double high, String plateNumber, double weight, VehicleStatus status, LicenseLevel license, String goodsType, double goodsWeight) {
-        super(history,driverID, distanceCover, type, length, wide, high, plateNumber, weight, status, license);
-        this.goodsType = goodsType;
-        this.goodsWeight = goodsWeight;
-    }
-
     public Truck()
     {
         super();
@@ -38,6 +32,7 @@ public class Truck extends Vehicle{
         this.goodsType = "";
         this.goodsWeight = 0;
     }
+
 
 }
 

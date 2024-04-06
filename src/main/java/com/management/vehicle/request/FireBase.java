@@ -5,34 +5,37 @@ import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.database.*;
 import com.management.vehicle.driver.Driver;
+import com.management.vehicle.driver.DriverStatus;
+import com.management.vehicle.license.License;
+import com.management.vehicle.license.LicenseLevel;
+import com.management.vehicle.role.Role;
 import com.management.vehicle.trip.Trip;
+import com.management.vehicle.vehicle.TypeVehicle;
 import com.management.vehicle.vehicle.Vehicle;
+import com.management.vehicle.vehicle.VehicleStatus;
 
-import javax.crypto.Cipher;
-import javax.crypto.spec.SecretKeySpec;
 import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 public class FireBase {
     private static FireBase instance;
+    private final Security security = new Security();
     private final List<Driver> driverList = new ArrayList<>();
     private final List<Vehicle> vehicleList = new ArrayList<>();
 
     /**
      * Private constructor to initialize the Firebase connection.
      * It reads the token from a file, decrypts it and uses it to authenticate with Firebase.
+     *
      * @throws Exception if there's an error during the decryption or Firebase initialization.
      */
     private FireBase() throws Exception {
-        byte[] key1 = {0x45, 0x47, 0x57, 0x47, 0x74, 0x51, 0x4f, 0x51, 0x4d, 0x73, 0x70, 0x55, 0x73, 0x76, 0x5a, 0x6c, 0x4a, 0x50, 0x4b, 0x5a, 0x7a, 0x71, 0x36, 0x42, 0x59, 0x37, 0x35, 0x4c, 0x69, 0x6a, 0x45, 0x48};
-        byte[] key2 = {0x4e, 0x48, 0x43, 0x72, 0x77, 0x7a, 0x6e, 0x61, 0x6b, 0x45, 0x76, 0x63, 0x5a, 0x76, 0x6c, 0x70, 0x35, 0x31, 0x4d, 0x59, 0x45, 0x38, 0x7a, 0x31, 0x54, 0x7a, 0x39, 0x38, 0x6f, 0x32, 0x45, 0x6d};
         byte[] token = readFromFile("src/main/java/com/management/vehicle/request/token");
-        byte[] decrypted = decrypt(token, key1, key2);
+        byte[] decrypted = security.decrypt(token);
         GoogleCredentials credentials = GoogleCredentials.fromStream(new ByteArrayInputStream(decrypted));
 
         FirebaseOptions options = new FirebaseOptions.Builder()
@@ -44,6 +47,7 @@ public class FireBase {
 
     /**
      * Singleton pattern to get the instance of the FireBase class.
+     *
      * @return the instance of the FireBase class.
      * @throws Exception if there's an error during the initialization.
      */
@@ -54,80 +58,9 @@ public class FireBase {
         return instance;
     }
 
-    public static void main(String[] args) throws Exception {
-        FireBase fb = FireBase.getInstance();
-//        fb.getAllDriver();
-//        System.out.println(fb.driverList.size());
-//        for (Driver driver : fb.driverList) {
-//            System.out.println(driver.getName());
-//        }
-//        System.out.println("Done");
-//
-//        Driver driver = fb.driverList.get(0);
-//        System.out.println(driver.getName());
-//        driver.setRecentPlateNumber("60B1 12435");
-//        fb.editDriver(driver);
-        fb.getAllVehicle();
-        System.out.println(fb.vehicleList.size());
-        for (Vehicle vehicle : fb.vehicleList) {
-            System.out.println(vehicle.getPlateNumber());
-            if (!vehicle.getHistory().isEmpty()) {
-                System.out.println(fb.getTrip(vehicle.getHistory().get(0)).getBegin_date());
-            }
-        }
-        System.out.println("Done");
-        Trip trip = new Trip();
-        trip.setTripID("1");
-        trip.setBegin_date("2021-10-10");
-        trip.setEnd_date("2021-10-11");
-        trip.setDriverID("1");
-        trip.setPlateNumber("60B1 12435");
-        fb.addTrip(trip);
-    }
-
-    /**
-     * Encrypts the given data using AES encryption and the provided keys.
-     * @param data the data to be encrypted.
-     * @param key1 the first key for the encryption.
-     * @param key2 the second key for the encryption.
-     * @return the encrypted data.
-     * @throws Exception if there's an error during the encryption.
-     */
-    public byte[] encrypt(byte[] data, byte[] key1, byte[] key2) throws Exception {
-        SecretKeySpec keySpec = new SecretKeySpec(key2, "AES");
-        Cipher cipher = Cipher.getInstance("AES");
-        cipher.init(Cipher.ENCRYPT_MODE, keySpec);
-        byte[] encryptedWithAES = Base64.getEncoder().encodeToString(cipher.doFinal(data)).getBytes();
-        byte[] encryptedWithKey1 = new byte[encryptedWithAES.length];
-        for (int i = 0; i < encryptedWithAES.length; i++) {
-            encryptedWithKey1[i] = (byte) (encryptedWithAES[i] ^ key1[i % key1.length]);
-        }
-
-        return encryptedWithKey1;
-    }
-
-    /**
-     * Decrypts the given data using AES decryption and the provided keys.
-     * @param data the data to be decrypted.
-     * @param key1 the first key for the decryption.
-     * @param key2 the second key for the decryption.
-     * @return the decrypted data.
-     * @throws Exception if there's an error during the decryption.
-     */
-    public byte[] decrypt(byte[] data, byte[] key1, byte[] key2) throws Exception {
-        byte[] decryptedWithKey1 = new byte[data.length];
-        for (int i = 0; i < data.length; i++) {
-            decryptedWithKey1[i] = (byte) (data[i] ^ key1[i % key1.length]);
-        }
-        SecretKeySpec keySpec = new SecretKeySpec(key2, "AES");
-        Cipher cipher = Cipher.getInstance("AES");
-        cipher.init(Cipher.DECRYPT_MODE, keySpec);
-
-        return cipher.doFinal(Base64.getDecoder().decode(new String(decryptedWithKey1)));
-    }
-
     /**
      * Reads the content of a file and returns it as a byte array.
+     *
      * @param fileName the name of the file to be read.
      * @return the content of the file as a byte array.
      * @throws IOException if there's an error during the file reading.
@@ -144,7 +77,9 @@ public class FireBase {
      * Retrieves all drivers from Firebase and stores them in the driverList.
      */
     public void getAllDriver() {
-        if (!driverList.isEmpty()) { return; }
+        if (!driverList.isEmpty()) {
+            return;
+        }
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Driver");
         CompletableFuture<Void> future = new CompletableFuture<>();
         ref.addChildEventListener(new ChildEventListener() {
@@ -183,6 +118,7 @@ public class FireBase {
                 System.out.println("onDataChange");
                 future.complete(null);
             }
+
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 System.out.println("The read failed: " + databaseError.getCode());
@@ -193,7 +129,34 @@ public class FireBase {
     }
 
     /**
+     * Retrieves a Driver object from Firebase based on the provided driver ID.
+     *
+     * @param id The ID of the driver to be retrieved.
+     * @return The Driver object retrieved from Firebase.
+     */
+    public Driver getDriver(String id) {
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Driver").child(id);
+        CompletableFuture<Driver> future = new CompletableFuture<>();
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                System.out.println("onDataChange");
+                Driver driver = dataSnapshot.getValue(Driver.class);
+                future.complete(driver);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                System.out.println("The read failed: " + databaseError.getCode());
+                future.completeExceptionally(databaseError.toException());
+            }
+        });
+        return future.join();
+    }
+
+    /**
      * Adds a driver to Firebase.
+     *
      * @param driver The driver to be added.
      */
     public void addDriver(Driver driver) {
@@ -213,41 +176,92 @@ public class FireBase {
 
     /**
      * Deletes a driver from Firebase.
+     *
      * @param id The id of the driver to be deleted.
      */
     public void deleteDriver(String id) {
         CompletableFuture<Void> future = new CompletableFuture<>();
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Driver").child(id);
-        ref.removeValue((databaseError, databaseReference) -> {
-            if (databaseError != null) {
-                System.out.println("Data could not be removed " + databaseError.getMessage());
-                future.completeExceptionally(databaseError.toException());
-            } else {
-                System.out.println("Data removed successfully.");
-                future.complete(null);
-            }
-        });
-        future.join();
+        updateData(future, ref);
     }
 
     /**
      * Edits a driver in Firebase.
+     *
      * @param driver The new driver information.
      */
     public void editDriver(Driver driver) {
         CompletableFuture<Void> future = new CompletableFuture<>();
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Driver").child(driver.getId());
-        ref.setValue(driver, (databaseError, databaseReference) -> {
-            if (databaseError != null) {
-                System.out.println("Data could not be edited " + databaseError.getMessage());
-                future.completeExceptionally(databaseError.toException());
-            } else {
-                System.out.println("Data edited successfully.");
-                future.complete(null);
-            }
-        });
-        future.join();
+        updateData(driver, future, ref);
     }
+
+    private void editDriverAttribute(String id, String attribute, Object value) {
+        CompletableFuture<Void> future = new CompletableFuture<>();
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Driver").child(id).child(attribute);
+        updateData(value, future, ref);
+    }
+
+    /**
+     * Edits the name of a driver in Firebase.
+     *
+     * @param id   The ID of the driver.
+     * @param name The new name of the driver.
+     */
+    public void editDriverName(String id, String name) {
+        editDriverAttribute(id, "name", name);
+    }
+
+    /**
+     * Edits the phone number of a driver in Firebase.
+     *
+     * @param id          The ID of the driver.
+     * @param phoneNumber The new phone number of the driver.
+     */
+    public void editDriverPhoneNumber(String id, String phoneNumber) {
+        editDriverAttribute(id, "phoneNumber", phoneNumber);
+    }
+
+    /**
+     * Edits the address of a driver in Firebase.
+     *
+     * @param id      The ID of the driver.
+     * @param address The new address of the driver.
+     */
+    public void editDriverAddress(String id, String address) {
+        editDriverAttribute(id, "address", address);
+    }
+
+    /**
+     * Edits the status of a driver in Firebase.
+     *
+     * @param id     The ID of the driver.
+     * @param status The new status of the driver.
+     */
+    public void editDriverStatus(String id, DriverStatus status) {
+        editDriverAttribute(id, "status", status);
+    }
+
+    /**
+     * Edits the recent plate number of a driver in Firebase.
+     *
+     * @param id                The ID of the driver.
+     * @param recentPlateNumber The new recent plate number of the driver.
+     */
+    public void editDriverRecentPlateNumber(String id, String recentPlateNumber) {
+        editDriverAttribute(id, "recentPlateNumber", recentPlateNumber);
+    }
+
+    /**
+     * Edits the license of a driver in Firebase.
+     *
+     * @param id      The ID of the driver.
+     * @param license The new license of the driver.
+     */
+    public void editDriverLicense(String id, List<License> license) {
+        editDriverAttribute(id, "license", license);
+    }
+
 
     /**
      * Retrieves all vehicles from Firebase and stores them in the vehicleList.
@@ -291,6 +305,7 @@ public class FireBase {
                 System.out.println("onDataChange");
                 future.complete(null);
             }
+
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 System.out.println("The read failed: " + databaseError.getCode());
@@ -300,7 +315,13 @@ public class FireBase {
         future.join();
     }
 
-
+    /**
+     * Adds a new vehicle to Firebase.
+     * The method takes a Vehicle object as input, then stores it in the Firebase database.
+     *
+     * @param vehicle The Vehicle object to be added to Firebase.
+     * @throws RuntimeException If there's an error during the Firebase operation.
+     */
     public void addVehicle(Vehicle vehicle) {
         CompletableFuture<Void> future = new CompletableFuture<>();
         DatabaseReference newVehicleRef = FirebaseDatabase.getInstance().getReference("Vehicle").child(vehicle.getPlateNumber());
@@ -316,9 +337,18 @@ public class FireBase {
         future.join();
     }
 
+    /**
+     * Deletes a vehicle from Firebase.
+     *
+     * @param plateNumber The plate number of the vehicle to be deleted.
+     */
     public void deleteVehicle(String plateNumber) {
         CompletableFuture<Void> future = new CompletableFuture<>();
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Vehicle").child(plateNumber);
+        updateData(future, ref);
+    }
+
+    private void updateData(CompletableFuture<Void> future, DatabaseReference ref) {
         ref.removeValue((databaseError, databaseReference) -> {
             if (databaseError != null) {
                 System.out.println("Data could not be removed " + databaseError.getMessage());
@@ -331,14 +361,143 @@ public class FireBase {
         future.join();
     }
 
+    /**
+     * Edits a vehicle in Firebase.
+     * If the plate number of the vehicle has changed, the old vehicle is deleted and the new vehicle is added.
+     * Otherwise, the vehicle data is updated in Firebase.
+     *
+     * @param plateNumberOld The old plate number of the vehicle.
+     * @param vehicle        The vehicle object containing the new data.
+     */
     public void editVehicle(String plateNumberOld, Vehicle vehicle) {
         CompletableFuture<Void> future = new CompletableFuture<>();
         if (!plateNumberOld.equals(vehicle.getPlateNumber())) {
             deleteVehicle(plateNumberOld);
             addVehicle(vehicle);
+            return;
         }
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Vehicle").child(plateNumberOld);
-        ref.setValue(vehicle, (databaseError, databaseReference) -> {
+        updateData(vehicle, future, ref);
+    }
+
+    private void editVehicleAttribute(String plateNumber, String attribute, Object value) {
+        CompletableFuture<Void> future = new CompletableFuture<>();
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Vehicle").child(plateNumber).child(attribute);
+        updateData(value, future, ref);
+    }
+
+    /**
+     * Edits the distance covered from the last repair of a vehicle in Firebase.
+     *
+     * @param plateNumber                 The plate number of the vehicle.
+     * @param distanceCoverFromLastRepair The new distance covered from the last repair.
+     */
+    public void editVehicleDistanceCoverFromLastRepair(String plateNumber, double distanceCoverFromLastRepair) {
+        editVehicleAttribute(plateNumber, "distanceCoverFromLastRepair", distanceCoverFromLastRepair);
+    }
+
+    /**
+     * Edits the last repair date of a vehicle in Firebase.
+     *
+     * @param plateNumber    The plate number of the vehicle.
+     * @param lastRepairDate The new last repair date.
+     */
+    public void editVehicleLastRepairDate(String plateNumber, String lastRepairDate) {
+        editVehicleAttribute(plateNumber, "last_repair_date", lastRepairDate);
+    }
+
+    /**
+     * Edits the distance covered by a vehicle in Firebase.
+     *
+     * @param plateNumber   The plate number of the vehicle.
+     * @param distanceCover The new distance covered.
+     */
+    public void editVehicleDistanceCover(String plateNumber, double distanceCover) {
+        editVehicleAttribute(plateNumber, "distanceCover", distanceCover);
+    }
+
+    /**
+     * Edits the type of vehicle in Firebase.
+     *
+     * @param plateNumber The plate number of the vehicle.
+     * @param type        The new type of the vehicle.
+     */
+    public void editVehicleType(String plateNumber, TypeVehicle type) {
+        editVehicleAttribute(plateNumber, "type", type);
+    }
+
+    /**
+     * Edits the length of a vehicle in Firebase.
+     *
+     * @param plateNumber The plate number of the vehicle.
+     * @param length      The new length of the vehicle.
+     */
+    public void editVehicleLength(String plateNumber, double length) {
+        editVehicleAttribute(plateNumber, "length", length);
+    }
+
+    /**
+     * Edits the width of a vehicle in Firebase.
+     *
+     * @param plateNumber The plate number of the vehicle.
+     * @param wide        The new width of the vehicle.
+     */
+    public void editVehicleWide(String plateNumber, double wide) {
+        editVehicleAttribute(plateNumber, "wide", wide);
+    }
+
+    /**
+     * Edits the height of a vehicle in Firebase.
+     *
+     * @param plateNumber The plate number of the vehicle.
+     * @param high        The new height of the vehicle.
+     */
+    public void editVehicleHigh(String plateNumber, double high) {
+        editVehicleAttribute(plateNumber, "high", high);
+    }
+
+    /**
+     * Edits the driver ID of a vehicle in Firebase.
+     *
+     * @param plateNumber The plate number of the vehicle.
+     * @param driverID    The new driver ID.
+     */
+    public void editVehicleDriverID(String plateNumber, String driverID) {
+        editVehicleAttribute(plateNumber, "driverID", driverID);
+    }
+
+    /**
+     * Edits the weight of a vehicle in Firebase.
+     *
+     * @param plateNumber The plate number of the vehicle.
+     * @param weight      The new weight of the vehicle.
+     */
+    public void editVehicleWeight(String plateNumber, double weight) {
+        editVehicleAttribute(plateNumber, "weight", weight);
+    }
+
+    /**
+     * Edits the license of a vehicle in Firebase.
+     *
+     * @param plateNumber The plate number of the vehicle.
+     * @param license     The new license of the vehicle.
+     */
+    public void editVehicleLicense(String plateNumber, LicenseLevel license) {
+        editVehicleAttribute(plateNumber, "license", license);
+    }
+
+    /**
+     * Edits the status of a vehicle in Firebase.
+     *
+     * @param plateNumber The plate number of the vehicle.
+     * @param status      The new status of the vehicle.
+     */
+    public void editVehicleStatus(String plateNumber, VehicleStatus status) {
+        editVehicleAttribute(plateNumber, "status", status);
+    }
+
+    private void updateData(Object value, CompletableFuture<Void> future, DatabaseReference ref) {
+        ref.setValue(value, (databaseError, databaseReference) -> {
             if (databaseError != null) {
                 System.out.println("Data could not be edited " + databaseError.getMessage());
                 future.completeExceptionally(databaseError.toException());
@@ -350,6 +509,12 @@ public class FireBase {
         future.join();
     }
 
+    /**
+     * Retrieves a Trip object from Firebase based on the provided trip ID.
+     *
+     * @param tripID The ID of the trip to be retrieved.
+     * @return The Trip object retrieved from Firebase.
+     */
     public Trip getTrip(String tripID) {
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Trip").child(tripID);
         CompletableFuture<Trip> future = new CompletableFuture<>();
@@ -360,6 +525,7 @@ public class FireBase {
                 Trip trip = dataSnapshot.getValue(Trip.class);
                 future.complete(trip);
             }
+
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 System.out.println("The read failed: " + databaseError.getCode());
@@ -369,6 +535,13 @@ public class FireBase {
         return future.join();
     }
 
+    /**
+     * Adds a new trip to Firebase.
+     * The method takes a Trip object as input, then stores it in the Firebase database.
+     *
+     * @param trip The Trip object to be added to Firebase.
+     * @throws RuntimeException If there's an error during the Firebase operation.
+     */
     public void addTrip(Trip trip) {
         CompletableFuture<Void> future = new CompletableFuture<>();
         DatabaseReference newTripRef = FirebaseDatabase.getInstance().getReference("Trip").child(trip.getTripID());
@@ -382,5 +555,92 @@ public class FireBase {
             }
         });
         future.join();
+    }
+
+    /**
+     * Adds a new account to Firebase.
+     * The method encrypts the username and password, then stores them in the Firebase database along with the user's role.
+     *
+     * @param username The username of the new account.
+     * @param password The password of the new account.
+     * @param role     The role of the new account.
+     * @throws Exception If there's an error during the encryption.
+     */
+    public void addAccount(String username, String password, Role role) throws Exception {
+        String encryptedUsername = security.bytesToHex(security.encrypt(username.getBytes()));
+        String encryptedPassword = security.bytesToHex(security.encrypt(password.getBytes()));
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("User").child(encryptedUsername).child(encryptedPassword);
+        CompletableFuture<Void> future = new CompletableFuture<>();
+        ref.setValue(role, (databaseError, databaseReference) -> {
+            if (databaseError != null) {
+                System.out.println("Data could not be saved " + databaseError.getMessage());
+                future.completeExceptionally(databaseError.toException());
+            } else {
+                System.out.println("Data saved successfully.");
+                future.complete(null);
+            }
+        });
+    }
+
+    /**
+     * Authenticates a user by their username and password.
+     * The method encrypts the username and password, then checks if they exist in the Firebase database.
+     *
+     * @param username The username of the user.
+     * @param password The password of the user.
+     * @return The role of the authenticated user.
+     * @throws Exception If there's an error during the encryption.
+     */
+    public Role login(String username, String password) throws Exception {
+        String encryptedUsername = security.bytesToHex(security.encrypt(username.getBytes()));
+        String encryptedPassword = security.bytesToHex(security.encrypt(password.getBytes()));
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("User").child(encryptedUsername).child(encryptedPassword);
+        CompletableFuture<Role> future = new CompletableFuture<>();
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                System.out.println("onDataChange");
+                Role role = dataSnapshot.getValue(Role.class);
+                System.out.println(role);
+                future.complete(role);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                System.out.println("The read failed: " + databaseError.getCode());
+                future.completeExceptionally(databaseError.toException());
+            }
+        });
+        return future.join();
+    }
+
+    /**
+     * Retrieves the API key from Firebase, decrypts it and returns it as a string.
+     *
+     * @return The decrypted API key as a string.
+     * @throws RuntimeException If there's an error during the decryption.
+     */
+    public String getAPIKey() {
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("API").child("graphhopper");
+        CompletableFuture<String> future = new CompletableFuture<>();
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                System.out.println("onDataChange");
+                String key = dataSnapshot.getValue(String.class);
+                try {
+                    future.complete(security.byteToString(security.decrypt(security.hexToBytes(key))));
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                System.out.println("The read failed: " + databaseError.getCode());
+                future.completeExceptionally(databaseError.toException());
+            }
+        });
+        return future.join();
     }
 }

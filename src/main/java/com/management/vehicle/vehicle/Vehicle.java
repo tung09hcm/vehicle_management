@@ -6,7 +6,31 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Vehicle {
-    private int distanceCover;
+    @Override
+    public String toString() {
+        StringBuilder buffer = new StringBuilder();
+
+        buffer.append("--------------------------\n");
+        buffer.append("distanceCoverFromLastRepair: ").append(distanceCoverFromLastRepair).append("\n");
+        buffer.append("last_repair_date: ").append(last_repair_date).append("\n");
+        buffer.append("distanceCover: ").append(distanceCover).append("\n");
+        buffer.append("type: ").append(type).append("\n");
+        buffer.append("status: ").append(status).append("\n");
+        buffer.append("driverID: ").append(driverID).append("\n");
+        buffer.append("length: ").append(length).append("\n");
+        buffer.append("wide: ").append(wide).append("\n");
+        buffer.append("high: ").append(high).append("\n");
+        buffer.append("plateNumber: ").append(plateNumber).append("\n");
+        buffer.append("weight: ").append(weight).append("\n");
+        buffer.append("license: ").append(license).append("\n");
+        buffer.append("history: ").append(history).append("\n");
+        buffer.append("--------------------------\n");
+        return buffer.toString();
+    }
+
+    private double distanceCoverFromLastRepair;
+    private String last_repair_date;
+    private double distanceCover;
     private TypeVehicle type;
     private VehicleStatus status;
     private String driverID ;
@@ -17,12 +41,28 @@ public class Vehicle {
     private double weight;
     private LicenseLevel license;
     private List<String> history;
+    public double getDistanceCoverFromLastRepair() {
+        return distanceCoverFromLastRepair;
+    }
 
-    public int getDistanceCover() {
+    public void setDistanceCoverFromLastRepair(double distanceCoverFromLastRepair) {
+        this.distanceCoverFromLastRepair = distanceCoverFromLastRepair;
+    }
+
+    public String getLast_repair_date() {
+        return last_repair_date;
+    }
+
+    public void setLast_repair_date(String last_repair_date) {
+        this.last_repair_date = last_repair_date;
+    }
+
+
+    public double getDistanceCover() {
         return distanceCover;
     }
 
-    public void setDistanceCover(int distanceCover) {
+    public void setDistanceCover(double distanceCover) {
         this.distanceCover = distanceCover;
     }
 
@@ -107,7 +147,7 @@ public class Vehicle {
     }
     public void setMaintenance(){}
 
-    public Vehicle(List<String> history,String driverID,int distanceCover, TypeVehicle type, double length, double wide, double high, String plateNumber, double weight, VehicleStatus status, LicenseLevel license) {
+    public Vehicle(String last_repair_date, double distanceCoverFromLastRepair,List<String> history,String driverID,int distanceCover, TypeVehicle type, double length, double wide, double high, String plateNumber, double weight, VehicleStatus status, LicenseLevel license) {
         this.distanceCover = distanceCover;
         this.type = type;
         this.length = length;
@@ -119,6 +159,8 @@ public class Vehicle {
         this.license = license;
         this.driverID = driverID;
         this.history = history;
+        this.distanceCoverFromLastRepair = distanceCoverFromLastRepair;
+        this.last_repair_date = last_repair_date;
     }
     public Vehicle()
     {
@@ -133,7 +175,10 @@ public class Vehicle {
         this.license = LicenseLevel.NONE;
         this.driverID = "";
         this.history = new ArrayList<>();
+        this.distanceCoverFromLastRepair = 0;
+        this.last_repair_date = "";
     }
+
 
 }
 

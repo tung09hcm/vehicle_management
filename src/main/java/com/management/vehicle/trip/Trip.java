@@ -1,6 +1,25 @@
 package com.management.vehicle.trip;
 
 public class Trip {
+    @Override
+    public String toString() {
+        StringBuilder buffer = new StringBuilder();
+
+        buffer.append("--------------------------\n");
+        buffer.append("begin: ").append(begin).append("\n");
+        buffer.append("tripID: ").append(tripID).append("\n");
+        buffer.append("end: ").append(end).append("\n");
+        buffer.append("begin_date: ").append(begin_date).append("\n");
+        buffer.append("end_date: ").append(end_date).append("\n");
+        buffer.append("plateNumber: ").append(plateNumber).append("\n");
+        buffer.append("driverID: ").append(driverID).append("\n");
+        buffer.append("Revenue: ").append(Revenue).append("\n");
+        buffer.append("Distance: ").append(distanceCover).append("\n");
+        buffer.append("--------------------------\n");
+
+        return buffer.toString();
+    }
+    private double distanceCover;
     private Coordinate begin;
     private String tripID;
     private Coordinate end;
@@ -8,6 +27,16 @@ public class Trip {
     private String end_date;
     private String plateNumber;
     private String driverID;
+
+    private double Revenue;
+
+    public double getDistanceCover() {
+        return distanceCover;
+    }
+
+    public void setDistanceCover(double distanceCover) {
+        this.distanceCover = distanceCover;
+    }
 
     public String getTripID() {
         return tripID;
@@ -57,8 +86,15 @@ public class Trip {
     public void setEnd_date(String end_date) {
         this.end_date = end_date;
     }
+    public double getRevenue() {
+        return Revenue;
+    }
+    public void setRevenue(double revenue) {
+        Revenue = revenue;
+    }
 
     public Trip() {
+        this.distanceCover = 0;
         this.begin = new Coordinate();
         this.end = new Coordinate();
         this.begin_date = "";
@@ -66,15 +102,8 @@ public class Trip {
         this.driverID = "";
         this.plateNumber = "";
         this.tripID = "";
+        this.Revenue = 0;
     }
 
-    public Trip(String tripID, String driverID, String plateNumber,Coordinate begin, Coordinate end, String begin_date, String end_date) {
-        this.begin = begin;
-        this.end = end;
-        this.begin_date = begin_date;
-        this.end_date = end_date;
-        this.plateNumber = plateNumber;
-        this.driverID = driverID;
-        this.tripID = tripID;
-    }
+
 }

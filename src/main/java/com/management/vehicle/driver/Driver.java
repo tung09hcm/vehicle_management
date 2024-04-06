@@ -1,15 +1,32 @@
 package com.management.vehicle.driver;
 import com.management.vehicle.license.License;
-import com.management.vehicle.trip.Trip;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Driver {
+    @Override
+    public String toString()
+    {
+        StringBuilder buffer = new StringBuilder();
+
+        buffer.append("--------------------------\n");
+        buffer.append("name: ").append(name).append("\n");
+        buffer.append("phoneNumber: ").append(phoneNumber).append("\n");
+        buffer.append("address: ").append(address).append("\n");
+        buffer.append("recentPlateNumber: ").append(recentPlateNumber).append("\n");
+        buffer.append("id: ").append(id).append("\n");
+        buffer.append("license: ").append(license).append("\n");
+        buffer.append("status: ").append(status).append("\n");
+        buffer.append("history: ").append(history).append("\n");
+        buffer.append("--------------------------\n");
+
+        return buffer.toString();
+    }
     private String name;
     private String phoneNumber;
     private String address;
-    private String recentPlateNumber ;
+    private String recentPlateNumber;
     private String id;
     public List<License> getLicense() {
         return license;

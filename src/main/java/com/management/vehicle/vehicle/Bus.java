@@ -2,6 +2,7 @@ package com.management.vehicle.vehicle;
 import com.management.vehicle.license.LicenseLevel;
 import com.management.vehicle.trip.Trip;
 import io.grpc.internal.JsonUtil;
+import javafx.scene.control.Alert;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -35,7 +36,6 @@ public class Bus extends Vehicle {
 
 
 
-
     public Bus()
     {
         super();
@@ -45,6 +45,8 @@ public class Bus extends Vehicle {
         NumberOfCustomer = 0;
         setMaintenanceCycleInDays(90);
         setMaintenanceCycleInKilometers(4000);
+        setRevenue(getNumberOfCustomer() * getPricePerSeat());
+
     }
 
 }

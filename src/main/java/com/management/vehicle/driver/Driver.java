@@ -23,6 +23,8 @@ public class Driver {
 
         return buffer.toString();
     }
+    private double distanceCoverAll = 0;
+
     private String name;
     private String phoneNumber;
     private String address;
@@ -85,6 +87,14 @@ public class Driver {
         this.address = address;
     }
 
+    public double getDistanceCoverAll() {
+        return distanceCoverAll;
+    }
+
+    public void setDistanceCoverAll(double distanceCoverAll) {
+        this.distanceCoverAll = distanceCoverAll;
+    }
+
     public void setStatus(DriverStatus status) {
         this.status = status;
     }
@@ -135,6 +145,7 @@ public class Driver {
         this.license = license;
         this.status = status;
         this.history = history;
+
     }
 }
 

@@ -63,7 +63,7 @@ public class MapRequest {
      * @return A list of Hit objects, each representing a possible match for the given address.
      * @throws IOException If an I/O error occurs when creating the URL connection or reading from it.
      */
-    private List<Hit> getCoordinateList(String address) throws IOException {
+    public List<Hit> getCoordinateList(String address) throws IOException {
         HttpsURLConnection urlConnection = getHttpsURLConnection("https://graphhopper.com/api/1/geocode?q=" + URLEncoder.encode(address, StandardCharsets.UTF_8) + "&key=" + apikey);
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
         StringBuilder response = new StringBuilder();
@@ -79,7 +79,7 @@ public class MapRequest {
     /**
      * Retrieves a list of hits (possible matches) for a given address using the GraphHopper Geocoding API.
      *
-     * @param address The address to be geocoded.
+     * @param urlString The address to be geocoded.
      * @return A list of Hit objects, each representing a possible match for the given address.
      * @throws IOException If an I/O error occurs when creating the URL connection or reading from it.
      */

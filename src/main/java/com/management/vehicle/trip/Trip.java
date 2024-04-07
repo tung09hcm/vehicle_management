@@ -1,4 +1,9 @@
 package com.management.vehicle.trip;
+import com.management.vehicle.request.RouteMatrix;
+import com.management.vehicle.request.struct.*;
+import com.management.vehicle.request.MapRequest;
+
+import java.util.List;
 
 public class Trip {
     @Override
@@ -91,6 +96,18 @@ public class Trip {
     }
     public void setRevenue(double revenue) {
         Revenue = revenue;
+    }
+
+    public void makeTrip(String from , String to) throws Exception {
+        MapRequest mapRequest = new MapRequest();
+        List coordinate1 = mapRequest.getCoordinateList(from);
+        List coordinate2 = mapRequest.getCoordinateList(to);
+
+        RouteMatrix result = mapRequest.getDistanceMatrix(coordinate1,coordinate2);
+
+
+        System.out.println(result.getDistance());
+        System.out.println(result.getDuration());
     }
 
     public Trip() {

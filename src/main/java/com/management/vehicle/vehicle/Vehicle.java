@@ -8,7 +8,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Vehicle {
+public  class Vehicle {
     @Override
     public String toString() {
         StringBuilder buffer = new StringBuilder();
@@ -54,6 +54,7 @@ public class Vehicle {
         long daysFromLastRepair = Math.round(distanceCoverFromLastRepair/maintenanceCycleInKilometers*maintenanceCycleInDays);
         return date.plusDays(daysFromLastRepair).format(formatter);
     }
+
     private int maintenanceCycleInKilometers;
     private int maintenanceCycleInDays;
     private double distanceCoverFromLastRepair;
@@ -70,6 +71,28 @@ public class Vehicle {
     private double weight;
     private LicenseLevel license;
     private List<String> history;
+    private double revenue;  // currency: đ
+    private fuel fuel_v = fuel.NONE;
+    private double fuel_per_kilometer = 0;
+
+
+
+
+    public double getFuel_per_kilometer() {
+        return fuel_per_kilometer;
+    }
+
+    public void setFuel_per_kilometer(double fuel_per_kilometer) {
+        this.fuel_per_kilometer = fuel_per_kilometer;
+    }
+
+    public fuel getFuel_v() {
+        return fuel_v;
+    }
+
+    public void setFuel_v(fuel fuel_v) {
+        this.fuel_v = fuel_v;
+    }
 
     public int getMaintenanceCycleInKilometers() {
         return maintenanceCycleInKilometers;
@@ -89,6 +112,14 @@ public class Vehicle {
 
     public double getDistanceCoverFromLastRepair() {
         return distanceCoverFromLastRepair;
+    }
+
+    public double getRevenue() {
+        return revenue;
+    }
+
+    public void setRevenue(double revenue) {
+        this.revenue = revenue;
     }
 
     public void setDistanceCoverFromLastRepair(double distanceCoverFromLastRepair) {
@@ -202,8 +233,6 @@ public class Vehicle {
     public void setMaintenance(){}
 
 
-
-
     public Vehicle(String last_repair_date, double distanceCoverFromLastRepair,List<String> history,String driverID,int distanceCover, TypeVehicle type, double length, double wide, double high, String plateNumber, double weight, VehicleStatus status, LicenseLevel license) {
         this.distanceCover = distanceCover;
         this.type = type;
@@ -237,6 +266,7 @@ public class Vehicle {
         this.maitain_period = 0;
         this.maintenanceCycleInKilometers = 0;
         this.maintenanceCycleInDays = 0;
+        this.revenue = 0;
     }
 
 

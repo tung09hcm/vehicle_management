@@ -95,8 +95,8 @@ public class MapRequest {
     private HttpsURLConnection getHttpsURLConnection(String urlString) throws IOException {
         URL url = new URL(urlString);
         HttpsURLConnection urlConnection = (HttpsURLConnection) url.openConnection();
-        urlConnection.setDoOutput(true);
         urlConnection.setRequestMethod("GET");
+        urlConnection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.9999.999 Safari/537.36");
         urlConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
         urlConnection.setConnectTimeout(5000);
         try {
@@ -122,6 +122,7 @@ public class MapRequest {
         HttpsURLConnection urlConnection = (HttpsURLConnection) url.openConnection();
         urlConnection.setDoOutput(true);
         urlConnection.setRequestMethod("POST");
+        urlConnection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.9999.999 Safari/537.36");
         urlConnection.setRequestProperty("Content-Type", "application/json");
         urlConnection.setConnectTimeout(5000);
         urlConnection.getOutputStream().write(body.getBytes());

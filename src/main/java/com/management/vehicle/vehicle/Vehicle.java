@@ -28,7 +28,6 @@ public class Vehicle {
         buffer.append("license: ").append(license).append("\n");
         buffer.append("history: ").append(history).append("\n");
         buffer.append("--------------------------\n");
-
         return buffer.toString();
     }
     public long subDate()

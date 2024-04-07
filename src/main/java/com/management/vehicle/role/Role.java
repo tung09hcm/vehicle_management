@@ -3,7 +3,7 @@ package com.management.vehicle.role;
 public enum Role {
     NONE,
     USER,
-    ADMIN
+    ADMIN;
     public Role getRoleFromValue(String value)
     {
         if(value.equals("Admin")) return ADMIN;

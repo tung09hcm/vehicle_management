@@ -25,7 +25,8 @@ public class Driver {
     }
     private double distanceCoverAll = 0;
     private List<String> requestTrip;
-
+    private String username;
+    private String password;
     private String name;
     private String phoneNumber;
     private String address;
@@ -44,6 +45,23 @@ public class Driver {
     private License license;
     private DriverStatus status;
     private List<String> history;
+
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
     public String getName() {
         return name;
@@ -144,6 +162,8 @@ public class Driver {
         this.licensetoken = "";
         this.expirydate = "";
         this.requestTrip = new ArrayList<>();
+        this.password = "";
+        this.username = "";
     }
 
     public Driver(String name, String phoneNumber, String address, String recentPlateNumber, String id, License license, DriverStatus status, List<String> history) {

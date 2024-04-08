@@ -24,6 +24,7 @@ public class Driver {
         return buffer.toString();
     }
     private double distanceCoverAll = 0;
+    private List<String> requestTrip;
 
     private String name;
     private String phoneNumber;
@@ -122,6 +123,14 @@ public class Driver {
         return this.id.equals(driver.id);
     }
 
+    public List<String> getRequestTrip() {
+        return requestTrip;
+    }
+
+    public void setRequestTrip(List<String> requestTrip) {
+        this.requestTrip = requestTrip;
+    }
+
     public Driver() {
         this.name = "";
         this.phoneNumber = "";
@@ -134,6 +143,7 @@ public class Driver {
         this.history = new ArrayList<>();
         this.licensetoken = "";
         this.expirydate = "";
+        this.requestTrip = new ArrayList<>();
     }
 
     public Driver(String name, String phoneNumber, String address, String recentPlateNumber, String id, License license, DriverStatus status, List<String> history) {

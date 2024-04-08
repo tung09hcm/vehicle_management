@@ -8,7 +8,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-public  class Vehicle {
+public class Vehicle {
     @Override
     public String toString() {
         StringBuilder buffer = new StringBuilder();

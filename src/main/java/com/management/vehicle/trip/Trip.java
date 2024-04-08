@@ -24,6 +24,16 @@ public class Trip {
 
         return buffer.toString();
     }
+    private TripStatus status;
+
+    public TripStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(TripStatus status) {
+        this.status = status;
+    }
+
     private double distanceCover;
     private Coordinate begin;
     private String tripID;
@@ -120,6 +130,7 @@ public class Trip {
         this.plateNumber = "";
         this.tripID = "";
         this.Revenue = 0;
+        this.status = TripStatus.NONE;
     }
 
 

@@ -73,6 +73,7 @@ public class Car extends Vehicle {
         this.returnDate = "";
         setMaintenanceCycleInDays(120);
         setMaintenanceCycleInKilometers(5000);
+        setLimitKilometers(6000);
     }
 
 }

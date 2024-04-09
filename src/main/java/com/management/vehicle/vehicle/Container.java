@@ -33,6 +33,7 @@ public class Container extends Vehicle{
         goodsWeight = 0;
         setMaintenanceCycleInDays(120);
         setMaintenanceCycleInKilometers(8500);
+        setLimitKilometers(9500);
     }
 }
 

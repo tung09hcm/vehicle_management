@@ -33,6 +33,7 @@ public class Truck extends Vehicle{
         this.goodsWeight = 0;
         setMaintenanceCycleInDays(180);
         setMaintenanceCycleInKilometers(8000);
+        setLimitKilometers(9000);
     }
 
 

@@ -2,6 +2,8 @@ package com.management.vehicle.vehicle;
 import java.time.format.DateTimeFormatter;
 import com.management.vehicle.license.LicenseLevel;
 import com.management.vehicle.trip.Trip;
+import javafx.scene.control.Alert;
+
 import java.time.temporal.ChronoUnit;
 
 import java.time.LocalDate;
@@ -41,11 +43,22 @@ public class Vehicle {
         return ChronoUnit.DAYS.between(localDate, date);
 
     }
-    public void alertMaintenance() {
+    public void alertMaintenance(double tripDistance) {
+        if(getDistanceCoverFromLastRepair() + tripDistance > limitKilometers)
+        {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Lỗi");
+            alert.setHeaderText("Vượt quá Maintenance Cycle");
+            alert.setContentText("Vượt quá Maintenance Cycle");
+            alert.showAndWait();
+            return;
+        }
         if(getMaintenanceCycleInKilometers() <= getDistanceCoverFromLastRepair()
                 || subDate() >= getMaintenanceCycleInDays())
         {
             // to do
+            // set bảo dưỡng
+            setStatus(VehicleStatus.NEED_REPAIR);
         }
     }
     public String guessMaintenanceDate() {
@@ -54,7 +67,7 @@ public class Vehicle {
         long daysFromLastRepair = Math.round(distanceCoverFromLastRepair/maintenanceCycleInKilometers*maintenanceCycleInDays);
         return date.plusDays(daysFromLastRepair).format(formatter);
     }
-
+    private int limitKilometers = 0;
     private int maintenanceCycleInKilometers;
     private int maintenanceCycleInDays;
     private double distanceCoverFromLastRepair;
@@ -92,6 +105,14 @@ public class Vehicle {
 
     public void setFuel_v(fuel fuel_v) {
         this.fuel_v = fuel_v;
+    }
+
+    public int getLimitKilometers() {
+        return limitKilometers;
+    }
+
+    public void setLimitKilometers(int limitKilometers) {
+        this.limitKilometers = limitKilometers;
     }
 
     public int getMaintenanceCycleInKilometers() {

@@ -23,7 +23,7 @@ public class MapRequest {
 
     private MapRequest() throws Exception {
         FireBase fb = FireBase.getInstance();
-        apikey = fb.getAPIKey();
+        apikey = fb.getAPIKey() ;
     }
 
     public MapRequest getInstance() throws Exception {

@@ -17,10 +17,6 @@ public class RouteRequest {
         this.points = points;
     }
 
-    public String getLocale() {
-        return locale;
-    }
-
     public void setLocale(String locale) {
         this.locale = locale;
     }

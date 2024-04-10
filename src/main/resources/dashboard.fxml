@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import com.jfoenix.controls.JFXButton?>
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
@@ -11,9 +13,9 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1280.0" style="-fx-border-color: black; -fx-border-width: 1.5;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.management.vehicle.gui.dashboardController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1280.0" style="-fx-border-color: black; -fx-border-width: 1.5;" stylesheets="@dashboardDesign.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.management.vehicle.gui.dashboardController">
    <children>
-      <AnchorPane fx:id="HomePane" layoutX="133.0" layoutY="3.0" prefHeight="626.0" prefWidth="770.0" style="-fx-border-color: #4da3ea;">
+      <AnchorPane fx:id="HomePane" layoutX="133.0" layoutY="3.0" prefHeight="626.0" prefWidth="770.0" style="-fx-border-color: #4da3ea;" visible="false">
          <children>
             <AnchorPane layoutX="14.0" layoutY="14.0" prefHeight="200.0" prefWidth="397.0" style="-fx-background-color: #4daaea;">
                <children>
@@ -22,63 +24,132 @@
             </AnchorPane>
          </children>
       </AnchorPane>
-      <Button fx:id="HomeButton" layoutX="15.0" layoutY="112.0" mnemonicParsing="false" onAction="#switchForm" prefHeight="46.0" prefWidth="102.0" text="Trang chủ" textFill="#25282b" />
-      <AnchorPane fx:id="VehiclePane" layoutX="133.0" layoutY="11.0" prefHeight="514.0" prefWidth="660.0" visible="false">
+      <AnchorPane fx:id="VehiclePane" layoutX="133.0" layoutY="11.0" prefHeight="514.0" prefWidth="660.0" style="-fx-background-radius: 30;">
          <children>
-            <AnchorPane layoutY="-7.0" prefHeight="190.0" prefWidth="770.0" style="-fx-background-color: gray;">
+            <AnchorPane fx:id="standard" layoutY="-1.0" prefHeight="238.0" prefWidth="556.0" style="-fx-background-color: LightGray;" styleClass="standardField" stylesheets="@dashboardDesign.css">
                <children>
-                  <TextField layoutX="123.0" layoutY="55.0" prefHeight="26.0" prefWidth="110.0" promptText="BS" />
-                  <Label layoutX="22.0" layoutY="17.0" text="Loại xe" />
-                  <Label layoutX="22.0" layoutY="59.0" text="Biển số xe" />
-                  <ComboBox layoutX="123.0" layoutY="13.0" prefHeight="26.0" prefWidth="110.0" />
-                  <ComboBox layoutX="123.0" layoutY="103.0" prefHeight="26.0" prefWidth="110.0" />
-                  <ComboBox layoutX="123.0" layoutY="149.0" prefHeight="26.0" prefWidth="110.0" />
-                  <Label layoutX="22.0" layoutY="108.0" text="Bằng yêu cầu" />
-                  <Label layoutX="22.0" layoutY="154.0" text="Trạng thái" />
-                  <Label layoutX="277.0" layoutY="29.0" text="Kích thước (m)" />
-                  <TextField layoutX="277.0" layoutY="53.0" prefHeight="26.0" prefWidth="45.0" promptText="Dài" />
-                  <TextField layoutX="334.0" layoutY="53.0" prefHeight="26.0" prefWidth="46.0" promptText="Rộng" />
-                  <TextField layoutX="392.0" layoutY="53.0" prefHeight="26.0" prefWidth="49.0" promptText="Cao" />
-                  <TextField layoutX="364.0" layoutY="106.0" prefHeight="26.0" prefWidth="78.0" />
-                  <Label layoutX="277.0" layoutY="110.0" prefHeight="18.0" prefWidth="78.0" text="Trọng tải (tấn)" />
-                  <Button fx:id="addVehicle" graphicTextGap="0.0" layoutX="523.0" layoutY="26.0" mnemonicParsing="false" prefHeight="84.0" prefWidth="78.0" style="-fx-background-color: #0bea9f;" text="Thêm" textFill="#191e1c">
+                  <TextField fx:id="plateNumberText" layoutX="16.0" layoutY="72.0" prefHeight="26.0" prefWidth="102.0" promptText="Biển số xe" />
+                  <ComboBox fx:id="typeVehicleComboBox" layoutX="16.0" layoutY="35.0" onAction="#typeVehicleChange" prefHeight="26.0" prefWidth="102.0" promptText="Loại xe" />
+                  <ComboBox fx:id="licenseLevelComboBox" layoutX="16.0" layoutY="111.0" prefHeight="26.0" prefWidth="118.0" promptText="Bằng yêu cầu" />
+                  <ComboBox fx:id="vehicleStatusComboBox" layoutX="16.0" layoutY="150.0" prefHeight="26.0" prefWidth="102.0" promptText="Trạng thái" />
+                  <Label layoutX="142.0" layoutY="8.0" text="Kích thước (m)">
                      <font>
-                        <Font size="20.0" />
-                     </font>
-                  </Button>
-                  <Button fx:id="removeVehicle" graphicTextGap="0.0" layoutX="647.0" layoutY="26.0" mnemonicParsing="false" prefHeight="84.0" prefWidth="78.0" style="-fx-background-color: #0bea9f;" text="Xóa">
+                        <Font name="System Bold" size="14.0" />
+                     </font></Label>
+                  <TextField fx:id="lengthText" layoutX="142.0" layoutY="35.0" prefHeight="26.0" prefWidth="45.0" promptText="Dài" />
+                  <TextField fx:id="wideText" layoutX="196.0" layoutY="35.0" prefHeight="26.0" prefWidth="46.0" promptText="Rộng" />
+                  <TextField fx:id="highText" layoutX="253.0" layoutY="35.0" prefHeight="26.0" prefWidth="49.0" promptText="Cao" />
+                  <TextField fx:id="weightText" layoutX="142.0" layoutY="72.0" prefHeight="26.0" prefWidth="92.0" promptText="Trọng tải (tấn)" />
+                  <TextField fx:id="distanceCoverText" layoutX="142.0" layoutY="111.0" prefHeight="26.0" prefWidth="123.0" promptText="Quãng đường đã đi" />
+                  <TextField fx:id="driverofVehicleText" layoutX="16.0" layoutY="188.0" prefHeight="26.0" prefWidth="78.0" promptText="Mã tài xế" />
+                  <JFXButton layoutX="303.0" layoutY="69.0" onAction="#addVehicle" prefHeight="58.0" prefWidth="118.0" ripplerFill="#fcfcfc" style="-fx-background-radius: 30; -fx-background-color: #3786bf; -fx-border-radius: 30; -fx-border-color: #f0f4f5;" text="Thêm" textFill="WHITE">
                      <font>
-                        <Font size="20.0" />
+                        <Font name="Arial" size="18.0" />
                      </font>
-                  </Button>
+                  </JFXButton>
+                  <JFXButton layoutX="432.0" layoutY="153.0" onAction="#resetField" prefHeight="58.0" prefWidth="110.0" ripplerFill="#fcfcfc" style="-fx-background-radius: 30; -fx-background-color: #3786bf; -fx-border-radius: 30; -fx-border-color: #f0f4f5;" text="Làm mới" textFill="WHITE">
+                     <font>
+                        <Font name="Arial" size="18.0" />
+                     </font>
+                  </JFXButton>
+                  <JFXButton layoutX="303.0" layoutY="153.0" onAction="#updateVehicle" prefHeight="58.0" prefWidth="118.0" ripplerFill="#fcfcfc" style="-fx-background-radius: 30; -fx-background-color: #3786bf; -fx-border-radius: 30; -fx-border-color: #f0f4f5;" text="Sửa" textFill="WHITE">
+                     <font>
+                        <Font name="Arial" size="18.0" />
+                     </font>
+                  </JFXButton>
+                  <JFXButton layoutX="432.0" layoutY="69.0" onAction="#deleteVehicle" prefHeight="58.0" prefWidth="110.0" ripplerFill="#fcfcfc" style="-fx-background-radius: 30; -fx-background-color: #3786bf; -fx-border-radius: 30; -fx-border-color: #f0f4f5;" text="Xóa" textFill="WHITE">
+                     <font>
+                        <Font name="Arial" size="18.0" />
+                     </font>
+                  </JFXButton>
                </children>
             </AnchorPane>
-            <AnchorPane fx:id="InforVehicle" layoutY="190.0" prefHeight="427.0" prefWidth="770.0" style="-fx-background-color: pink;">
+            <AnchorPane fx:id="InforVehicle" layoutY="238.0" onMouseClicked="#MouseClicktoUnselectVehicle" prefHeight="440.0" prefWidth="818.0" style="-fx-background-color: #3a89bd;" styleClass="InforVehicle" stylesheets="@dashboardDesign.css">
                <children>
-                  <TableView layoutX="20.0" layoutY="57.0" prefHeight="352.0" prefWidth="730.0">
+                  <TableView fx:id="vehicleTable" layoutX="20.0" layoutY="57.0" onMouseClicked="#mouseSelectedVehicle" prefHeight="352.0" prefWidth="730.0">
                     <columns>
-                      <TableColumn prefWidth="114.4000244140625" text="Loại xe" />
-                      <TableColumn prefWidth="103.20001220703125" text="Biển số xe" />
-                        <TableColumn prefWidth="99.20001220703125" text="Bằng" />
-                        <TableColumn prefWidth="147.199951171875" text="Trạng thái" />
-                        <TableColumn prefWidth="55.20001220703125" text="Dài (m)" />
-                        <TableColumn prefWidth="60.79998779296875" text="Rộng (m)" />
-                        <TableColumn prefWidth="54.39990234375" text="Cao (m)" />
-                        <TableColumn prefWidth="91.99997558593748" text="Trọng tải" />
+                      <TableColumn fx:id="typeVehicleColumn" prefWidth="61.600006103515625" text="Loại xe" />
+                      <TableColumn fx:id="plateNumberColumn" prefWidth="85.59999084472656" text="Biển số xe" />
+                        <TableColumn fx:id="licenseLevelColumn" prefWidth="35.199951171875" text="Bằng" />
+                        <TableColumn fx:id="driverofVehicleColumn" prefWidth="89.5999755859375" text="Mã tài xế" />
+                        <TableColumn fx:id="vehicleStatusColumn" prefWidth="89.5999755859375" text="Trạng thái" />
+                        <TableColumn prefWidth="228.0" text="Kích thước">
+                           <columns>
+                              <TableColumn fx:id="lengthColumn" prefWidth="49.60003662109375" text="Dài (m)" />
+                              <TableColumn fx:id="wideColumn" prefWidth="59.20001220703125" text="Rộng (m)" />
+                              <TableColumn fx:id="highColumn" prefWidth="52.00006103515625" text="Cao (m)" />
+                           </columns></TableColumn>
+                        <TableColumn fx:id="weightColumn" prefWidth="99.199951171875" text="Trọng tải (kg)" />
+                        <TableColumn fx:id="distanceCoverColumn" prefWidth="104.79996337890623" text="Quãng đg" />
                     </columns>
                   </TableView>
-                  <TextField layoutX="20.0" layoutY="20.0" prefHeight="26.0" prefWidth="265.0" promptText="Search..." />
+                  <TextField fx:id="searchVehicleText" layoutX="20.0" layoutY="20.0" prefHeight="26.0" prefWidth="265.0" promptText="Search..." style="-fx-background-color: #d6d0d0; -fx-background-radius: 30;" />
                   <ImageView fitHeight="26.0" fitWidth="54.0" layoutX="286.0" layoutY="20.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@searchIcon.png" />
                      </image>
                   </ImageView>
                </children></AnchorPane>
+            <AnchorPane fx:id="TruckField" layoutX="551.0" layoutY="-1.0" prefHeight="238.0" prefWidth="266.0" style="-fx-background-color: LightGray;" styleClass="moreField" stylesheets="@dashboardDesign.css" visible="false">
+               <children>
+                  <Label layoutX="14.0" layoutY="14.0" text="Thông tin thêm của từng loại xe">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Label>
+                  <TextField fx:id="truckGoodTypeText" layoutX="14.0" layoutY="44.0" promptText="Loại hàng" />
+                  <TextField fx:id="truckGoodWeightText" layoutX="14.0" layoutY="93.0" promptText="Khối lượng hàng (kg)" />
+               </children>
+            </AnchorPane>
+            <AnchorPane fx:id="ContainerField" layoutX="551.0" layoutY="-1.0" prefHeight="238.0" prefWidth="266.0" style="-fx-background-color: LightGray;" styleClass="moreField" stylesheets="@dashboardDesign.css" visible="false">
+               <children>
+                  <Label layoutX="14.0" layoutY="14.0" text="Thông tin thêm của từng loại xe">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Label>
+                  <TextField fx:id="containerGoodTypeText" layoutX="14.0" layoutY="44.0" promptText="Loại hàng" />
+                  <TextField fx:id="containerGoodWeightText" layoutX="14.0" layoutY="93.0" promptText="Khối lượng hàng (kg)" />
+               </children>
+            </AnchorPane>
+            <AnchorPane fx:id="CarField" layoutX="551.0" layoutY="-1.0" prefHeight="238.0" prefWidth="266.0" style="-fx-background-color: LightGray;" styleClass="moreField" stylesheets="@dashboardDesign.css" visible="false">
+               <children>
+                  <Label layoutX="14.0" layoutY="14.0" text="Thông tin thêm của từng loại xe">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Label>
+                  <TextField fx:id="carCustomerNameText" layoutX="14.0" layoutY="44.0" prefHeight="26.0" prefWidth="118.0" promptText="Tên khách hàng" />
+                  <TextField fx:id="carCustomerPhonenumText" layoutX="14.0" layoutY="93.0" prefHeight="26.0" prefWidth="118.0" promptText="SĐT khách hàng" />
+                  <TextField fx:id="carCustomerIDText" layoutX="15.0" layoutY="142.0" prefHeight="26.0" prefWidth="118.0" promptText="CCCD khách hàng" />
+                  <TextField fx:id="carCustomerAddressText" layoutX="16.0" layoutY="192.0" prefHeight="26.0" prefWidth="118.0" promptText="Địa chỉ khách hàng" />
+                  <TextField fx:id="carRentalDateText" layoutX="148.0" layoutY="45.0" prefHeight="26.0" prefWidth="110.0" promptText="Ngày thuê" />
+                  <TextField fx:id="carReturnDateText" layoutX="148.0" layoutY="93.0" prefHeight="26.0" prefWidth="110.0" promptText="Ngày trả" />
+               </children>
+            </AnchorPane>
+            <AnchorPane fx:id="BusField" layoutX="551.0" layoutY="-1.0" prefHeight="238.0" prefWidth="266.0" style="-fx-background-color: LightGray;" styleClass="moreField" stylesheets="@dashboardDesign.css" visible="false">
+               <children>
+                  <Label layoutX="14.0" layoutY="14.0" text="Thông tin thêm của từng loại xe">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Label>
+                  <TextField fx:id="busNumSeatText" layoutX="14.0" layoutY="44.0" prefHeight="26.0" prefWidth="118.0" promptText="Số lượng ghế" />
+                  <TextField fx:id="busPriceText" layoutX="14.0" layoutY="93.0" prefHeight="26.0" prefWidth="118.0" promptText="Gía vé" />
+                  <TextField fx:id="busNumCustomerText" layoutX="15.0" layoutY="142.0" prefHeight="26.0" prefWidth="118.0" promptText="Số lượng khách" />
+               </children>
+            </AnchorPane>
+            <AnchorPane fx:id="StandardField" layoutX="551.0" layoutY="-1.0" prefHeight="238.0" prefWidth="266.0" style="-fx-background-color: LightGray;" styleClass="moreField" stylesheets="@dashboardDesign.css">
+               <children>
+                  <Label layoutX="14.0" layoutY="14.0" text="Thông tin thêm của từng loại xe">
+                     <font>
+                        <Font name="System Bold" size="14.0" />
+                     </font>
+                  </Label>
+               </children>
+            </AnchorPane>
          </children>
       </AnchorPane>
-      <Button fx:id="Vehicles" layoutX="15.0" layoutY="177.0" mnemonicParsing="false" onAction="#switchForm" prefHeight="46.0" prefWidth="102.0" text="Danh sách xe" />
-      <Button fx:id="Drivers" layoutX="14.0" layoutY="240.0" mnemonicParsing="false" onAction="#switchForm" prefHeight="46.0" prefWidth="102.0" text="Danh sách tài xế" />
-      <Button fx:id="loginOut" cancelButton="true" layoutX="14.0" layoutY="302.0" mnemonicParsing="false" onAction="#switchForm" prefHeight="46.0" prefWidth="102.0" text="Thoát" />
       <AnchorPane fx:id="DriverPane" layoutX="133.0" layoutY="11.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="514.0" prefWidth="660.0" visible="false">
          <children>
             <AnchorPane layoutY="-8.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="190.0" prefWidth="770.0" style="-fx-background-color: gray;">
@@ -131,5 +202,45 @@
             </AnchorPane>
          </children>
       </AnchorPane>
+      <JFXButton fx:id="HomeButton" layoutX="4.0" layoutY="160.0" onAction="#switchForm" prefHeight="68.0" prefWidth="123.0" text="Button">
+         <font>
+            <Font size="1.0" />
+         </font>
+         <graphic>
+            <FontAwesomeIconView fill="#3786bf" glyphName="HOME" selectionEnd="0" size="5em" wrappingWidth="47.714264035224915" />
+         </graphic>
+      </JFXButton>
+      <JFXButton fx:id="VehicleButton" layoutX="4.0" layoutY="237.0" onAction="#switchForm" prefHeight="68.0" prefWidth="123.0" text="Button">
+         <font>
+            <Font size="1.0" />
+         </font>
+         <graphic>
+            <FontAwesomeIconView fill="#3786bf" glyphName="CAR" selectionEnd="0" size="5em" wrappingWidth="58.11428081989288" />
+         </graphic>
+      </JFXButton>
+      <JFXButton fx:id="DriverButton" alignment="CENTER" layoutX="4.0" layoutY="316.0" onAction="#switchForm" prefHeight="68.0" prefWidth="123.0" text="Button">
+         <font>
+            <Font size="1.0" />
+         </font>
+         <graphic>
+            <FontAwesomeIconView fill="#3786bf" glyphName="USER" selectionEnd="0" size="5em" wrappingWidth="33.60000000000002" />
+         </graphic>
+      </JFXButton>
+      <JFXButton fx:id="LogOutButton" layoutX="4.0" layoutY="486.0" onAction="#switchForm" prefHeight="68.0" prefWidth="123.0" text="Button">
+         <font>
+            <Font size="1.0" />
+         </font>
+         <graphic>
+            <FontAwesomeIconView fill="#3786bf" glyphName="POWER_OFF" selectionEnd="0" size="5em" wrappingWidth="41.31427013874054" />
+         </graphic>
+      </JFXButton>
+      <JFXButton fx:id="TripButton" layoutX="4.0" layoutY="400.0" onAction="#switchForm" prefHeight="68.0" prefWidth="123.0" text="Button">
+         <font>
+            <Font size="1.0" />
+         </font>
+         <graphic>
+            <FontAwesomeIconView fill="#3786bf" glyphName="ROAD" selectionEnd="0" size="5em" wrappingWidth="54.11425793170929" />
+         </graphic>
+      </JFXButton>
    </children>
 </AnchorPane>

@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane maxHeight="700.0" maxWidth="1300.0" minHeight="700.0" minWidth="1300.0" prefHeight="700.0" prefWidth="1300.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.management.vehicle.gui.driverController">
+   <children>
+      <AnchorPane fx:id="HomePane" layoutX="100.0" layoutY="100.0" maxHeight="600.0" maxWidth="1200.0" minHeight="600.0" minWidth="1200.0" prefHeight="600.0" prefWidth="1200.0" style="-fx-border-color: #000000;">
+         <children>
+            <Label layoutX="10.0" layoutY="10.0" text="Xin chào, ">
+               <font>
+                  <Font name="Arial Bold" size="36.0" />
+               </font>
+            </Label>
+            <Label fx:id="Driver" layoutX="180.0" layoutY="10.0" text="driver" textFill="#3986bde5">
+               <font>
+                  <Font name="Arial Bold" size="36.0" />
+               </font>
+            </Label>
+            <Label fx:id="Date" layoutX="10.0" layoutY="52.0" text="Ngày tháng">
+               <font>
+                  <Font name="Arial" size="24.0" />
+               </font>
+            </Label>
+            <Label alignment="CENTER" contentDisplay="CENTER" layoutY="100.0" maxWidth="1200.0" minWidth="1200.0" prefWidth="1200.0" text="THÔNG TIN CÁ NHÂN" textAlignment="CENTER" textFill="#3a89bd">
+               <font>
+                  <Font name="Arial Bold" size="30.0" />
+               </font>
+            </Label>
+            <Label layoutX="100.0" layoutY="150.0" text="Họ và tên:" textFill="#3a89bd">
+               <font>
+                  <Font name="Arial Bold" size="18.0" />
+               </font>
+            </Label>
+            <Label layoutX="100.0" layoutY="190.0" text="Số điện thoại:" textFill="#3a89bd">
+               <font>
+                  <Font name="Arial Bold" size="18.0" />
+               </font>
+            </Label>
+            <Label layoutX="100.0" layoutY="230.0" text="Địa chỉ:" textFill="#3a89bd">
+               <font>
+                  <Font name="Arial Bold" size="18.0" />
+               </font>
+            </Label>
+            <Label layoutX="600.0" layoutY="150.0" text="Giấy phép lái xe:" textFill="#3a89bd">
+               <font>
+                  <Font name="Arial Bold" size="18.0" />
+               </font>
+            </Label>
+            <Label layoutX="600.0" layoutY="190.0" text="Trạng thái hiện tại:" textFill="#3a89bd">
+               <font>
+                  <Font name="Arial Bold" size="18.0" />
+               </font>
+            </Label>
+            <Label alignment="CENTER" layoutY="275.0" minWidth="1200.0" text="Lịch sử chuyến đi" textFill="#3a89bd">
+               <font>
+                  <Font name="Arial Bold" size="18.0" />
+               </font>
+            </Label>
+            <Label fx:id="Name" layoutX="275.0" layoutY="150.0" text="Nguyễn Văn A">
+               <font>
+                  <Font name="Arial" size="18.0" />
+               </font>
+            </Label>
+            <Label fx:id="Phone" layoutX="275.0" layoutY="190.0" text="0*********">
+               <font>
+                  <Font name="Arial" size="18.0" />
+               </font>
+            </Label>
+            <Label fx:id="Address" layoutX="275.0" layoutY="230.0" text="Trường ĐH Bách Khoa">
+               <font>
+                  <Font name="Arial" size="18.0" />
+               </font>
+            </Label>
+            <Label fx:id="License" layoutX="775.0" layoutY="150.0" text="A1">
+               <font>
+                  <Font name="Arial" size="18.0" />
+               </font>
+            </Label>
+            <Label fx:id="Status" layoutX="775.0" layoutY="190.0" text="On duty">
+               <font>
+                  <Font name="Arial" size="18.0" />
+               </font>
+            </Label>
+            <TableView layoutX="50.0" layoutY="300.0" prefHeight="275.0" prefWidth="1100.0">
+              <columns>
+                <TableColumn prefWidth="100.0" text="ID chuyến đi" />
+                <TableColumn minWidth="-1.0" prefWidth="200.0" text="Địa điểm bắt đầu" />
+                  <TableColumn minWidth="-1.0" prefWidth="200.0" text="Địa điểm kết thúc" />
+                  <TableColumn minWidth="-1.0" prefWidth="150.0" text="Ngày bắt đầu" />
+                  <TableColumn minWidth="-1.0" prefWidth="150.0" text="Ngày kết thúc" />
+                  <TableColumn prefWidth="150.0" text="Biển số xe" />
+                  <TableColumn minWidth="-1.0" prefWidth="150.0" text="Số ID của tài xế" />
+              </columns>
+            </TableView>
+         </children>
+      </AnchorPane>
+      <AnchorPane fx:id="LeavePane" layoutX="100.0" layoutY="100.0" maxHeight="600.0" maxWidth="1200.0" minHeight="600.0" minWidth="1200.0" prefHeight="600.0" prefWidth="1200.0" style="-fx-border-color: #000000;" visible="false">
+         <children>
+            <Label fx:id="CurrentStatus" alignment="CENTER" layoutY="25.0" minWidth="1200.0" text="YÊU CẦU XIN NGHỈ" textFill="#3a8dbd">
+               <font>
+                  <Font name="Arial Bold" size="30.0" />
+               </font>
+            </Label>
+            <AnchorPane layoutX="100.0" layoutY="75.0" prefHeight="200.0" prefWidth="1000.0" style="-fx-background-color: LightGray;">
+               <children>
+                  <Label layoutX="275.0" layoutY="30.0" text="Ngày bắt đầu nghỉ: ">
+                     <font>
+                        <Font name="Arial" size="24.0" />
+                     </font>
+                  </Label>
+                  <DatePicker layoutX="530.0" layoutY="30.0" />
+                  <Label layoutX="275.0" layoutY="75.0" text="Ngày kết thúc nghỉ: ">
+                     <font>
+                        <Font name="Arial" size="24.0" />
+                     </font>
+                  </Label>
+                  <DatePicker layoutX="530.0" layoutY="75.0" />
+                  <JFXButton layoutX="423.0" layoutY="135.0" style="-fx-background-color: #3a89bd;" text="Tạo yêu cầu" textFill="WHITE">
+                     <font>
+                        <Font name="Arial Bold" size="24.0" />
+                     </font>
+                  </JFXButton>
+               </children>
+            </AnchorPane>
+            <AnchorPane layoutX="100.0" layoutY="300.0" prefHeight="275.0" prefWidth="1000.0" style="-fx-background-color: #3a89bdb2;">
+               <children>
+                  <TableView layoutX="20.0" layoutY="20.0" prefHeight="235.0" prefWidth="960.0">
+                    <columns>
+                        <TableColumn prefWidth="240.0" text="Số thứ tự" />
+                      <TableColumn prefWidth="240.0" text="Ngày tạo yêu cầu" />
+                      <TableColumn prefWidth="240.0" text="Ngày bắt đầu nghỉ" />
+                        <TableColumn prefWidth="240.0" text="Ngày kết thúc nghỉ" />
+                    </columns>
+                  </TableView>
+               </children>
+            </AnchorPane>
+         </children></AnchorPane>
+      <AnchorPane fx:id="TripPane" layoutX="100.0" layoutY="100.0" maxHeight="600.0" maxWidth="1200.0" minHeight="600.0" minWidth="1200.0" prefHeight="600.0" prefWidth="1200.0" style="-fx-border-color: #000000;" visible="false">
+         <children>
+            <Label alignment="CENTER" layoutY="25.0" minWidth="1200.0" text="YÊU CẦU CHUYẾN ĐI" textFill="#3a89bd">
+               <font>
+                  <Font name="Arial Bold" size="30.0" />
+               </font>
+            </Label>
+            <AnchorPane layoutX="100.0" layoutY="75.0" prefHeight="200.0" prefWidth="1000.0" style="-fx-background-color: LightGray;">
+               <children>
+                  <Label layoutX="325.0" layoutY="10.0" text="Địa điểm bắt đầu: ">
+                     <font>
+                        <Font name="Arial" size="18.0" />
+                     </font>
+                  </Label>
+                  <TextField layoutX="525.0" layoutY="10.0" />
+                  <Label layoutX="325.0" layoutY="40.0" text="Địa điểm kết thúc: ">
+                     <font>
+                        <Font name="Arial" size="18.0" />
+                     </font>
+                  </Label>
+                  <TextField layoutX="525.0" layoutY="40.0" />
+                  <Label layoutX="325.0" layoutY="70.0" text="Ngày bắt đầu: ">
+                     <font>
+                        <Font name="Arial" size="18.0" />
+                     </font>
+                  </Label>
+                  <DatePicker layoutX="525.0" layoutY="70.0" />
+                  <Label layoutX="325.0" layoutY="100.0" text="Ngày kết thúc: ">
+                     <font>
+                        <Font name="Arial" size="18.0" />
+                     </font>
+                  </Label>
+                  <DatePicker layoutX="525.0" layoutY="100.0" />
+                  <Label layoutX="325.0" layoutY="130.0" text="Biển số xe: ">
+                     <font>
+                        <Font name="Arial" size="18.0" />
+                     </font>
+                  </Label>
+                  <TextField layoutX="525.0" layoutY="130.0" />
+                  <JFXButton layoutX="436.0" layoutY="162.0" style="-fx-background-color: #3a89bd;" text="Tạo yêu cầu" textFill="WHITE">
+                     <font>
+                        <Font name="Arial Bold" size="18.0" />
+                     </font>
+                  </JFXButton>
+               </children>
+            </AnchorPane>
+            <AnchorPane layoutX="100.0" layoutY="300.0" prefHeight="275.0" prefWidth="1000.0" style="-fx-background-color: #3a89bdb2;">
+               <children>
+                  <TableView layoutX="20.0" layoutY="20.0" prefHeight="235.0" prefWidth="960.0">
+                     <columns>
+                        <TableColumn prefWidth="100.0" text="ID chuyến đi" />
+                        <TableColumn prefWidth="150.0" text="Địa điểm bắt đầu" />
+                        <TableColumn prefWidth="150.0" text="Địa điểm kết thúc" />
+                        <TableColumn prefWidth="125.0" text="Ngày bắt đầu" />
+                        <TableColumn prefWidth="125.0" text="Ngày kết thúc" />
+                        <TableColumn prefWidth="150.0" text="Biển số xe" />
+                        <TableColumn prefWidth="160.0" text="Ngày tạo yêu cầu" />
+                     </columns>
+                  </TableView>
+               </children>
+            </AnchorPane>
+         </children></AnchorPane>
+      <JFXButton fx:id="Home" contentDisplay="CENTER" layoutX="21.0" layoutY="150.0" onAction="#switchForm" prefHeight="60.0" prefWidth="63.0">
+         <font>
+            <Font size="1.0" />
+         </font>
+         <graphic>
+            <FontAwesomeIconView fill="#3786bf" glyphName="HOME" selectionEnd="0" size="3em" textAlignment="CENTER" wrappingWidth="32.80002021789551" />
+         </graphic>
+      </JFXButton>
+      <JFXButton fx:id="RequestLeave" contentDisplay="CENTER" layoutX="21.0" layoutY="225.0" onAction="#switchForm" prefHeight="60.0" prefWidth="63.0">
+         <font>
+            <Font size="1.0" />
+         </font>
+         <graphic>
+            <FontAwesomeIconView fill="#3786bf" glyphName="FILE_TEXT" selectionEnd="0" size="3em" textAlignment="CENTER" wrappingWidth="32.80002021789551" />
+         </graphic>
+      </JFXButton>
+      <JFXButton fx:id="RequestTrip" contentDisplay="CENTER" layoutX="21.0" layoutY="300.0" onAction="#switchForm" prefHeight="60.0" prefWidth="63.0">
+         <font>
+            <Font size="1.0" />
+         </font>
+         <graphic>
+            <FontAwesomeIconView fill="#3786bf" glyphName="BUS" selectionEnd="0" size="3em" textAlignment="CENTER" wrappingWidth="32.80002021789551" />
+         </graphic>
+      </JFXButton>
+      <JFXButton fx:id="LogOut" contentDisplay="CENTER" layoutX="21.0" layoutY="375.0" onAction="#switchForm" prefHeight="60.0" prefWidth="63.0">
+         <font>
+            <Font size="1.0" />
+         </font>
+         <graphic>
+            <FontAwesomeIconView fill="#3786bf" glyphName="SIGN_OUT" selectionEnd="0" size="3em" textAlignment="CENTER" wrappingWidth="32.80002021789551" />
+         </graphic>
+      </JFXButton>
+   </children>
+</AnchorPane>

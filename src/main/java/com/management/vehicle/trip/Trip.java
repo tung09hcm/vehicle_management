@@ -109,9 +109,14 @@ public class Trip {
     }
 
     public void makeTrip(String from , String to) throws Exception {
-        MapRequest mapRequest = new MapRequest();
-        List coordinate1 = mapRequest.getCoordinateList(from);
-        List coordinate2 = mapRequest.getCoordinateList(to);
+        MapRequest mapRequest = MapRequest.getInstance();
+        List<Hit> coordinate1 = mapRequest.getCoordinateList(from);
+        List<Hit> coordinate2 = mapRequest.getCoordinateList(to);
+
+        for(Hit hit :coordinate2)
+        {
+            System.out.println(hit.getCity() + " " + hit.getCountry());
+        }
 
         RouteMatrix result = mapRequest.getDistanceMatrix(coordinate1,coordinate2);
 

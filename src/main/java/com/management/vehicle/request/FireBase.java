@@ -24,6 +24,7 @@ import java.util.concurrent.CompletableFuture;
 public class FireBase {
     private static FireBase instance;
     private final Security security = new Security();
+
     private final List<Driver> driverList = new ArrayList<>();
     private final List<Vehicle> vehicleList = new ArrayList<>();
 
@@ -56,6 +57,14 @@ public class FireBase {
             instance = new FireBase();
         }
         return instance;
+    }
+
+    public List<Driver> getDriverList() {
+        return driverList;
+    }
+
+    public List<Vehicle> getVehicleList() {
+        return vehicleList;
     }
 
     /**

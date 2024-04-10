@@ -12,7 +12,7 @@ public class Container extends Vehicle{
         return goodsType;
     }
 
-    public double getKhoiLuongHangHoa() {
+    public double getGoodsWeight() {
         return goodsWeight;
     }
 
@@ -23,6 +23,8 @@ public class Container extends Vehicle{
     public void setGoodsWeight(double goodsWeight) {
         this.goodsWeight = goodsWeight;
     }
+
+
 
 
     public Container()

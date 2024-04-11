@@ -90,6 +90,15 @@ public class FireBase {
         return data;
     }
 
+    public static void main(String[] args) throws Exception {
+        FireBase fb = FireBase.getInstance();
+        fb.getAllDriver();
+        fb.deleteDriver(fb.getDriverList().getFirst().getId());
+        for (Driver driver : fb.getDriverList()) {
+            System.out.println(driver.toString());
+        }
+    }
+
     /**
      * Retrieves all drivers from Firebase and stores them in the driverList.
      */
@@ -110,11 +119,24 @@ public class FireBase {
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String prevChildKey) {
                 System.out.println("onChildChanged");
+                for (Driver driver : driverList) {
+                    if (driver.getId().equals(dataSnapshot.getKey())) {
+                        driverList.remove(driver);
+                        driverList.add(dataSnapshot.getValue(Driver.class));
+                        break;
+                    }
+                }
             }
 
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
                 System.out.println("onChildRemoved");
+                for (Driver driver : driverList) {
+                    if (driver.getId().equals(dataSnapshot.getKey())) {
+                        driverList.remove(driver);
+                        break;
+                    }
+                }
             }
 
             @Override

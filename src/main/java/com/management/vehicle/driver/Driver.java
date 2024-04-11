@@ -26,7 +26,7 @@ public class Driver {
     private double distanceCoverAll = 0;
     private List<String> requestTrip;
     private String username;
-    private String password;
+
     private String name;
     private String phoneNumber;
     private String address;
@@ -55,13 +55,6 @@ public class Driver {
         this.username = username;
     }
 
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
 
     public String getName() {
         return name;
@@ -162,7 +155,6 @@ public class Driver {
         this.licensetoken = "";
         this.expirydate = "";
         this.requestTrip = new ArrayList<>();
-        this.password = "";
         this.username = "";
     }
 

@@ -24,6 +24,7 @@ import java.util.concurrent.CompletableFuture;
 public class FireBase {
     private static FireBase instance;
     private final Security security = new Security();
+
     private final List<Driver> driverList = new ArrayList<>();
     private final List<Vehicle> vehicleList = new ArrayList<>();
 
@@ -56,6 +57,14 @@ public class FireBase {
             instance = new FireBase();
         }
         return instance;
+    }
+
+    public List<Driver> getDriverList() {
+        return driverList;
+    }
+
+    public List<Vehicle> getVehicleList() {
+        return vehicleList;
     }
 
     /**
@@ -161,7 +170,7 @@ public class FireBase {
      */
     public void addDriver(Driver driver) {
         CompletableFuture<Void> future = new CompletableFuture<>();
-        DatabaseReference newDriverRef = FirebaseDatabase.getInstance().getReference("Driver").child(String.valueOf(driverList.size()));
+        DatabaseReference newDriverRef = FirebaseDatabase.getInstance().getReference("Driver").child(String.valueOf(driver.getId()));
         newDriverRef.setValue(driver, (databaseError, databaseReference) -> {
             if (databaseError != null) {
                 System.out.println("Data could not be saved " + databaseError.getMessage());

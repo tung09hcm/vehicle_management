@@ -1,7 +1,12 @@
 package com.management.vehicle.gui;
 
 import com.jfoenix.controls.JFXButton;
+import com.management.vehicle.driver.Driver;
+import com.management.vehicle.driver.DriverStatus;
+import com.management.vehicle.license.License;
 import com.management.vehicle.license.LicenseLevel;
+import com.management.vehicle.request.FireBase;
+import com.management.vehicle.trip.Trip;
 import com.management.vehicle.vehicle.*;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
@@ -21,6 +26,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import org.jxmapviewer.JXMapViewer;
 
@@ -28,15 +34,14 @@ import javax.swing.*;
 import java.io.IOException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 public class dashboardController implements Initializable
 {
     @FXML
     private AnchorPane DriverPane;
-
-    @FXML
-    private Button Drivers;
 
     @FXML
     private JFXButton HomeButton;
@@ -57,22 +62,7 @@ public class dashboardController implements Initializable
     private AnchorPane HomePane;
 
     @FXML
-    private AnchorPane InforVehicle;
-
-    @FXML
     private AnchorPane VehiclePane;
-
-    @FXML
-    private Button Vehicles;
-
-    @FXML
-    private Button addVehicle;
-
-    @FXML
-    private Button loginOut;
-
-    @FXML
-    private Button removeVehicle;
 
     @FXML
     private Label timeLabel;
@@ -93,6 +83,15 @@ public class dashboardController implements Initializable
     private AnchorPane BusField;
 
     private Boolean stopTime = false;
+
+    @FXML
+    private Label homeNumberVehicelLabel;
+
+    @FXML
+    private Label homeNumberDriverLabel;
+
+    @FXML
+    private Label homeNumberTripLabel;
     ////////////////////////////////////////////////////////////////////////
 
     @FXML
@@ -128,7 +127,7 @@ public class dashboardController implements Initializable
     @FXML
     private TableColumn<Vehicle, String> driverofVehicleColumn;
 
-    private ObservableList<Vehicle> vehicleList;
+    private ObservableList<Vehicle> vehicleList = FXCollections.observableArrayList();
 
     @FXML
     private ComboBox<TypeVehicle> typeVehicleComboBox;
@@ -214,27 +213,121 @@ public class dashboardController implements Initializable
     @FXML
     private TextField containerGoodWeightText;
 
-//////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////////
+
+    @FXML
+    private TableView<Driver> TableListDriver;
+
+    @FXML
+    private JFXButton addDriverButton;
+
+    @FXML
+    private TableColumn<Driver, String> addressDiverCol;
+
+    @FXML
+    private TextField addressDriverText;
+
+    @FXML
+    private JFXButton clearFilledButton;
+
+    @FXML
+    private TableColumn<Driver, String> driverIDCol;
+
+    @FXML
+    private TextField driverIDText;
+
+    @FXML
+    private TableColumn<Driver, String> expireDateCol;
+
+    @FXML
+    private TextField issueDateText;
+
+    @FXML
+    private TableColumn<Driver, String> licenseDriverCol;
+
+    @FXML
+    private TextField licenseDriverText;
+
+    @FXML
+    private TableColumn<Driver, String> nameDriverCol;
+
+    @FXML
+    private TextField nameDriverText;
+
+    @FXML
+    private TableColumn<Driver, String> phoneDriverCol;
+
+    @FXML
+    private TextField phoneDriverText;
+
+    @FXML
+    private JFXButton removeDriverButton;
+
+    @FXML
+    private TableColumn<Driver, DriverStatus> statusDriverCol;
+
+    @FXML
+    private ComboBox<DriverStatus> statusDriverComboBox;
+
+    @FXML
+    private JFXButton updateDriverButton;
+
+    @FXML
+    private DatePicker issueDatePicker;
+
+    @FXML
+    private TextField researchDriverText;
+
+    @FXML
+    private JFXButton researchDriverButton;
+
+    ObservableList<DriverStatus> statusDriverObservableList = FXCollections.observableArrayList(DriverStatus.NONE, DriverStatus.ON_DUTY, DriverStatus.ON_LEAVE);
+    ObservableList<Driver> driverList = FXCollections.observableArrayList();
+
+/////////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////////
+    ObservableList<Trip> listTrip = FXCollections.observableArrayList();
+
+/////////////////////////////////////////////////////////////////////////////////
+
+
+////////////////////////////////////////////////////////////////////////////////
+
+
+
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+
         typeVehicleComboBox.setItems(typeVehicleObservableList);
         licenseLevelComboBox.setItems(licenseLevelObservableList);
         vehicleStatusComboBox.setItems(vehicleStatusObservableList);
+        statusDriverComboBox.setItems(statusDriverObservableList);
+        Timenow();
+        showHome();
+        HomePane.setVisible(true);
+        VehiclePane.setVisible(false);
+        DriverPane.setVisible(false);
+//        try {
+//            showDriverList();
+//        } catch (Exception e) {
+//            throw new RuntimeException(e);
+//        }
+//        try {
+//            showVehicleList();
+//        } catch (Exception e) {
+//            throw new RuntimeException(e);
+//        }
+    }
 
-        vehicleList = FXCollections.observableArrayList();
+    public void showVehicleList() throws Exception {
+        vehicleList = connection.getVehicle();
 
-        Truck newVehicle = new Truck();
-        newVehicle.setDriverID("12345");
-        newVehicle.setDistanceCover(55);
-        newVehicle.setType(TypeVehicle.truck);
-        newVehicle.setLength(1.2);
-        newVehicle.setWide(2.3);
-        newVehicle.setHigh(3.4);
-        newVehicle.setPlateNumber("21A-23211");
-        newVehicle.setWeight(345.67);
-        newVehicle.setStatus(VehicleStatus.ON_DUTY);
-        newVehicle.setLicense(LicenseLevel.NONE);
-        vehicleList.add(newVehicle);
 
         driverofVehicleColumn.setCellValueFactory(new PropertyValueFactory<Vehicle, String>("driverID"));
         distanceCoverColumn.setCellValueFactory(new PropertyValueFactory<Vehicle, Integer>("distanceCover"));
@@ -301,6 +394,7 @@ public class dashboardController implements Initializable
         // 5. Add sorted (and filtered) data to the table.
         vehicleTable.setItems(sortedData);
     }
+
     public void mouseSelectedVehicle() {
         Vehicle selected = vehicleTable.getSelectionModel().getSelectedItem();
         if (selected == null) return;
@@ -429,7 +523,7 @@ public class dashboardController implements Initializable
         bus.setPricePerSeat(Double.parseDouble(busPriceText.getText()));
         bus.setNumberOfCustomer(Integer.parseInt(busNumSeatText.getText()));
     }
-    public void addVehicle (ActionEvent e) {
+    public void addVehicle (ActionEvent e) throws Exception {
         for (Vehicle v : vehicleList) {
             if (Objects.equals(plateNumberText.getText(), v.getPlateNumber())) {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -454,7 +548,12 @@ public class dashboardController implements Initializable
                     Car newCar = new Car();
                     SetFieldtoVehicle(newCar);
                     setCar(newCar);
-                    vehicleList.add(newCar);
+
+                    FireBase fireBase = FireBase.getInstance();
+                    fireBase.addVehicle(newCar);
+                    showVehicleList();
+                    resetField();
+
                 }
             }
             case TypeVehicle.truck -> {
@@ -466,7 +565,11 @@ public class dashboardController implements Initializable
                     Truck newTruck = new Truck();
                     SetFieldtoVehicle(newTruck);
                     setTruck(newTruck);
-                    vehicleList.add(newTruck);
+
+                    FireBase fireBase = FireBase.getInstance();
+                    fireBase.addVehicle(newTruck);
+                    showVehicleList();
+                    resetField();
                 }
             }
             case TypeVehicle.container -> {
@@ -478,7 +581,12 @@ public class dashboardController implements Initializable
                     Container newContainer = new Container();
                     SetFieldtoVehicle(newContainer);
                     setContainer(newContainer);
-                    vehicleList.add(newContainer);
+
+
+                    FireBase fireBase = FireBase.getInstance();
+                    fireBase.addVehicle(newContainer);
+                    showVehicleList();
+                    resetField();
                 }
             }
             case TypeVehicle.bus -> {
@@ -491,12 +599,17 @@ public class dashboardController implements Initializable
                     Bus newBus = new Bus();
                     SetFieldtoVehicle(newBus);
                     setBus(newBus);
-                    vehicleList.add(newBus);
+
+                    FireBase fireBase = FireBase.getInstance();
+                    fireBase.addVehicle(newBus);
+                    showVehicleList();
+                    resetField();
                 }
             }
             default -> {
             }
         }
+
     }
     public void deleteVehicle (ActionEvent e) {
         Vehicle selected = vehicleTable.getSelectionModel().getSelectedItem();
@@ -546,7 +659,9 @@ public class dashboardController implements Initializable
                         ) BlankFieldVehicleAlert();
                         SetFieldtoVehicle(selectedCar);
                         setCar(selectedCar);
-                        vehicleList.set(index, selectedCar);
+
+
+
                     }
                     case Truck selectedTruck -> {
                         if (warningBlankFieldVehicle()
@@ -555,7 +670,8 @@ public class dashboardController implements Initializable
                         ) BlankFieldVehicleAlert();
                         SetFieldtoVehicle(selectedTruck);
                         setTruck(selectedTruck);
-                        vehicleList.set(index, selectedTruck);
+
+
                     }
                     case Container selectedContainer -> {
                         if (warningBlankFieldVehicle()
@@ -564,7 +680,7 @@ public class dashboardController implements Initializable
                         ) BlankFieldVehicleAlert();
                         SetFieldtoVehicle(selectedContainer);
                         setContainer(selectedContainer);
-                        vehicleList.set(index, selectedContainer);
+
                     }
                     case Bus selectedBus -> {
                         if (warningBlankFieldVehicle()
@@ -574,11 +690,20 @@ public class dashboardController implements Initializable
                         ) BlankFieldVehicleAlert();
                         SetFieldtoVehicle(selectedBus);
                         setBus(selectedBus);
-                        vehicleList.set(index, selectedBus);
+
                     }
                     default -> {
                     }
                 }
+                try {
+                    FireBase fireBase = FireBase.getInstance();
+                    fireBase.editVehicle(selected.getPlateNumber(), selected);
+                    showVehicleList();
+                    resetField();
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+
             }
         });
     }
@@ -622,9 +747,217 @@ public class dashboardController implements Initializable
     public void MouseClicktoUnselectVehicle() {
         vehicleTable.getSelectionModel().select(null);
     }
+
+////////////////////////////////////////////////////////
+
+    public void showDriverList() throws Exception {
+
+        driverList = connection.getDriver();
+
+        driverIDCol.setCellValueFactory(new PropertyValueFactory<Driver, String>("id"));
+        nameDriverCol.setCellValueFactory(new PropertyValueFactory<Driver, String>("name"));
+        statusDriverCol.setCellValueFactory(new PropertyValueFactory<Driver, DriverStatus>("status"));
+        phoneDriverCol.setCellValueFactory(new PropertyValueFactory<Driver, String>("phoneNumber"));
+        addressDiverCol.setCellValueFactory(new PropertyValueFactory<Driver, String>("address"));
+        licenseDriverCol.setCellValueFactory(new PropertyValueFactory<Driver, String>("licensetoken"));
+        expireDateCol.setCellValueFactory(new PropertyValueFactory<Driver, String>("expirydate"));
+        TableListDriver.setItems(driverList);
+    }
+
+    public void addDriver() throws Exception {
+        if (warningBlankFieldDriver()) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setHeaderText(null);
+            alert.setContentText("Please fill all blank fields");
+            alert.showAndWait();
+            return;
+        }
+        for(Driver driver: driverList)
+        {
+            if(Objects.equals(driver.getId(), driverIDText.getText()) )
+            {
+                BlankFieldAlert("Same ID of driver error");
+                return;
+            }
+            if(Objects.equals(driver.getPhoneNumber(), phoneDriverText.getText()))
+            {
+                BlankFieldAlert("Same phoneNumber of driver error");
+                return;
+            }
+        }
+        Driver newDriver = new Driver();
+        newDriver.setId(driverIDText.getText());
+        newDriver.setName(nameDriverText.getText());
+        newDriver.setPhoneNumber(phoneDriverText.getText());
+        newDriver.setAddress(addressDriverText.getText());
+        newDriver.setStatus(statusDriverComboBox.getValue());
+        newDriver.setLicensetoken(licenseDriverText.getText());
+        newDriver.setRecentPlateNumber("21A-3213");
+
+
+
+        LocalDate localDate = issueDatePicker.getValue();
+        String pattern = "dd-MM-yyyy";
+        String datePattern = localDate.format(DateTimeFormatter.ofPattern(pattern));
+        newDriver.setExpirydate(datePattern);
+
+        FireBase fireBase = FireBase.getInstance();
+        fireBase.addDriver(newDriver);
+        showDriverList();
+
+        resetFieldDriver();
+    }
+
+    public void removeDriver() {
+        Driver seleted = TableListDriver.getSelectionModel().getSelectedItem();
+        if(seleted==null) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setHeaderText(null);
+            alert.setContentText("please select driver to delete");
+            alert.showAndWait();
+            return;
+        }
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setHeaderText("Delete this driver");
+        alert.setContentText("You want to delete this driver");
+        alert.getButtonTypes().setAll(ButtonType.YES, ButtonType.NO);
+        alert.showAndWait().ifPresent(response-> {
+            if(response == ButtonType.YES)
+                driverList.remove(seleted);
+        });
+        resetFieldDriver();
+    }
+
+    private void updateDriver() {
+        Driver seleted = TableListDriver.getSelectionModel().getSelectedItem();
+        if(seleted==null){
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setHeaderText(null);
+            alert.setContentText("Please seleted driver to update");
+            alert.showAndWait();
+            return;
+        }
+
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setHeaderText("Update to driver");
+        alert.setContentText("You want to update driver");
+        alert.getButtonTypes().setAll(ButtonType.YES, ButtonType.NO);
+        alert.showAndWait().ifPresent(respone->{
+            if(respone==ButtonType.YES) {
+                if (warningBlankFieldDriver()) {
+                    BlankFieldVehicleAlert();
+                    resetFieldDriver();
+                    return;
+                }
+                for(Driver driver: driverList)
+                {
+                    if(Objects.equals(seleted, driver)) continue;
+                    if(Objects.equals(driver.getId(), driverIDText.getText()) )
+                    {
+                        BlankFieldAlert("Same ID of driver error");
+                        resetFieldDriver();
+                        return;
+                    }
+                    if(Objects.equals(driver.getPhoneNumber(), phoneDriverText.getText()))
+                    {
+                        BlankFieldAlert("Same phoneNumber of driver error");
+                        resetFieldDriver();
+                        return;
+                    }
+                }
+                seleted.setId(driverIDText.getText());
+                seleted.setName(nameDriverText.getText());
+                seleted.setPhoneNumber(phoneDriverText.getText());
+                seleted.setAddress(addressDriverText.getText());
+                seleted.setStatus(statusDriverComboBox.getValue());
+                seleted.setLicensetoken(licenseDriverText.getText());
+
+                LocalDate localDate = issueDatePicker.getValue();
+                String pattern = "dd-MM-yyyy";
+                String datePattern = localDate.format(DateTimeFormatter.ofPattern(pattern));
+                seleted.setExpirydate(datePattern);
+
+
+                try {
+                    FireBase fireBase = FireBase.getInstance();
+                    fireBase.editDriver(seleted);
+                    showDriverList();
+                    resetFieldDriver();
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+
+            }
+        });
+
+    }
+
+    public void resetFieldDriver() {
+        driverIDText.setText(null);
+        nameDriverText.setText(null);
+        phoneDriverText.setText(null);
+        addressDriverText.setText(null);
+        licenseDriverText.setText(null);
+        issueDatePicker.setValue(null);
+        statusDriverComboBox.getSelectionModel().select(null);
+        TableListDriver.getSelectionModel().select(null);
+    }
+
+    public void mouseClicktoUnselectDriver() {
+        TableListDriver.getSelectionModel().select(null);
+    }
+    public void mouseClicktoselecrDriver() {
+        Driver selected = TableListDriver.getSelectionModel().getSelectedItem();
+        if(selected==null) return;
+        driverIDText.setText(selected.getId());
+        nameDriverText.setText(selected.getName());
+        phoneDriverText.setText(selected.getPhoneNumber());
+        addressDriverText.setText(selected.getAddress());
+        licenseDriverText.setText(selected.getLicensetoken());
+        statusDriverComboBox.getSelectionModel().select(selected.getStatus());
+
+        LocalDate localDate = LocalDate.parse(selected.getExpirydate(), DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+        issueDatePicker.setValue(localDate);
+    }
+
+    public Boolean warningBlankFieldDriver() {
+        return driverIDText.getText().isEmpty()
+                || nameDriverText.getText().isEmpty()
+                || phoneDriverText.getText().isEmpty()
+                || addressDriverText.getText().isEmpty()
+                || statusDriverComboBox.getSelectionModel().getSelectedItem() == null
+                || licenseDriverText.getText().isEmpty();
+    }
+
+    public static void BlankFieldAlert(String errorStr) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setHeaderText(null);
+        alert.setContentText(errorStr);
+        alert.showAndWait();
+    }
+
+////////////////////////////////////////////////////////
+    public void controllDriver(ActionEvent e) throws Exception {
+        if(e.getSource()==addDriverButton)
+            addDriver();
+        else if(e.getSource()==removeDriverButton)
+            removeDriver();
+        else if(e.getSource()==clearFilledButton)
+            resetFieldDriver();
+        else if(e.getSource()==updateDriverButton)
+            updateDriver();
+    }
+
+    public void showHome() {
+        homeNumberVehicelLabel.setText(String.valueOf(vehicleList.size()));
+        homeNumberDriverLabel.setText(String.valueOf(driverList.size()));
+        homeNumberTripLabel.setText(String.valueOf(listTrip.size()));
+    }
+
+
     public void switchForm(ActionEvent e){
         if (e.getSource()==HomeButton){
-            Timenow();
+            showHome();
             HomePane.setVisible(true);
             VehiclePane.setVisible(false);
             DriverPane.setVisible(false);
@@ -651,7 +984,7 @@ public class dashboardController implements Initializable
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Xác nhận thông tin");
         alert.setHeaderText(null);
-        alert.setContentText("Do you want to logOut?");
+        alert.setContentText("Are you want to logOut?");
         Optional<ButtonType> option = alert.showAndWait();
         try {
             if(option.get().equals(ButtonType.OK)) {

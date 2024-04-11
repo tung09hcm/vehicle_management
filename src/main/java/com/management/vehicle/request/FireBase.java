@@ -59,10 +59,18 @@ public class FireBase {
         return instance;
     }
 
+    /**
+     * Retrieves the list of Driver objects.
+     * @return A list of Driver objects.
+     */
     public List<Driver> getDriverList() {
         return driverList;
     }
 
+    /**
+     * Retrieves the list of Vehicle objects.
+     * @return A list of Vehicle objects.
+     */
     public List<Vehicle> getVehicleList() {
         return vehicleList;
     }
@@ -589,6 +597,7 @@ public class FireBase {
                 future.complete(null);
             }
         });
+        future.join();
     }
 
     /**
@@ -610,7 +619,6 @@ public class FireBase {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 System.out.println("onDataChange");
                 Role role = dataSnapshot.getValue(Role.class);
-                System.out.println(role);
                 future.complete(role);
             }
 

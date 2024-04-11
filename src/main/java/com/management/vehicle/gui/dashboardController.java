@@ -313,16 +313,16 @@ public class dashboardController implements Initializable
         HomePane.setVisible(true);
         VehiclePane.setVisible(false);
         DriverPane.setVisible(false);
-//        try {
-//            showDriverList();
-//        } catch (Exception e) {
-//            throw new RuntimeException(e);
-//        }
-//        try {
-//            showVehicleList();
-//        } catch (Exception e) {
-//            throw new RuntimeException(e);
-//        }
+        try {
+            showDriverList();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        try {
+            showVehicleList();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void showVehicleList() throws Exception {
@@ -752,8 +752,6 @@ public class dashboardController implements Initializable
 
     public void showDriverList() throws Exception {
 
-        driverList = connection.getDriver();
-
         driverIDCol.setCellValueFactory(new PropertyValueFactory<Driver, String>("id"));
         nameDriverCol.setCellValueFactory(new PropertyValueFactory<Driver, String>("name"));
         statusDriverCol.setCellValueFactory(new PropertyValueFactory<Driver, DriverStatus>("status"));
@@ -761,6 +759,8 @@ public class dashboardController implements Initializable
         addressDiverCol.setCellValueFactory(new PropertyValueFactory<Driver, String>("address"));
         licenseDriverCol.setCellValueFactory(new PropertyValueFactory<Driver, String>("licensetoken"));
         expireDateCol.setCellValueFactory(new PropertyValueFactory<Driver, String>("expirydate"));
+
+        driverList = connection.getDriver();
         TableListDriver.setItems(driverList);
     }
 
@@ -792,7 +792,7 @@ public class dashboardController implements Initializable
         newDriver.setAddress(addressDriverText.getText());
         newDriver.setStatus(statusDriverComboBox.getValue());
         newDriver.setLicensetoken(licenseDriverText.getText());
-        newDriver.setRecentPlateNumber("21A-3213");
+        //newDriver.setRecentPlateNumber("21A-3213");
 
 
 
@@ -801,8 +801,7 @@ public class dashboardController implements Initializable
         String datePattern = localDate.format(DateTimeFormatter.ofPattern(pattern));
         newDriver.setExpirydate(datePattern);
 
-        FireBase fireBase = FireBase.getInstance();
-        fireBase.addDriver(newDriver);
+        FireBase.getInstance().addDriver(newDriver);
         showDriverList();
 
         resetFieldDriver();

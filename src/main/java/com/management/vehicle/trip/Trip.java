@@ -33,7 +33,8 @@ public class Trip {
     public void setStatus(TripStatus status) {
         this.status = status;
     }
-
+    private String beginLocation;
+    private String endLocation;
     private double distanceCover;
     private Coordinate begin;
     private String tripID;
@@ -44,6 +45,22 @@ public class Trip {
     private String driverID;
 
     private double Revenue;
+
+    public String getBeginLocation() {
+        return beginLocation;
+    }
+
+    public void setBeginLocation(String beginLocation) {
+        this.beginLocation = beginLocation;
+    }
+
+    public String getEndLocation() {
+        return endLocation;
+    }
+
+    public void setEndLocation(String endLocation) {
+        this.endLocation = endLocation;
+    }
 
     public double getDistanceCover() {
         return distanceCover;

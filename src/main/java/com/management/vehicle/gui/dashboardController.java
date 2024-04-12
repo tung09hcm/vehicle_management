@@ -3,14 +3,12 @@ package com.management.vehicle.gui;
 import com.jfoenix.controls.JFXButton;
 import com.management.vehicle.driver.Driver;
 import com.management.vehicle.driver.DriverStatus;
-import com.management.vehicle.license.License;
 import com.management.vehicle.license.LicenseLevel;
 import com.management.vehicle.request.FireBase;
 import com.management.vehicle.trip.Trip;
 import com.management.vehicle.vehicle.*;
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -25,12 +23,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.StackPane;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import org.jxmapviewer.JXMapViewer;
 
-import javax.swing.*;
 import java.io.IOException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
@@ -757,7 +751,6 @@ public class dashboardController implements Initializable
 
     public void showDriverList() throws Exception {
 
-
         System.out.println("SIGNAL on showDriverList()");
 
         driverList = connection.getDriver();
@@ -767,12 +760,10 @@ public class dashboardController implements Initializable
         statusDriverCol.setCellValueFactory(new PropertyValueFactory<Driver, DriverStatus>("status"));
         phoneDriverCol.setCellValueFactory(new PropertyValueFactory<Driver, String>("phoneNumber"));
         addressDiverCol.setCellValueFactory(new PropertyValueFactory<Driver, String>("address"));
-        licenseDriverCol.setCellValueFactory(new PropertyValueFactory<Driver, String>("licensetoken"));
-        expireDateCol.setCellValueFactory(new PropertyValueFactory<Driver, String>("expirydate"));
-
-        //System.out.println("SIGNAL on showDriverList() - 2");
-        System.out.println("driverlist in dashboard: " + driverList.size());
-
+        licenseDriverCol.setCellValueFactory( data->
+                new SimpleStringProperty(data.getValue().getLicense().getType().toString()));
+        expireDateCol.setCellValueFactory(data->
+                new SimpleStringProperty(data.getValue().getLicense().getExpiryDate()));
 
         //System.out.println("SIGNAL on showDriverList() - 3");
         TableListDriver.setItems(driverList);
@@ -801,31 +792,22 @@ public class dashboardController implements Initializable
                 return;
             }
         }
-        FireBase fireBase = FireBase.getInstance();
+
         Driver newDriver = new Driver();
         newDriver.setId(driverIDText.getText());
         newDriver.setName(nameDriverText.getText());
         newDriver.setPhoneNumber(phoneDriverText.getText());
         newDriver.setAddress(addressDriverText.getText());
         newDriver.setStatus(statusDriverComboBox.getValue());
-        newDriver.setLicensetoken(licenseDriverComboBox.getValue());
 
+        newDriver.getLicense().setType(licenseDriverComboBox.getValue());
         LocalDate localDate = issueDatePicker.getValue();
         localDate = localDate.plusYears(5);
         String pattern = "dd-MM-yyyy";
         String datePattern = localDate.format(DateTimeFormatter.ofPattern(pattern));
-        newDriver.setExpirydate(datePattern);
+        newDriver.getLicense().setExpiryDate(datePattern);
 
-        System.out.println("testing trước khi vào add: " + FireBase.getInstance().getDriverList().size());
-        fireBase.addDriver(newDriver);
-        fireBase.getAllDriver();
-        List<Driver> ls = fireBase.getDriverList();
-
-        for(Driver dr: ls)
-        {
-            System.out.println(dr.getName() + "  " + dr.getId());
-        }
-        System.out.println("testing trước khi vào show: " + FireBase.getInstance().getDriverList().size());
+        FireBase.getInstance().addDriver(newDriver);
 
         showDriverList();
 
@@ -847,7 +829,6 @@ public class dashboardController implements Initializable
         alert.getButtonTypes().setAll(ButtonType.YES, ButtonType.NO);
         alert.showAndWait().ifPresent(response-> {
             if(response == ButtonType.YES) {
-                driverList.remove(seleted);
                 try {
                     FireBase.getInstance().deleteDriver(seleted.getId());
                     showDriverList();
@@ -903,12 +884,12 @@ public class dashboardController implements Initializable
                 seleted.setPhoneNumber(phoneDriverText.getText());
                 seleted.setAddress(addressDriverText.getText());
                 seleted.setStatus(statusDriverComboBox.getValue());
-                seleted.setLicensetoken(licenseDriverComboBox.getValue());
+                seleted.getLicense().setType(licenseDriverComboBox.getValue());
 
                 LocalDate localDate = issueDatePicker.getValue();
                 String pattern = "dd-MM-yyyy";
                 String datePattern = localDate.format(DateTimeFormatter.ofPattern(pattern));
-                seleted.setExpirydate(datePattern);
+                seleted.getLicense().setExpiryDate(datePattern);
 
 
                 try {
@@ -946,10 +927,10 @@ public class dashboardController implements Initializable
         nameDriverText.setText(selected.getName());
         phoneDriverText.setText(selected.getPhoneNumber());
         addressDriverText.setText(selected.getAddress());
-        licenseDriverComboBox.getSelectionModel().select(selected.getLicensetoken());
+        licenseDriverComboBox.getSelectionModel().select(selected.getLicense().getType());
         statusDriverComboBox.getSelectionModel().select(selected.getStatus());
 
-        LocalDate localDate = LocalDate.parse(selected.getExpirydate(), DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+        LocalDate localDate = LocalDate.parse(selected.getLicense().getExpiryDate(), DateTimeFormatter.ofPattern("dd-MM-yyyy"));
         issueDatePicker.setValue(localDate);
     }
 

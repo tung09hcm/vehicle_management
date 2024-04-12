@@ -19,7 +19,7 @@ import java.util.List;
 
 public class MapRequest {
     public static MapRequest instance;
-    private String apikey;
+    private final String apikey;
 
     private MapRequest() throws Exception {
         FireBase fb = FireBase.getInstance();

@@ -19,7 +19,7 @@
                   <Font name="Arial Bold" size="36.0" />
                </font>
             </Label>
-            <Label fx:id="Driver" layoutX="180.0" layoutY="10.0" text="driver" textFill="#3986bde5">
+            <Label fx:id="DriverName" layoutX="180.0" layoutY="10.0" text="driver" textFill="#3986bde5">
                <font>
                   <Font name="Arial Bold" size="36.0" />
                </font>
@@ -54,7 +54,12 @@
                   <Font name="Arial Bold" size="18.0" />
                </font>
             </Label>
-            <Label layoutX="600.0" layoutY="190.0" text="Trạng thái hiện tại:" textFill="#3a89bd">
+            <Label layoutX="600.0" layoutY="190.0" text="Ngày hết hạn:" textFill="#3a89bd">
+               <font>
+                  <Font name="Arial Bold" size="18.0" />
+               </font>
+            </Label>
+            <Label layoutX="600.0" layoutY="230.0" text="Trạng thái hiện tại:" textFill="#3a89bd">
                <font>
                   <Font name="Arial Bold" size="18.0" />
                </font>
@@ -84,7 +89,12 @@
                   <Font name="Arial" size="18.0" />
                </font>
             </Label>
-            <Label fx:id="Status" layoutX="775.0" layoutY="190.0" text="On duty">
+            <Label fx:id="ExpiryDate" layoutX="775.0" layoutY="190.0" text="01/01/2029">
+               <font>
+                  <Font name="Arial" size="18.0" />
+               </font>
+            </Label>
+            <Label fx:id="Status" layoutX="775.0" layoutY="230.0" text="On duty">
                <font>
                   <Font name="Arial" size="18.0" />
                </font>

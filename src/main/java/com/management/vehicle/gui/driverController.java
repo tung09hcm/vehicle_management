@@ -1,5 +1,6 @@
 package com.management.vehicle.gui;
 
+import com.management.vehicle.driver.Driver;
 import com.jfoenix.controls.JFXButton;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -42,9 +43,31 @@ public class driverController implements Initializable  {
     @FXML
     private Label Date;
     @FXML
-    private Label Driver;
+    private Label DriverName;
+    @FXML
+    private Label Name;
+    @FXML
+    private Label Phone;
+    @FXML
+    private Label Address;
+    @FXML
+    private Label License;
+    @FXML
+    private Label ExpiryDate;
+    @FXML
+    private Label Status;
+    private static Driver driver;
 
     public driverController() {}
+
+    public com.management.vehicle.driver.Driver getDriver() {
+        return driver;
+    }
+
+    public static void setDriver(com.management.vehicle.driver.Driver d) {
+        driver = d;
+    }
+
     public void switchForm(ActionEvent e){
         if (e.getSource()==Home){
             HomePane.setVisible(true);
@@ -86,8 +109,27 @@ public class driverController implements Initializable  {
             }
         } catch (Exception e) {e.printStackTrace();}
     }
-    public void setFullName() {
-        Driver.setText("Nguyễn Văn A");
+    public void setInfo() {
+        DriverName.setText(driver.getName());
+        Name.setText(driver.getName());
+        Phone.setText(driver.getPhoneNumber());
+        Address.setText(driver.getAddress());
+        switch (driver.getLicense().getType()) {
+            case B1 -> License.setText("B1");
+            case B2 -> License.setText("B2");
+            case C -> License.setText("C");
+            case D -> License.setText("D");
+            case E -> License.setText("E");
+            case F -> License.setText("F");
+            case FC -> License.setText("FC");
+            default -> License.setText("NONE");
+        }
+        ExpiryDate.setText(driver.getLicense().getExpiryDate());
+        switch (driver.getStatus()) {
+            case ON_DUTY -> Status.setText("ON DUTY");
+            case ON_LEAVE -> Status.setText("ON LEAVE");
+            default -> Status.setText("NONE");
+        }
     }
     public void setDate() {
         LocalDate date = LocalDate.now();
@@ -95,25 +137,25 @@ public class driverController implements Initializable  {
         DayOfWeek day = date.getDayOfWeek();
         switch(day) {
             case MONDAY:
-                Day = "Thứ hai";
+                Day += "Thứ hai";
                 break;
             case TUESDAY:
-                Day = "Thứ ba";
+                Day += "Thứ ba";
                 break;
             case WEDNESDAY:
-                Day = "Thứ tư";
+                Day += "Thứ tư";
                 break;
             case THURSDAY:
-                Day = "Thứ năm";
+                Day += "Thứ năm";
                 break;
             case FRIDAY:
-                Day = "Thứ sáu";
+                Day += "Thứ sáu";
                 break;
             case SATURDAY:
-                Day = "Thứ bảy";
+                Day += "Thứ bảy";
                 break;
             default:
-                Day = "Chủ nhật";
+                Day += "Chủ nhật";
         }
         String DateOfMonth = Integer.toString(date.getDayOfMonth());
         String Month = Integer.toString(date.getMonthValue());
@@ -121,7 +163,7 @@ public class driverController implements Initializable  {
         Date.setText(Day + ", ngày " + DateOfMonth + " tháng " + Month + " năm " + Year);
     }
     private void init() {
-        setFullName();
+        setInfo();
         setDate();
     }
     @Override

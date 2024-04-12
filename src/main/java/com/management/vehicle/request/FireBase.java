@@ -546,6 +546,9 @@ public class FireBase {
      * @return The Trip object retrieved from Firebase.
      */
     public Trip getTrip(String tripID) {
+        if (tripID == null) {
+            throw new RuntimeException("Invalid input");
+        }
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Trip").child(tripID);
         CompletableFuture<Trip> future = new CompletableFuture<>();
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -573,6 +576,9 @@ public class FireBase {
      * @throws RuntimeException If there's an error during the Firebase operation.
      */
     public void addTrip(Trip trip) {
+        if (trip == null || trip.getTripID() == null) {
+            throw new RuntimeException("Invalid input");
+        }
         CompletableFuture<Void> future = new CompletableFuture<>();
         DatabaseReference newTripRef = FirebaseDatabase.getInstance().getReference("Trip").child(trip.getTripID());
         newTripRef.setValue(trip, (databaseError, databaseReference) -> {
@@ -597,6 +603,12 @@ public class FireBase {
      * @throws Exception If there's an error during the encryption.
      */
     public void addAccount(String username, String password, Role role) throws Exception {
+        if (role == null || username == null || password == null) {
+            throw new RuntimeException("Invalid input");
+        }
+        if (checkAccountExist(username)) {
+            throw new RuntimeException("Account already exists");
+        }
         String encryptedUsername = security.bytesToHex(security.encrypt(username.getBytes()));
         String encryptedPassword = security.bytesToHex(security.encrypt(password.getBytes()));
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("User").child(encryptedUsername).child(encryptedPassword);
@@ -623,6 +635,9 @@ public class FireBase {
      * @throws Exception If there's an error during the encryption.
      */
     public Role login(String username, String password) throws Exception {
+        if (username == null || password == null) {
+            throw new RuntimeException("Invalid input");
+        }
         String encryptedUsername = security.bytesToHex(security.encrypt(username.getBytes()));
         String encryptedPassword = security.bytesToHex(security.encrypt(password.getBytes()));
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("User").child(encryptedUsername).child(encryptedPassword);
@@ -633,6 +648,27 @@ public class FireBase {
                 System.out.println("onDataChange");
                 Role role = dataSnapshot.getValue(Role.class);
                 future.complete(role);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                System.out.println("The read failed: " + databaseError.getCode());
+                future.completeExceptionally(databaseError.toException());
+            }
+        });
+        return future.join();
+    }
+
+    private Boolean checkAccountExist(String username) throws Exception {
+        String encryptedUsername = security.bytesToHex(security.encrypt(username.getBytes()));
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("User").child(encryptedUsername);
+        CompletableFuture<Boolean> future = new CompletableFuture<>();
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                System.out.println("onDataChange");
+                Boolean exist = dataSnapshot.exists();
+                future.complete(exist);
             }
 
             @Override

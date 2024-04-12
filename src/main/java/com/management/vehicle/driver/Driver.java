@@ -168,7 +168,8 @@ public class Driver {
         this.license = license;
         this.status = status;
         this.history = history;
-
+        this.licensetoken = license.getType();
+        this.expirydate = license.getExpiryDate();
     }
 }
 

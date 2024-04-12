@@ -90,15 +90,6 @@ public class FireBase {
         return data;
     }
 
-    public static void main(String[] args) throws Exception {
-        FireBase fb = FireBase.getInstance();
-        fb.getAllDriver();
-        fb.deleteDriver(fb.getDriverList().getFirst().getId());
-        for (Driver driver : fb.getDriverList()) {
-            System.out.println(driver.toString());
-        }
-    }
-
     /**
      * Retrieves all drivers from Firebase and stores them in the driverList.
      */

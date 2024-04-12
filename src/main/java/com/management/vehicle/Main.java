@@ -11,19 +11,13 @@ import com.management.vehicle.role.Role;
 import com.management.vehicle.vehicle.Vehicle;
 import com.management.vehicle.vehicle.VehicleStatus;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public class Main {
     public static void main(String[] args) throws Exception {
-        MapRequest mapRequest = MapRequest.getInstance();
-        List<Hit> hitList = mapRequest.getCoordinateList("Hà Nội");
 
-        for(Hit x: hitList)
-        {
-            System.out.println(x.getCity() + " " + x.getName() + " " + x.getCountry());
-            System.out.println(x.getPoint().getLat());
-            System.out.println(x.getPoint().getLng());
-            System.out.println("--------------------------------------");
-        }
+
     }
 }

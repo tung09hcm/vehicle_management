@@ -9,7 +9,8 @@ import javafx.collections.ObservableList;
 import java.util.List;
 
 public class connection {
-    FireBase firbase = null;
+    FireBase instance = null;
+
     public static ObservableList<Driver> getDriver() throws Exception {
         FireBase firebase = FireBase.getInstance();
         // System.out.println("SIGNAL on showDriverList() - 2.1");
@@ -19,18 +20,12 @@ public class connection {
         try
         {
             // System.out.println("SIGNAL on showDriverList() - 2.3");
-            firebase.getAllDriver();
+//            firebase.getAllDriver();
             // System.out.println("SIGNAL on showDriverList() - 2.4");
             List<Driver> driverList = firebase.getDriverList();
-            if(driverList.size() == 0)
-            {
-                return driverlist_conn;
-            }
-            System.out.println("show number of driver: " + driverList.size());
             for(Driver token: driverList)
             {
                 driverlist_conn.add(token);
-                System.out.println(token.getName());
             }
         }
         catch (Exception e)
@@ -44,7 +39,6 @@ public class connection {
         ObservableList<Vehicle> vehiclelist_conn = FXCollections.observableArrayList();
         try
         {
-            firebase.getAllDriver();
             List<Vehicle> vehicleList = firebase.getVehicleList();
             for(Vehicle token: vehicleList)
             {

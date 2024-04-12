@@ -303,6 +303,7 @@ public class dashboardController implements Initializable
         vehicleStatusComboBox.setItems(vehicleStatusObservableList);
         statusDriverComboBox.setItems(statusDriverObservableList);
         licenseDriverComboBox.setItems(licenseLevelObservableList);
+
         Timenow();
         try {
             showDriverList();
@@ -327,7 +328,6 @@ public class dashboardController implements Initializable
     public void showVehicleList() throws Exception {
         vehicleList = connection.getVehicle();
 
-
         driverofVehicleColumn.setCellValueFactory(new PropertyValueFactory<Vehicle, String>("driverID"));
         distanceCoverColumn.setCellValueFactory(new PropertyValueFactory<Vehicle, Integer>("distanceCover"));
         typeVehicleColumn.setCellValueFactory(new PropertyValueFactory<Vehicle, TypeVehicle>("type"));
@@ -338,6 +338,7 @@ public class dashboardController implements Initializable
         weightColumn.setCellValueFactory(new PropertyValueFactory<Vehicle, Double>("weight"));
         vehicleStatusColumn.setCellValueFactory(new PropertyValueFactory<Vehicle, VehicleStatus>("status"));
         licenseLevelColumn.setCellValueFactory(new PropertyValueFactory<Vehicle, LicenseLevel>("license"));
+
         vehicleTable.setItems(vehicleList);
 
         ContextMenu contextMenu = new ContextMenu();
@@ -619,14 +620,20 @@ public class dashboardController implements Initializable
             alert.showAndWait();
             return;
         }
-        int index = vehicleTable.getSelectionModel().getSelectedIndex();
+
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setHeaderText("You will delete this vehicle");
         alert.setContentText("Are you sure to delete this vehicle information?");
         alert.getButtonTypes().setAll(ButtonType.YES, ButtonType.NO);
         alert.showAndWait().ifPresent(response -> {
             if (response == ButtonType.YES) {
-                vehicleList.remove(selected);
+                try {
+                    FireBase.getInstance().deleteVehicle(selected.getPlateNumber());
+                    showVehicleList();
+                } catch (Exception ex) {
+                    throw new RuntimeException(ex);
+                }
+
             }
         });
     }

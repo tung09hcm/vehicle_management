@@ -46,7 +46,7 @@ public class controller {
                 alert.showAndWait();
                 // HIDE YOUR LOGIN FORM
                 loginBtn.getScene().getWindow().hide();
-                System.out.println("hello");
+
                 // LINK YOUR DASHBOARD FORM
                 Parent root = FXMLLoader.load(getClass().getResource("/dashboard.fxml"));
                 Stage stage = new Stage();

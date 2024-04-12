@@ -1,5 +1,6 @@
 package com.management.vehicle.driver;
 import com.management.vehicle.license.License;
+import com.management.vehicle.license.LicenseLevel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +33,7 @@ public class Driver {
     private String address;
     private String recentPlateNumber;
     private String id;
-    private String licensetoken;
+    private LicenseLevel licensetoken;
     private String expirydate;
     public License getLicense() {
         return license;
@@ -66,11 +67,11 @@ public class Driver {
         return address;
     }
 
-    public String getLicensetoken() {
+    public LicenseLevel getLicensetoken() {
         return licensetoken;
     }
 
-    public void setLicensetoken(String licensetoken) {
+    public void setLicensetoken(LicenseLevel licensetoken) {
         this.licensetoken = licensetoken;
     }
 
@@ -152,7 +153,7 @@ public class Driver {
         this.recentPlateNumber = "";
         this.id = "";
         this.history = new ArrayList<>();
-        this.licensetoken = "";
+        this.licensetoken = LicenseLevel.NONE;
         this.expirydate = "";
         this.requestTrip = new ArrayList<>();
         this.username = "";

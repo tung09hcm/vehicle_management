@@ -12,12 +12,21 @@ public class connection {
     FireBase firbase = null;
     public static ObservableList<Driver> getDriver() throws Exception {
         FireBase firebase = FireBase.getInstance();
+        // System.out.println("SIGNAL on showDriverList() - 2.1");
         ObservableList<Driver> driverlist_conn = FXCollections.observableArrayList();
+        // System.out.println("SIGNAL on showDriverList() - 2.2");
+
         try
         {
+            // System.out.println("SIGNAL on showDriverList() - 2.3");
             firebase.getAllDriver();
-            java.util.List<Driver> driverList = firebase.getDriverList();
-
+            // System.out.println("SIGNAL on showDriverList() - 2.4");
+            List<Driver> driverList = firebase.getDriverList();
+            if(driverList.size() == 0)
+            {
+                return driverlist_conn;
+            }
+            System.out.println("show number of driver: " + driverList.size());
             for(Driver token: driverList)
             {
                 driverlist_conn.add(token);
@@ -36,7 +45,7 @@ public class connection {
         try
         {
             firebase.getAllDriver();
-            java.util.List<Vehicle> vehicleList = firebase.getVehicleList();
+            List<Vehicle> vehicleList = firebase.getVehicleList();
             for(Vehicle token: vehicleList)
             {
                 vehiclelist_conn.add(token);

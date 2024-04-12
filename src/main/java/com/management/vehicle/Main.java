@@ -14,20 +14,26 @@ import java.util.List;
 public class Main {
     public static void main(String[] args) throws Exception {
         FireBase fireBase = FireBase.getInstance();
+        //fireBase.getAllDriver();
+
+        Driver newDriver = new Driver();
+        newDriver.setId("1");
+        newDriver.setName("tung");
+        newDriver.setPhoneNumber("123123");
+        newDriver.setAddress("aaaa");
+        newDriver.setStatus(DriverStatus.NONE);
+        newDriver.setLicensetoken(LicenseLevel.D);
+        newDriver.setExpirydate("12-02-2323");
+        fireBase.addDriver(newDriver);
+
         fireBase.getAllDriver();
         List<Driver> ls = fireBase.getDriverList();
-        for(Driver token: ls)
+
+        for(Driver dr: ls)
         {
-            fireBase.deleteDriver(token.getId());
+            System.out.println(dr.getName() + "  " + dr.getId());
         }
 
-        List<Driver> ls1 = fireBase.getDriverList();
-        for(Driver token: ls1)
-        {
-            System.out.println(token.getName());
-            System.out.println(token.getId());
-            System.out.println("============");
-        }
-        System.out.println(ls1.size());
+
     }
 }

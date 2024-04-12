@@ -59,10 +59,18 @@ public class FireBase {
         return instance;
     }
 
+    /**
+     * Retrieves the list of Driver objects.
+     * @return A list of Driver objects.
+     */
     public List<Driver> getDriverList() {
         return driverList;
     }
 
+    /**
+     * Retrieves the list of Vehicle objects.
+     * @return A list of Vehicle objects.
+     */
     public List<Vehicle> getVehicleList() {
         return vehicleList;
     }
@@ -81,6 +89,15 @@ public class FireBase {
         inputStream.close();
         return data;
     }
+
+//    public static void main(String[] args) throws Exception {
+//        FireBase fb = FireBase.getInstance();
+//        fb.getAllDriver();
+//        fb.deleteDriver(fb.getDriverList().getFirst().getId());
+//        for (Driver driver : fb.getDriverList()) {
+//            System.out.println(driver.toString());
+//        }
+//    }
 
     /**
      * Retrieves all drivers from Firebase and stores them in the driverList.
@@ -102,11 +119,24 @@ public class FireBase {
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String prevChildKey) {
                 System.out.println("onChildChanged");
+                for (Driver driver : driverList) {
+                    if (driver.getId().equals(dataSnapshot.getKey())) {
+                        driverList.remove(driver);
+                        driverList.add(dataSnapshot.getValue(Driver.class));
+                        break;
+                    }
+                }
             }
 
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
                 System.out.println("onChildRemoved");
+                for (Driver driver : driverList) {
+                    if (driver.getId().equals(dataSnapshot.getKey())) {
+                        driverList.remove(driver);
+                        break;
+                    }
+                }
             }
 
             @Override
@@ -169,6 +199,7 @@ public class FireBase {
      * @param driver The driver to be added.
      */
     public void addDriver(Driver driver) {
+        System.out.println("[ADD]----------------------");
         CompletableFuture<Void> future = new CompletableFuture<>();
         DatabaseReference newDriverRef = FirebaseDatabase.getInstance().getReference("Driver").child(String.valueOf(driver.getId()));
         newDriverRef.setValue(driver, (databaseError, databaseReference) -> {
@@ -589,6 +620,7 @@ public class FireBase {
                 future.complete(null);
             }
         });
+        future.join();
     }
 
     /**
@@ -610,7 +642,6 @@ public class FireBase {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 System.out.println("onDataChange");
                 Role role = dataSnapshot.getValue(Role.class);
-                System.out.println(role);
                 future.complete(role);
             }
 

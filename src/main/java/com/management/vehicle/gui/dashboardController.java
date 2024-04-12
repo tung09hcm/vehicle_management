@@ -122,7 +122,7 @@ public class dashboardController implements Initializable
     private TableColumn<Vehicle, Double> weightColumn;
 
     @FXML
-    private TableColumn<Vehicle, Integer> distanceCoverColumn;
+    private TableColumn<Vehicle, Double> distanceCoverColumn;
 
     @FXML
     private TableColumn<Vehicle, String> driverofVehicleColumn;
@@ -168,8 +168,7 @@ public class dashboardController implements Initializable
     @FXML
     private TextField driverofVehicleText;
 
-    @FXML
-    private TextField vehicleHistoryText;
+
 
     @FXML
     private TextField searchVehicleText;
@@ -214,8 +213,49 @@ public class dashboardController implements Initializable
     private TextField containerGoodWeightText;
 
 /////////////////////////////////////////////////////////////////////////////////
+    @FXML
+    private TextField plateNumberTripText;
 
+    @FXML
+    private TextField endTripText;
 
+    @FXML
+    private TextField beginDateTripText;
+
+    @FXML
+    private TextField beginTripText;
+
+    @FXML
+    private ComboBox<String> gasolineTypeComboBox;
+
+    ObservableList<String> gasolineTypeObservableList = FXCollections.observableArrayList("a", "b", "c");
+
+    @FXML
+    private TextField driverIDTripText;
+
+    @FXML
+    private AnchorPane TripPane;
+
+    @FXML
+    private TableView<Trip> TripTable;
+
+    @FXML
+    private TableColumn<Trip, String> beginDateTripColumn;
+
+    @FXML
+    private TableColumn<Trip, String> beginTripColumn;
+
+    @FXML
+    private TableColumn<Trip, String> driverIDTripColumn;
+
+    @FXML
+    private TableColumn<Trip, String> endTripColumn;
+
+    @FXML
+    private TableColumn<Trip, String> gasolineTypeColumn;
+
+    @FXML
+    private TableColumn<Trip, String> plateNumberTripColumn;
 /////////////////////////////////////////////////////////////////////////////////
 
     @FXML
@@ -303,12 +343,10 @@ public class dashboardController implements Initializable
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-
         typeVehicleComboBox.setItems(typeVehicleObservableList);
         licenseLevelComboBox.setItems(licenseLevelObservableList);
         vehicleStatusComboBox.setItems(vehicleStatusObservableList);
         statusDriverComboBox.setItems(statusDriverObservableList);
-        licenseDriverComboBox.setItems(licenseLevelObservableList);
         Timenow();
         try {
             showDriverList();
@@ -322,12 +360,17 @@ public class dashboardController implements Initializable
             System.out.println("error on loading vehicle list");
             throw new RuntimeException(e);
         }
-
+        try {
+            showTrip();
+        } catch (Exception e) {
+            System.out.println("error on loading trip");
+            throw new RuntimeException(e);
+        }
         showHome();
         HomePane.setVisible(true);
         VehiclePane.setVisible(false);
         DriverPane.setVisible(false);
-
+        TripPane.setVisible(false);
     }
 
     public void showVehicleList() throws Exception {
@@ -335,7 +378,7 @@ public class dashboardController implements Initializable
 
 
         driverofVehicleColumn.setCellValueFactory(new PropertyValueFactory<Vehicle, String>("driverID"));
-        distanceCoverColumn.setCellValueFactory(new PropertyValueFactory<Vehicle, Integer>("distanceCover"));
+        distanceCoverColumn.setCellValueFactory(new PropertyValueFactory<Vehicle, Double>("distanceCover"));
         typeVehicleColumn.setCellValueFactory(new PropertyValueFactory<Vehicle, TypeVehicle>("type"));
         lengthColumn.setCellValueFactory(new PropertyValueFactory<Vehicle, Double>("length"));
         wideColumn.setCellValueFactory(new PropertyValueFactory<Vehicle, Double>("wide"));
@@ -459,7 +502,7 @@ public class dashboardController implements Initializable
     }
 
     public void SetFieldtoVehicle(Vehicle newVehicle) {
-        newVehicle.setDistanceCover(Integer.parseInt(distanceCoverText.getText()));
+        newVehicle.setDistanceCover(Double.parseDouble(distanceCoverText.getText()));
         newVehicle.setType(typeVehicleComboBox.getValue());
         newVehicle.setLength(Double.parseDouble(lengthText.getText()));
         newVehicle.setWide(Double.parseDouble(wideText.getText()));
@@ -734,7 +777,6 @@ public class dashboardController implements Initializable
         vehicleStatusComboBox.getSelectionModel().select(null);
         vehicleTable.getSelectionModel().select(null);
         driverofVehicleText.setText("");
-        vehicleHistoryText.setText("");
         truckGoodTypeText.setText("");
         truckGoodWeightText.setText("");
         carCustomerNameText.setText("");
@@ -986,7 +1028,9 @@ public class dashboardController implements Initializable
         homeNumberDriverLabel.setText(String.valueOf(driverList.size()));
         homeNumberTripLabel.setText(String.valueOf(listTrip.size()));
     }
-
+    public void showTrip() {
+        gasolineTypeComboBox.setItems(gasolineTypeObservableList);
+    }
 
     public void switchForm(ActionEvent e){
         if (e.getSource()==HomeButton){
@@ -994,22 +1038,28 @@ public class dashboardController implements Initializable
             HomePane.setVisible(true);
             VehiclePane.setVisible(false);
             DriverPane.setVisible(false);
+            TripPane.setVisible(false);
         }
         else if (e.getSource()==VehicleButton) {
             HomePane.setVisible(false);
             VehiclePane.setVisible(true);
             DriverPane.setVisible(false);
+            TripPane.setVisible(false);
         }
         else if(e.getSource()==DriverButton) {
             HomePane.setVisible(false);
             VehiclePane.setVisible(false);
             DriverPane.setVisible(true);
+            TripPane.setVisible(false);
         }
         else if (e.getSource()==LogOutButton){
             logOut();
         }
         else {
-            mainMap.display();
+            HomePane.setVisible(false);
+            VehiclePane.setVisible(false);
+            DriverPane.setVisible(false);
+            TripPane.setVisible(true);
         }
     }
 

@@ -126,9 +126,9 @@
             <AnchorPane fx:id="InforVehicle" layoutY="238.0" onMouseClicked="#MouseClicktoUnselectVehicle" prefHeight="440.0" prefWidth="818.0" style="-fx-background-color: #3a89bd;" styleClass="InforVehicle" stylesheets="@dashboardDesign.css">
                <children>
                   <TableView fx:id="vehicleTable" layoutX="20.0" layoutY="57.0" onMouseClicked="#mouseSelectedVehicle" prefHeight="352.0" prefWidth="777.0">
-                    <columns>
-                      <TableColumn fx:id="typeVehicleColumn" prefWidth="61.600006103515625" text="Loại xe" />
-                      <TableColumn fx:id="plateNumberColumn" prefWidth="85.59999084472656" text="Biển số xe" />
+                     <columns>
+                        <TableColumn fx:id="typeVehicleColumn" prefWidth="61.600006103515625" text="Loại xe" />
+                        <TableColumn fx:id="plateNumberColumn" prefWidth="85.59999084472656" text="Biển số xe" />
                         <TableColumn fx:id="licenseLevelColumn" prefWidth="53.5999755859375" text="Bằng" />
                         <TableColumn fx:id="driverofVehicleColumn" prefWidth="104.79998779296875" text="Mã tài xế" />
                         <TableColumn fx:id="vehicleStatusColumn" prefWidth="65.60000610351562" text="Trạng thái" />
@@ -140,7 +140,7 @@
                            </columns></TableColumn>
                         <TableColumn fx:id="weightColumn" prefWidth="93.5999755859375" text="Trọng tải (kg)" />
                         <TableColumn fx:id="distanceCoverColumn" prefWidth="146.4000244140625" text="Quãng đg" />
-                    </columns>
+                     </columns>
                   </TableView>
                   <TextField fx:id="searchVehicleText" layoutX="20.0" layoutY="20.0" prefHeight="26.0" prefWidth="265.0" promptText="Search..." style="-fx-background-color: #d6d0d0; -fx-background-radius: 30;" />
                   <ImageView fitHeight="26.0" fitWidth="54.0" layoutX="286.0" layoutY="20.0" pickOnBounds="true" preserveRatio="true">
@@ -209,7 +209,7 @@
             </AnchorPane>
          </children>
       </AnchorPane>
-      <AnchorPane fx:id="DriverPane" layoutX="133.0" layoutY="11.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onMouseClicked="#mouseClicktoUnselectDriver" prefHeight="678.0" prefWidth="818.0" style="-fx-background-radius: 30;">
+      <AnchorPane fx:id="DriverPane" layoutX="133.0" layoutY="11.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="678.0" prefWidth="818.0" style="-fx-background-radius: 30;" visible="false">
          <children>
             <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onMouseClicked="#mouseClicktoselecrDriver" prefHeight="238.0" prefWidth="818.0" style="-fx-background-color: lightgray;" styleClass="standardFieldDriver" stylesheets="@dashboardDesign.css">
                <children>
@@ -221,32 +221,33 @@
                   <TextField fx:id="nameDriverText" layoutX="103.0" layoutY="80.0" prefHeight="26.0" prefWidth="156.0" promptText="Họ và tên" />
                   <Label layoutX="28.0" layoutY="133.0" text="Điện thoại:" />
                   <TextField fx:id="phoneDriverText" layoutX="103.0" layoutY="127.0" prefHeight="26.0" prefWidth="156.0" promptText="SĐT" />
+                  <TextField fx:id="licenseDriverText" layoutX="379.0" layoutY="34.0" prefHeight="26.0" prefWidth="117.0" promptText="VD: B1,B2,..." />
                   <Label layoutX="298.0" layoutY="41.0" text="Bằng lái xe:" />
                   <TextField fx:id="addressDriverText" layoutX="103.0" layoutY="177.0" prefHeight="26.0" prefWidth="198.0" promptText="Địa chỉ" />
                   <Label layoutX="26.0" layoutY="181.0" text="Địa chỉ:" />
+                  <TextField fx:id="issueDateText" layoutX="378.0" layoutY="178.0" prefHeight="26.0" prefWidth="117.0" promptText="aa/bb/cc" />
                   <Label layoutX="298.0" layoutY="84.0" text="Ngày cấp" />
-                  <JFXButton fx:id="addDriverButton" layoutX="559.0" layoutY="27.0" onAction="#controllDriver" prefHeight="68.0" prefWidth="98.0" style="-fx-background-color: #3786bf; -fx-border-color: #f0f4f5; -fx-background-radius: 30; -fx-border-radius: 30;" text="Thêm">
+                  <JFXButton fx:id="addDriverButton" layoutX="559.0" layoutY="40.0" onAction="#controllDriver" prefHeight="58.0" prefWidth="86.0" style="-fx-background-color: #3786bf; -fx-border-color: #f0f4f5; -fx-background-radius: 30; -fx-border-radius: 30;" text="Thêm">
                      <font>
-                        <Font size="18.0" />
+                        <Font size="14.0" />
                      </font>
                   </JFXButton>
-                  <JFXButton fx:id="removeDriverButton" layoutX="559.0" layoutY="133.0" onAction="#controllDriver" prefHeight="68.0" prefWidth="98.0" style="-fx-background-color: #3786bf; -fx-border-color: #f0f4f5; -fx-background-radius: 30; -fx-border-radius: 30;" text="Xóa">
+                  <JFXButton fx:id="removeDriverButton" layoutX="559.0" layoutY="133.0" onAction="#controllDriver" prefHeight="58.0" prefWidth="86.0" style="-fx-background-color: #3786bf; -fx-border-color: #f0f4f5; -fx-background-radius: 30; -fx-border-radius: 30;" text="Xóa">
                      <font>
-                        <Font size="18.0" />
+                        <Font size="15.0" />
                      </font>
                   </JFXButton>
-                  <JFXButton fx:id="updateDriverButton" layoutX="690.0" layoutY="27.0" onAction="#controllDriver" prefHeight="68.0" prefWidth="98.0" style="-fx-background-color: #3786bf; -fx-border-color: #f0f4f5; -fx-background-radius: 30; -fx-border-radius: 30;" text="Sửa">
+                  <JFXButton fx:id="updateDriverButton" layoutX="690.0" layoutY="40.0" onAction="#controllDriver" prefHeight="58.0" prefWidth="86.0" style="-fx-background-color: #3786bf; -fx-border-color: #f0f4f5; -fx-background-radius: 30; -fx-border-radius: 30;" text="Cập nhật">
                      <font>
-                        <Font size="18.0" />
+                        <Font size="15.0" />
                      </font>
                   </JFXButton>
-                  <JFXButton fx:id="clearFilledButton" layoutX="690.0" layoutY="133.0" onAction="#controllDriver" prefHeight="68.0" prefWidth="98.0" style="-fx-background-color: #3786bf; -fx-border-color: #f0f4f5; -fx-background-radius: 30; -fx-border-radius: 30;" text="Làm Mới">
+                  <JFXButton fx:id="clearFilledButton" layoutX="690.0" layoutY="133.0" onAction="#controllDriver" prefHeight="58.0" prefWidth="86.0" style="-fx-background-color: #3786bf; -fx-border-color: #f0f4f5; -fx-background-radius: 30; -fx-border-radius: 30;" text="Clear">
                      <font>
-                        <Font size="18.0" />
+                        <Font size="15.0" />
                      </font>
                   </JFXButton>
                   <DatePicker fx:id="issueDatePicker" layoutX="377.0" layoutY="79.0" prefHeight="26.0" prefWidth="118.0" />
-                  <ComboBox fx:id="licenseDriverComboBox" layoutX="377.0" layoutY="29.0" prefHeight="26.0" prefWidth="118.0" />
                </children>
             </AnchorPane>
             <AnchorPane fx:id="InforVehicle1" layoutY="237.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="446.0" prefWidth="818.0" style="-fx-background-color: #3a89bd;" styleClass="InforVehicle" stylesheets="@dashboardDesign.css">
@@ -266,8 +267,75 @@
                         </TableColumn>
                      </columns>
                   </TableView>
-                  <TextField fx:id="researchDriverText" layoutX="24.0" layoutY="14.0" prefHeight="34.0" prefWidth="287.0" promptText="Search..." style="-fx-background-color: #d6d0d0; -fx-background-radius: 30;" />
+                  <TextField fx:id="researchDriverText" layoutX="24.0" layoutY="14.0" prefHeight="34.0" prefWidth="287.0" promptText="Search..." />
                   <JFXButton fx:id="researchDriverButton" layoutX="314.0" layoutY="15.0" text=" ">
+                     <font>
+                        <Font size="1.0" />
+                     </font>
+                     <graphic>
+                        <ImageView fitHeight="34.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@searchIcon.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </JFXButton>
+               </children>
+            </AnchorPane>
+         </children>
+      </AnchorPane>
+      <AnchorPane fx:id="TripPane" layoutX="133.0" layoutY="11.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="678.0" prefWidth="818.0" style="-fx-background-radius: 30;">
+         <children>
+            <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onMouseClicked="#mouseClicktoselecrDriver" prefHeight="238.0" prefWidth="818.0" style="-fx-background-color: lightgray;" styleClass="standardFieldDriver" stylesheets="@dashboardDesign.css">
+               <children>
+                  <JFXButton fx:id="addDriverButton1" layoutX="559.0" layoutY="40.0" onAction="#controllDriver" prefHeight="58.0" prefWidth="86.0" style="-fx-background-color: #3786bf; -fx-border-color: #f0f4f5; -fx-background-radius: 30; -fx-border-radius: 30;" text="Thêm">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </JFXButton>
+                  <JFXButton fx:id="removeDriverButton1" layoutX="559.0" layoutY="133.0" onAction="#controllDriver" prefHeight="58.0" prefWidth="86.0" style="-fx-background-color: #3786bf; -fx-border-color: #f0f4f5; -fx-background-radius: 30; -fx-border-radius: 30;" text="Xóa">
+                     <font>
+                        <Font size="15.0" />
+                     </font>
+                  </JFXButton>
+                  <JFXButton fx:id="updateDriverButton1" layoutX="690.0" layoutY="40.0" onAction="#controllDriver" prefHeight="58.0" prefWidth="86.0" style="-fx-background-color: #3786bf; -fx-border-color: #f0f4f5; -fx-background-radius: 30; -fx-border-radius: 30;" text="Cập nhật">
+                     <font>
+                        <Font size="15.0" />
+                     </font>
+                  </JFXButton>
+                  <JFXButton fx:id="clearFilledButton1" layoutX="690.0" layoutY="133.0" onAction="#controllDriver" prefHeight="58.0" prefWidth="86.0" style="-fx-background-color: #3786bf; -fx-border-color: #f0f4f5; -fx-background-radius: 30; -fx-border-radius: 30;" text="Clear">
+                     <font>
+                        <Font size="15.0" />
+                     </font>
+                  </JFXButton>
+                  <TextField fx:id="beginTripText" layoutX="88.0" layoutY="28.0" />
+                  <TextField fx:id="endTripText" layoutX="89.0" layoutY="79.0" />
+                  <TextField fx:id="beginDateTripText" layoutX="88.0" layoutY="133.0" />
+                  <TextField fx:id="plateNumberTripText" layoutX="324.0" layoutY="79.0" />
+                  <ComboBox fx:id="gasolineTypeComboBox" layoutX="323.0" layoutY="28.0" prefWidth="150.0" />
+                  <Label layoutX="15.0" layoutY="31.0" text="Địa điểm đi" />
+                  <Label layoutX="9.0" layoutY="83.0" text="Địa điểm đến" />
+                  <Label layoutX="9.0" layoutY="137.0" text="Ngày xuất phát" />
+                  <Label layoutX="258.0" layoutY="83.0" text="Biển số xe" />
+                  <Label layoutX="258.0" layoutY="32.0" text="Loại xăng" />
+                  <Label layoutX="258.0" layoutY="137.0" text="CCCD tài xế" />
+                  <TextField fx:id="driverIDTripText" layoutX="325.0" layoutY="133.0" />
+               </children>
+            </AnchorPane>
+            <AnchorPane fx:id="InforVehicle11" layoutY="237.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="446.0" prefWidth="818.0" style="-fx-background-color: #3a89bd;" styleClass="InforVehicle" stylesheets="@dashboardDesign.css">
+               <children>
+                  <TableView fx:id="TripTable" layoutX="24.0" layoutY="67.0" onMouseClicked="#mouseClicktoselecrDriver" prefHeight="352.0" prefWidth="770.0">
+                     <columns>
+                        <TableColumn fx:id="beginTripColumn" prefWidth="92.00003051757812" text="Địa điểm đi" />
+                        <TableColumn fx:id="endTripColumn" prefWidth="124.80000305175781" text="Địa điểm đến" />
+                        <TableColumn fx:id="beginDateTripColumn" prefWidth="103.20001220703125" text="Ngày xuất phát" />
+                        <TableColumn fx:id="gasolineTypeColumn" prefWidth="124.79998779296875" text="Loại xăng" />
+                        <TableColumn fx:id="plateNumberTripColumn" prefWidth="128.00006103515625" text="Biển số xe" />
+                        <TableColumn fx:id="driverIDTripColumn" prefWidth="202.39990234375" text="CCCD tài xế" />
+                     </columns>
+                  </TableView>
+                  <TextField fx:id="researchDriverText1" layoutX="24.0" layoutY="14.0" prefHeight="34.0" prefWidth="287.0" promptText="Search..." />
+                  <JFXButton fx:id="researchDriverButton1" layoutX="314.0" layoutY="15.0" text=" ">
                      <font>
                         <Font size="1.0" />
                      </font>
@@ -296,7 +364,7 @@
             <Font size="1.0" />
          </font>
          <graphic>
-            <FontAwesomeIconView fill="#3786bf" glyphName="CAR" selectionEnd="0" size="5em" wrappingWidth="58.11428081989288" />
+            <FontAwesomeIconView fill="#3786bf" glyphName="CAR" selectionEnd="0" size="5em" text="" wrappingWidth="58.11428081989288" />
          </graphic>
       </JFXButton>
       <JFXButton fx:id="DriverButton" alignment="CENTER" layoutY="330.0" onAction="#switchForm" prefHeight="68.0" prefWidth="123.0" text="Button">

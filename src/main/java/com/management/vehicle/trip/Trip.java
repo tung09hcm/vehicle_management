@@ -43,8 +43,16 @@ public class Trip {
     private String end_date;
     private String plateNumber;
     private String driverID;
-
+    private double cost;
     private double Revenue;
+
+    public double getCost() {
+        return cost;
+    }
+
+    public void setCost(double cost) {
+        this.cost = cost;
+    }
 
     public String getBeginLocation() {
         return beginLocation;

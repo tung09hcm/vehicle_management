@@ -5,6 +5,8 @@ import com.management.vehicle.driver.Driver;
 import com.management.vehicle.driver.DriverStatus;
 import com.management.vehicle.license.LicenseLevel;
 import com.management.vehicle.request.FireBase;
+import com.management.vehicle.request.MapRequest;
+import com.management.vehicle.request.struct.Hit;
 import com.management.vehicle.trip.Trip;
 import com.management.vehicle.vehicle.*;
 import javafx.application.Platform;
@@ -116,7 +118,7 @@ public class dashboardController implements Initializable
     private TableColumn<Vehicle, Double> weightColumn;
 
     @FXML
-    private TableColumn<Vehicle, Double> distanceCoverColumn;
+    private TableColumn<Vehicle, Integer> distanceCoverColumn;
 
     @FXML
     private TableColumn<Vehicle, String> driverofVehicleColumn;
@@ -162,7 +164,8 @@ public class dashboardController implements Initializable
     @FXML
     private TextField driverofVehicleText;
 
-
+    @FXML
+    private TextField vehicleHistoryText;
 
     @FXML
     private TextField searchVehicleText;
@@ -207,22 +210,22 @@ public class dashboardController implements Initializable
     private TextField containerGoodWeightText;
 
 /////////////////////////////////////////////////////////////////////////////////
-    @FXML
-    private TextField plateNumberTripText;
+@FXML
+private TextField plateNumberTripText;
 
     @FXML
     private TextField endTripText;
 
     @FXML
-    private TextField beginDateTripText;
+    private DatePicker beginTripDatePicker;
 
     @FXML
     private TextField beginTripText;
 
     @FXML
-    private ComboBox<String> gasolineTypeComboBox;
+    private ComboBox<fuel> fuelTripComboBox;
 
-    ObservableList<String> gasolineTypeObservableList = FXCollections.observableArrayList("a", "b", "c");
+    ObservableList<fuel> fuelTripObservableList = FXCollections.observableArrayList(fuel.DIESEL,fuel.RON95,fuel.RON97);
 
     @FXML
     private TextField driverIDTripText;
@@ -246,10 +249,13 @@ public class dashboardController implements Initializable
     private TableColumn<Trip, String> endTripColumn;
 
     @FXML
-    private TableColumn<Trip, String> gasolineTypeColumn;
-
-    @FXML
     private TableColumn<Trip, String> plateNumberTripColumn;
+
+    private ObservableList<Trip> tripList = FXCollections.observableArrayList();
+
+    private Hit selectedHitBegin;
+
+    private Hit selectedHitEnd;
 /////////////////////////////////////////////////////////////////////////////////
 
     @FXML
@@ -341,7 +347,48 @@ public class dashboardController implements Initializable
         licenseLevelComboBox.setItems(licenseLevelObservableList);
         vehicleStatusComboBox.setItems(vehicleStatusObservableList);
         statusDriverComboBox.setItems(statusDriverObservableList);
-        licenseDriverComboBox.setItems(licenseLevelObservableList);
+        fuelTripComboBox.setItems(fuelTripObservableList);
+        ////////////////////////////////////////////////////////////////////////////
+        ContextMenu contextMenu = new ContextMenu();
+        MenuItem menuItem1 = new MenuItem("Xem lịch sử chuyến đi");
+        menuItem1.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                try {
+                    viewDetailInforVehicle();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+        contextMenu.getItems().add(menuItem1);
+        vehicleTable.setContextMenu(contextMenu);
+
+        FilteredList<Vehicle> filteredDataVehicle = new FilteredList<>(vehicleList, b -> true);
+        searchVehicleText.textProperty().addListener((observable, oldValue, newValue) -> {
+            filteredDataVehicle.setPredicate(vehicle -> {
+                if (newValue == null || newValue.isEmpty() || newValue.isBlank()) {
+                    return true;
+                }
+                String lowerCaseFilter = newValue.toLowerCase();
+                if (vehicle.getPlateNumber().toLowerCase().contains(lowerCaseFilter)) {
+                    return true; // Filter matches first name.
+                } else // Does not match.
+                    if (vehicle.getType().toString().toLowerCase().contains(lowerCaseFilter)) {
+                        return true; // Filter matches last name.
+                    }
+                    else return vehicle.getDriverID().toLowerCase().contains(lowerCaseFilter);
+            });
+        });
+        SortedList<Vehicle> sortedData = new SortedList<>(filteredDataVehicle);
+        sortedData.comparatorProperty().bind(vehicleTable.comparatorProperty());
+        vehicleTable.setItems(sortedData);
+        //////////////////////////////////////////////////////////////////////////
+        ContextMenu menuBegin = new ContextMenu();
+        ContextMenu menuEnd = new ContextMenu();
+        initSuggestedLocation(beginTripText, menuBegin, true);
+        initSuggestedLocation(endTripText, menuEnd, false);
+        //////////////////////////////////////////////////////////////////////////
         Timenow();
         try {
             showDriverList();
@@ -372,7 +419,7 @@ public class dashboardController implements Initializable
         vehicleList = connection.getVehicle();
 
         driverofVehicleColumn.setCellValueFactory(new PropertyValueFactory<Vehicle, String>("driverID"));
-        distanceCoverColumn.setCellValueFactory(new PropertyValueFactory<Vehicle, Double>("distanceCover"));
+        distanceCoverColumn.setCellValueFactory(new PropertyValueFactory<Vehicle, Integer>("distanceCover"));
         typeVehicleColumn.setCellValueFactory(new PropertyValueFactory<Vehicle, TypeVehicle>("type"));
         lengthColumn.setCellValueFactory(new PropertyValueFactory<Vehicle, Double>("length"));
         wideColumn.setCellValueFactory(new PropertyValueFactory<Vehicle, Double>("wide"));
@@ -383,59 +430,6 @@ public class dashboardController implements Initializable
         licenseLevelColumn.setCellValueFactory(new PropertyValueFactory<Vehicle, LicenseLevel>("license"));
 
         vehicleTable.setItems(vehicleList);
-
-        ContextMenu contextMenu = new ContextMenu();
-
-        // create menuitems
-        MenuItem menuItem1 = new MenuItem("Xem lịch sử chuyến đi");
-        menuItem1.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                try {
-                    viewDetailInforVehicle();
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        });
-        contextMenu.getItems().add(menuItem1);
-        vehicleTable.setContextMenu(contextMenu);
-
-        // Wrap the ObservableList in a FilteredList (initially display all data).
-        FilteredList<Vehicle> filteredDataVehicle = new FilteredList<>(vehicleList, b -> true);
-
-        // 2. Set the filter Predicate whenever the filter changes.
-        searchVehicleText.textProperty().addListener((observable, oldValue, newValue) -> {
-            filteredDataVehicle.setPredicate(vehicle -> {
-                // If filter text is empty, display all persons.
-                if (newValue == null || newValue.isEmpty() || newValue.isBlank()) {
-                    return true;
-                }
-                // Compare first name and last name of every person with filter text.
-                String lowerCaseFilter = newValue.toLowerCase();
-
-                if (vehicle.getPlateNumber().toLowerCase().contains(lowerCaseFilter)) {
-                    return true; // Filter matches first name.
-                } else if (vehicle.getType().toString().toLowerCase().contains(lowerCaseFilter)) {
-                    return true; // Filter matches last name.
-                }
-                else if (vehicle.getDriverID().toLowerCase().contains(lowerCaseFilter)) {
-                    return true;
-                }
-                else
-                    return false; // Does not match.
-            });
-        });
-
-        // 3. Wrap the FilteredList in a SortedList.
-        SortedList<Vehicle> sortedData = new SortedList<>(filteredDataVehicle);
-
-        // 4. Bind the SortedList comparator to the TableView comparator.
-        // 	  Otherwise, sorting the TableView would have no effect.
-        sortedData.comparatorProperty().bind(vehicleTable.comparatorProperty());
-
-        // 5. Add sorted (and filtered) data to the table.
-        vehicleTable.setItems(sortedData);
     }
 
     public void mouseSelectedVehicle() {
@@ -497,7 +491,7 @@ public class dashboardController implements Initializable
     }
 
     public void SetFieldtoVehicle(Vehicle newVehicle) {
-        newVehicle.setDistanceCover(Double.parseDouble(distanceCoverText.getText()));
+        newVehicle.setDistanceCover(Integer.parseInt(distanceCoverText.getText()));
         newVehicle.setType(typeVehicleComboBox.getValue());
         newVehicle.setLength(Double.parseDouble(lengthText.getText()));
         newVehicle.setWide(Double.parseDouble(wideText.getText()));
@@ -1017,7 +1011,39 @@ public class dashboardController implements Initializable
         homeNumberTripLabel.setText(String.valueOf(listTrip.size()));
     }
     public void showTrip() {
-        gasolineTypeComboBox.setItems(gasolineTypeObservableList);
+        beginDateTripColumn.setCellValueFactory(new PropertyValueFactory<Trip, String>("begin_date"));
+        beginTripColumn.setCellValueFactory(new PropertyValueFactory<Trip, String>("beginLocation"));
+        driverIDTripColumn.setCellValueFactory(new PropertyValueFactory<Trip, String>("driverID"));
+        endTripColumn.setCellValueFactory(new PropertyValueFactory<Trip, String>("endLocation"));
+        plateNumberTripColumn.setCellValueFactory(new PropertyValueFactory<Trip, String>("plateNumber"));
+        TripTable.setItems(tripList);
+    }
+    public void initSuggestedLocation(TextField text, ContextMenu menu, boolean begin) {
+        text.setOnAction(event -> {
+            String t = text.getText();
+            menu.getItems().clear();
+            try {
+                MapRequest i = MapRequest.getInstance();
+                List<Hit> listHit = i.getCoordinateList(t);
+                for(Hit hit : listHit)
+                {
+                    MenuItem menuItem = new MenuItem(hit.getName() + " " + hit.getCity() + " " + hit.getCountry());
+                    menuItem.setOnAction(menuEvent -> {
+                        text.setText(menuItem.getText());
+                        if (begin) selectedHitBegin = hit;
+                        else selectedHitEnd = hit;
+                    });
+                    menu.getItems().add(menuItem);
+                }
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+            menu.show(text, text.getScene().getWindow().getX() + text.getLayoutX(),
+                    text.getScene().getWindow().getY() + text.getLayoutY() + text.getHeight());
+        });
+    }
+    public void addTrip() throws Exception {
+
     }
 
     public void switchForm(ActionEvent e){
@@ -1090,5 +1116,3 @@ public class dashboardController implements Initializable
     }
 
 }
-
-

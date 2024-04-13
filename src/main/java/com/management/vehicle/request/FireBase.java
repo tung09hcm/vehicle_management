@@ -10,9 +10,8 @@ import com.management.vehicle.license.License;
 import com.management.vehicle.license.LicenseLevel;
 import com.management.vehicle.role.Role;
 import com.management.vehicle.trip.Trip;
-import com.management.vehicle.vehicle.TypeVehicle;
-import com.management.vehicle.vehicle.Vehicle;
-import com.management.vehicle.vehicle.VehicleStatus;
+import com.management.vehicle.trip.TripStatus;
+import com.management.vehicle.vehicle.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
@@ -304,6 +303,22 @@ public class FireBase {
             public void onChildAdded(DataSnapshot dataSnapshot, String prevChildKey) {
                 System.out.println("onChildAdded");
                 Vehicle vehicle = dataSnapshot.getValue(Vehicle.class);
+                switch (vehicle.getType()) {
+                    case car:
+                        vehicle = dataSnapshot.getValue(Car.class);
+                        break;
+                    case truck:
+                        vehicle = dataSnapshot.getValue(Truck.class);
+                        break;
+                    case container:
+                        vehicle = dataSnapshot.getValue(Container.class);
+                        break;
+                    case bus:
+                        vehicle = dataSnapshot.getValue(Bus.class);
+                        break;
+                    default:
+                        break;
+                }
                 vehicleList.add(vehicle);
             }
 
@@ -628,7 +643,7 @@ public class FireBase {
             public void onChildAdded(DataSnapshot dataSnapshot, String prevChildKey) {
                 System.out.println("onChildAdded");
                 Trip trip = dataSnapshot.getValue(Trip.class);
-                if (trip.getStatus().equals("On duty")) {
+                if (trip.getStatus() == TripStatus.ON_DUTY) {
                     listTrip.add(trip);
                 }
             }

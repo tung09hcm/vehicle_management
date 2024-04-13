@@ -36,6 +36,7 @@ public class Container extends Vehicle{
         setMaintenanceCycleInDays(120);
         setMaintenanceCycleInKilometers(8500);
         setLimitKilometers(9500);
+        setFuel_per_kilometer(0.09);
     }
 }
 

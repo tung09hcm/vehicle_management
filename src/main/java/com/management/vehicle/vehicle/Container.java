@@ -12,7 +12,7 @@ public class Container extends Vehicle{
         return goodsType;
     }
 
-    public double getKhoiLuongHangHoa() {
+    public double getGoodsWeight() {
         return goodsWeight;
     }
 
@@ -25,12 +25,18 @@ public class Container extends Vehicle{
     }
 
 
+
+
     public Container()
     {
         super();
         this.setLicense(LicenseLevel.FC);
         goodsType = "";
         goodsWeight = 0;
+        setMaintenanceCycleInDays(120);
+        setMaintenanceCycleInKilometers(8500);
+        setLimitKilometers(9500);
+        setFuel_per_kilometer(0.09);
     }
 }
 

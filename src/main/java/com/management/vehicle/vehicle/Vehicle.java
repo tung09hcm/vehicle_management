@@ -1,7 +1,12 @@
 package com.management.vehicle.vehicle;
+import java.time.format.DateTimeFormatter;
 import com.management.vehicle.license.LicenseLevel;
 import com.management.vehicle.trip.Trip;
+import javafx.scene.control.Alert;
 
+import java.time.temporal.ChronoUnit;
+
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,9 +32,47 @@ public class Vehicle {
         buffer.append("--------------------------\n");
         return buffer.toString();
     }
+    public long subDate()
+    {
+        LocalDate localDate = LocalDate.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
+        // Chuyển đổi chuỗi thành LocalDate
+        LocalDate date = LocalDate.parse(last_repair_date, formatter);
+
+        return ChronoUnit.DAYS.between(localDate, date);
+
+    }
+    public void alertMaintenance(double tripDistance) {
+        if(getDistanceCoverFromLastRepair() + tripDistance > limitKilometers)
+        {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Lỗi");
+            alert.setHeaderText("Vượt quá Maintenance Cycle");
+            alert.setContentText("Vượt quá Maintenance Cycle");
+            alert.showAndWait();
+            return;
+        }
+        if(getMaintenanceCycleInKilometers() <= getDistanceCoverFromLastRepair()
+                || subDate() >= getMaintenanceCycleInDays())
+        {
+            // to do
+            // set bảo dưỡng
+            setStatus(VehicleStatus.NEED_REPAIR);
+        }
+    }
+    public String guessMaintenanceDate() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate date = LocalDate.parse(last_repair_date, formatter);
+        long daysFromLastRepair = Math.round(distanceCoverFromLastRepair/maintenanceCycleInKilometers*maintenanceCycleInDays);
+        return date.plusDays(daysFromLastRepair).format(formatter);
+    }
+    private int limitKilometers = 0;
+    private int maintenanceCycleInKilometers;
+    private int maintenanceCycleInDays;
     private double distanceCoverFromLastRepair;
     private String last_repair_date;
+    private int maitain_period;
     private double distanceCover;
     private TypeVehicle type;
     private VehicleStatus status;
@@ -41,8 +84,63 @@ public class Vehicle {
     private double weight;
     private LicenseLevel license;
     private List<String> history;
+    private double revenue;  // currency: đ
+    private fuel fuel_v = fuel.NONE;
+    private double fuel_per_kilometer = 0;
+
+    
+
+
+    public double getFuel_per_kilometer() {
+        return fuel_per_kilometer;
+    }
+
+    public void setFuel_per_kilometer(double fuel_per_kilometer) {
+        this.fuel_per_kilometer = fuel_per_kilometer;
+    }
+
+    public fuel getFuel_v() {
+        return fuel_v;
+    }
+
+    public void setFuel_v(fuel fuel_v) {
+        this.fuel_v = fuel_v;
+    }
+
+    public int getLimitKilometers() {
+        return limitKilometers;
+    }
+
+    public void setLimitKilometers(int limitKilometers) {
+        this.limitKilometers = limitKilometers;
+    }
+
+    public int getMaintenanceCycleInKilometers() {
+        return maintenanceCycleInKilometers;
+    }
+
+    public void setMaintenanceCycleInKilometers(int maintenanceCycleInKilometers) {
+        this.maintenanceCycleInKilometers = maintenanceCycleInKilometers;
+    }
+
+    public int getMaintenanceCycleInDays() {
+        return maintenanceCycleInDays;
+    }
+
+    public void setMaintenanceCycleInDays(int maintenanceCycleInDays) {
+        this.maintenanceCycleInDays = maintenanceCycleInDays;
+    }
+
     public double getDistanceCoverFromLastRepair() {
         return distanceCoverFromLastRepair;
+    }
+
+    public double getRevenue() {
+        return revenue;
+    }
+
+    public void setRevenue(double revenue) {
+        this.revenue = revenue;
     }
 
     public void setDistanceCoverFromLastRepair(double distanceCoverFromLastRepair) {
@@ -98,6 +196,14 @@ public class Vehicle {
         this.high = high;
     }
 
+    public int getMaitain_period() {
+        return maitain_period;
+    }
+
+    public void setMaitain_period(int maitain_period) {
+        this.maitain_period = maitain_period;
+    }
+
     public String getPlateNumber() {
         return plateNumber;
     }
@@ -147,6 +253,7 @@ public class Vehicle {
     }
     public void setMaintenance(){}
 
+
     public Vehicle(String last_repair_date, double distanceCoverFromLastRepair,List<String> history,String driverID,int distanceCover, TypeVehicle type, double length, double wide, double high, String plateNumber, double weight, VehicleStatus status, LicenseLevel license) {
         this.distanceCover = distanceCover;
         this.type = type;
@@ -176,7 +283,11 @@ public class Vehicle {
         this.driverID = "";
         this.history = new ArrayList<>();
         this.distanceCoverFromLastRepair = 0;
-        this.last_repair_date = "";
+        this.last_repair_date = LocalDate.now().toString();
+        this.maitain_period = 0;
+        this.maintenanceCycleInKilometers = 0;
+        this.maintenanceCycleInDays = 0;
+        this.revenue = 0;
     }
 
 

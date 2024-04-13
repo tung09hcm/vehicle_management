@@ -1,5 +1,17 @@
 package com.management.vehicle.trip;
 
+import com.google.gson.Gson;
+import com.management.vehicle.request.struct.GeocodingResponse;
+import com.management.vehicle.request.struct.Hit;
+
+import javax.net.ssl.HttpsURLConnection;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
+import com.management.vehicle.request.struct.*;
 public class Coordinate {
     private double lng;
     private double lat;
@@ -23,5 +35,9 @@ public class Coordinate {
     }
     public void setLat(double y) {
         this.lat = y;
+    }
+
+    public List<Double> getList() {
+        return List.of(lng, lat);
     }
 }

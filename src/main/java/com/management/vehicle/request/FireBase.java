@@ -367,6 +367,26 @@ public class FireBase {
         future.join();
     }
 
+    public Vehicle getVehicle(String plateNumber) {
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Vehicle").child(plateNumber);
+        CompletableFuture<Vehicle> future = new CompletableFuture<>();
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                System.out.println("onDataChange");
+                Vehicle vehicle = dataSnapshot.getValue(Vehicle.class);
+                future.complete(vehicle);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                System.out.println("The read failed: " + databaseError.getCode());
+                future.completeExceptionally(databaseError.toException());
+            }
+        });
+        return future.join();
+    }
+
     /**
      * Deletes a vehicle from Firebase.
      *

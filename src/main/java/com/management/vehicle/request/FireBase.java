@@ -777,8 +777,8 @@ public class FireBase {
      * @return The decrypted API key as a string.
      * @throws RuntimeException If there's an error during the decryption.
      */
-    public String getAPIKey() {
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("API").child("graphhopper");
+    public String getAPIKey(String key) {
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("API").child(key);
         CompletableFuture<String> future = new CompletableFuture<>();
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override

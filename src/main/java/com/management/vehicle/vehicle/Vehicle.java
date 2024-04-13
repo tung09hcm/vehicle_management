@@ -2,7 +2,6 @@ package com.management.vehicle.vehicle;
 import java.time.format.DateTimeFormatter;
 import com.management.vehicle.license.LicenseLevel;
 import com.management.vehicle.trip.Trip;
-import javafx.scene.control.Alert;
 
 import java.time.temporal.ChronoUnit;
 
@@ -42,24 +41,6 @@ public class Vehicle {
 
         return ChronoUnit.DAYS.between(localDate, date);
 
-    }
-    public void alertMaintenance(double tripDistance) {
-        if(getDistanceCoverFromLastRepair() + tripDistance > limitKilometers)
-        {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Lỗi");
-            alert.setHeaderText("Vượt quá Maintenance Cycle");
-            alert.setContentText("Vượt quá Maintenance Cycle");
-            alert.showAndWait();
-            return;
-        }
-        if(getMaintenanceCycleInKilometers() <= getDistanceCoverFromLastRepair()
-                || subDate() >= getMaintenanceCycleInDays())
-        {
-            // to do
-            // set bảo dưỡng
-            setStatus(VehicleStatus.NEED_REPAIR);
-        }
     }
     public String guessMaintenanceDate() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");

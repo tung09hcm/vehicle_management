@@ -2,7 +2,6 @@ package com.management.vehicle.vehicle;
 import com.management.vehicle.license.LicenseLevel;
 import com.management.vehicle.trip.Trip;
 import io.grpc.internal.JsonUtil;
-import javafx.scene.control.Alert;
 
 import java.time.LocalDate;
 import java.util.List;

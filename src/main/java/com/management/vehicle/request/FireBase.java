@@ -315,6 +315,12 @@ public class FireBase {
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
                 System.out.println("onChildRemoved");
+                for (Vehicle vehicle : vehicleList) {
+                    if (vehicle.getPlateNumber().equals(dataSnapshot.getKey())) {
+                        vehicleList.remove(vehicle);
+                        break;
+                    }
+                }
             }
 
             @Override
@@ -611,6 +617,71 @@ public class FireBase {
             }
         });
         future.join();
+    }
+
+    public List<Trip> getListTripOnDuty() {
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Trip");
+        CompletableFuture<List<Trip>> future = new CompletableFuture<>();
+        List<Trip> listTrip = new ArrayList<>();
+        ref.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String prevChildKey) {
+                System.out.println("onChildAdded");
+                Trip trip = dataSnapshot.getValue(Trip.class);
+                if (trip.getStatus().equals("On duty")) {
+                    listTrip.add(trip);
+                }
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String prevChildKey) {
+                System.out.println("onChildChanged");
+                for (Trip trip : listTrip) {
+                    if (trip.getTripID().equals(dataSnapshot.getKey())) {
+                        listTrip.remove(trip);
+                        listTrip.add(dataSnapshot.getValue(Trip.class));
+                        break;
+                    }
+                }
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+                System.out.println("onChildRemoved");
+                for (Trip trip : listTrip) {
+                    if (trip.getTripID().equals(dataSnapshot.getKey())) {
+                        listTrip.remove(trip);
+                        break;
+                    }
+                }
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String prevChildKey) {
+                System.out.println("onChildMoved");
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                System.out.println("The read failed: " + databaseError.getCode());
+                future.completeExceptionally(databaseError.toException());
+            }
+        });
+
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                System.out.println("onDataChange");
+                future.complete(listTrip);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                System.out.println("The read failed: " + databaseError.getCode());
+                future.completeExceptionally(databaseError.toException());
+            }
+        });
+        return future.join();
     }
 
     /**

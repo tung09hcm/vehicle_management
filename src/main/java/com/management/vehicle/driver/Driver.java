@@ -33,8 +33,7 @@ public class Driver {
     private String address;
     private String recentPlateNumber;
     private String id;
-    private LicenseLevel licensetoken;
-    private String expirydate;
+
     public License getLicense() {
         return license;
     }
@@ -67,21 +66,7 @@ public class Driver {
         return address;
     }
 
-    public LicenseLevel getLicensetoken() {
-        return licensetoken;
-    }
 
-    public void setLicensetoken(LicenseLevel licensetoken) {
-        this.licensetoken = licensetoken;
-    }
-
-    public String getExpirydate() {
-        return expirydate;
-    }
-
-    public void setExpirydate(String expirydate) {
-        this.expirydate = expirydate;
-    }
 
     public DriverStatus getStatus() {
         return status;
@@ -153,8 +138,7 @@ public class Driver {
         this.recentPlateNumber = "";
         this.id = "";
         this.history = new ArrayList<>();
-        this.licensetoken = LicenseLevel.NONE;
-        this.expirydate = "";
+
         this.requestTrip = new ArrayList<>();
         this.username = "";
     }

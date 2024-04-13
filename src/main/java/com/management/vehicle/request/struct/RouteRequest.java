@@ -7,7 +7,7 @@ public class RouteRequest {
     private String profile = ProfileVehicle.CAR.toString();
     private List<List> points = new ArrayList<>();
     private String locale = "vn";
-    private boolean points_encoded = false;
+    private final boolean points_encoded = false;
 
     public void setProfile(ProfileVehicle profile) {
         this.profile = profile.toString();

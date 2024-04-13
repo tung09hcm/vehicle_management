@@ -34,6 +34,7 @@ public class Truck extends Vehicle{
         setMaintenanceCycleInDays(180);
         setMaintenanceCycleInKilometers(8000);
         setLimitKilometers(9000);
+        setFuel_per_kilometer(0.08);
     }
 
 

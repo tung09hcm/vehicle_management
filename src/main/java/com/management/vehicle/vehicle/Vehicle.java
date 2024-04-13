@@ -88,7 +88,7 @@ public class Vehicle {
     private fuel fuel_v = fuel.NONE;
     private double fuel_per_kilometer = 0;
 
-
+    
 
 
     public double getFuel_per_kilometer() {

@@ -2,10 +2,13 @@ package com.management.vehicle.gui;
 
 import com.management.vehicle.driver.Driver;
 import com.management.vehicle.request.FireBase;
+import com.management.vehicle.trip.Trip;
+import com.management.vehicle.trip.TripStatus;
 import com.management.vehicle.vehicle.Vehicle;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class connection {
@@ -51,4 +54,20 @@ public class connection {
         }
         return vehiclelist_conn;
     }
+
+    public static List<Trip> getOnDutyTrip() throws Exception {
+        FireBase fireBase = FireBase.getInstance();
+        List<Trip> result = new ArrayList<>();
+        List<Driver> driverList = fireBase.getDriverList();
+        for(Driver token : driverList)
+        {
+            for(String triptoken: token.getHistory())
+            {
+                if(fireBase.getTrip(triptoken).getStatus() == TripStatus.ON_DUTY)
+                    result.add(fireBase.getTrip(triptoken));
+            }
+        }
+        return result;
+    }
+
 }

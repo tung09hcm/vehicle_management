@@ -735,7 +735,6 @@ public class dashboardController implements Initializable
         vehicleStatusComboBox.getSelectionModel().select(null);
         vehicleTable.getSelectionModel().select(null);
         driverofVehicleText.setText("");
-        vehicleHistoryText.setText("");
         truckGoodTypeText.setText("");
         truckGoodWeightText.setText("");
         carCustomerNameText.setText("");

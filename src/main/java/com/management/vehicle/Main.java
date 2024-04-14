@@ -31,7 +31,6 @@ public class Main {
         System.out.println(end.get(0)+"-"+end.get(1));
 
         RouteMatrix routeMatrix = mapRequest.getDistanceMatrix(begin,end);
-
-
+        System.out.println(routeMatrix.getDistance()+"-"+routeMatrix.getDuration());
     }
 }

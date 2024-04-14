@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class RouteRequest {
-    private String profile = ProfileVehicle.CAR.toString();
+    private String profile = ProfileVehicle.CAR.getProfile();
     private List<List> points = new ArrayList<>();
     private String locale = "vn";
     private final boolean points_encoded = false;

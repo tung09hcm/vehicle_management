@@ -16,14 +16,18 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class MapRequest {
     public static MapRequest instance;
-    private final String apikey;
+    private final String apiKeyGraphHopper;
+    private final String apiKeyDistanceMatrix;
 
     private MapRequest() throws Exception {
         FireBase fb = FireBase.getInstance();
-        apikey = fb.getAPIKey();
+        apiKeyGraphHopper = fb.getAPIKey("graphhopper");
+        apiKeyDistanceMatrix = fb.getAPIKey("distanceMatrix");
     }
 
     public static MapRequest getInstance() throws Exception {
@@ -49,7 +53,7 @@ public class MapRequest {
 
         Gson gson = new Gson();
         String body = gson.toJson(routeRequest);
-        HttpsURLConnection urlConnection = postHttpsURLConnection("https://graphhopper.com/api/1/route?key=" + apikey, body);
+        HttpsURLConnection urlConnection = postHttpsURLConnection("https://graphhopper.com/api/1/route?key=" + apiKeyGraphHopper, body);
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
         RouteResponse response = gson.fromJson(bufferedReader.readLine(), RouteResponse.class);
         List<Coordinate> coordinates = new ArrayList<>();
@@ -71,7 +75,7 @@ public class MapRequest {
      * @throws IOException If an I/O error occurs when creating the URL connection or reading from it.
      */
     public List<Hit> getCoordinateList(String address) throws IOException {
-        HttpsURLConnection urlConnection = getHttpsURLConnection("https://graphhopper.com/api/1/geocode?q=" + URLEncoder.encode(address, StandardCharsets.UTF_8) + "&key=" + apikey);
+        HttpsURLConnection urlConnection = getHttpsURLConnection("https://graphhopper.com/api/1/geocode?q=" + URLEncoder.encode(address, StandardCharsets.UTF_8) + "&key=" + apiKeyGraphHopper);
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
         StringBuilder response = new StringBuilder();
         String data;
@@ -81,6 +85,26 @@ public class MapRequest {
         Gson gson = new Gson();
         GeocodingResponse geocodingResponse = gson.fromJson(response.toString(), GeocodingResponse.class);
         return geocodingResponse.getHits();
+    }
+
+    /**
+     * This method is used to get the address from a given coordinate. It makes a GET request to the Distance Matrix API
+     * and parses the response to extract the address. If the API returns "ZERO_RESULTS", the method returns null.
+     *
+     * @param coordinate The coordinate for which the address is to be retrieved.
+     * @return The address corresponding to the given coordinate, or null if no address was found.
+     * @throws IOException If an I/O error occurs when creating the URL connection or reading from it.
+     */
+    public String getAddressFromCoordinate(Coordinate coordinate) throws IOException {
+        HttpsURLConnection urlConnection = getHttpsURLConnection("https://api.distancematrix.ai/maps/api/distancematrix/json?origins=" + coordinate.getLng() + "," + coordinate.getLat() + "&destinations=" + coordinate.getLng() + "," + coordinate.getLat() + "&key=" + apiKeyDistanceMatrix + "&language=vi");
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
+        StringBuilder response = new StringBuilder();
+        String data;
+        while ((data = bufferedReader.readLine()) != null) {
+            response.append(data);
+        }
+        if (response.indexOf("ZERO_RESULTS") != -1) return null;
+        return regex("\\\"destination_addresses\\\":\\[\\\"(.*?)\\\"\\]", response.toString());
     }
 
     /**
@@ -132,5 +156,21 @@ public class MapRequest {
             System.out.println("Connection failed");
         }
         return urlConnection;
+    }
+
+    private String regex(String regex, String input) {
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(input);
+        if (matcher.find()) {
+            if (regex.equals("\\d+")) {
+                StringBuilder resultBuilder = new StringBuilder(matcher.group());
+                while (matcher.find()) {
+                    resultBuilder.append(matcher.group());
+                }
+                return resultBuilder.toString();
+            }
+            return matcher.group(1);
+        }
+        return null;
     }
 }

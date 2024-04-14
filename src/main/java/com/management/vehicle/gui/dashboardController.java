@@ -326,6 +326,7 @@ public class dashboardController implements Initializable
     }
 
     public void showVehicleList() throws Exception {
+        System.out.println("show detected!!!");
         vehicleList = connection.getVehicle();
 
         driverofVehicleColumn.setCellValueFactory(new PropertyValueFactory<Vehicle, String>("driverID"));
@@ -637,7 +638,7 @@ public class dashboardController implements Initializable
             }
         });
     }
-    public void updateVehicle() {
+    public void updateVehicle() throws Exception{
         Vehicle selected = vehicleTable.getSelectionModel().getSelectedItem();
         if (selected == null) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -653,8 +654,8 @@ public class dashboardController implements Initializable
         alert.getButtonTypes().setAll(ButtonType.YES, ButtonType.NO);
         alert.showAndWait().ifPresent(response -> {
             if (response == ButtonType.YES) {
-                switch (selected) {
-                    case Car selectedCar -> {
+                switch (selected.getType()) {
+                    case TypeVehicle.car -> {
                         if (warningBlankFieldVehicle()
                                 || carCustomerNameText.getText().isEmpty()
                                 || carCustomerAddressText.getText().isEmpty()
@@ -663,52 +664,100 @@ public class dashboardController implements Initializable
                                 || carReturnDateText.getText().isEmpty()
                                 || carRentalDateText.getText().isEmpty()
                         ) BlankFieldVehicleAlert();
-                        SetFieldtoVehicle(selectedCar);
-                        setCar(selectedCar);
+                        else {
+                            Car selectedCar = new Car();
+                            
+
+                            SetFieldtoVehicle(selectedCar);
+                            setCar(selectedCar);
+                            FireBase fireBase = null;
+                            try {
+                                fireBase = FireBase.getInstance();
+                                fireBase.editVehicle(selectedCar.getPlateNumber(),selectedCar);
+                                showVehicleList();
+                                resetField();
+                            } catch (Exception e) {
+                                throw new RuntimeException(e);
+                            }
+                        }
+
+
 
 
 
                     }
-                    case Truck selectedTruck -> {
+                    case TypeVehicle.truck -> {
                         if (warningBlankFieldVehicle()
                                 || truckGoodWeightText.getText().isEmpty()
                                 || truckGoodTypeText.getText().isEmpty()
                         ) BlankFieldVehicleAlert();
-                        SetFieldtoVehicle(selectedTruck);
-                        setTruck(selectedTruck);
+                        else {
+                            Truck selectedTruck = new Truck();
+
+                            SetFieldtoVehicle(selectedTruck);
+                            setTruck(selectedTruck);
+                            FireBase fireBase = null;
+                            try {
+                                fireBase = FireBase.getInstance();
+                                fireBase.editVehicle(selectedTruck.getPlateNumber(),selectedTruck);
+                                showVehicleList();
+                                resetField();
+                            } catch (Exception e) {
+                                throw new RuntimeException(e);
+                            }
+                        }
 
 
                     }
-                    case Container selectedContainer -> {
+                    case TypeVehicle.container -> {
+                        System.out.println("stage container");
                         if (warningBlankFieldVehicle()
                                 || containerGoodWeightText.getText().isEmpty()
                                 || containerGoodTypeText.getText().isEmpty()
                         ) BlankFieldVehicleAlert();
-                        SetFieldtoVehicle(selectedContainer);
-                        setContainer(selectedContainer);
+                        else {
+                            Container selectedContainer = new Container();
+                            SetFieldtoVehicle(selectedContainer);
+                            setContainer(selectedContainer);
+                            FireBase fireBase = null;
+                            try {
+                                fireBase = FireBase.getInstance();
+                                fireBase.editVehicle(selectedContainer.getPlateNumber(),selectedContainer);
+                                showVehicleList();
+                                resetField();
+                            } catch (Exception e) {
+                                throw new RuntimeException(e);
+                            }
+                        }
 
                     }
-                    case Bus selectedBus -> {
+                    case TypeVehicle.bus -> {
                         if (warningBlankFieldVehicle()
                                 || busNumSeatText.getText().isEmpty()
                                 || busPriceText.getText().isEmpty()
                                 || busNumCustomerText.getText().isEmpty()
                         ) BlankFieldVehicleAlert();
-                        SetFieldtoVehicle(selectedBus);
-                        setBus(selectedBus);
+                        else {
+                            Bus selectedBus = new Bus();
+                            SetFieldtoVehicle(selectedBus);
+                            setBus(selectedBus);
+                            FireBase fireBase = null;
+                            try {
+                                fireBase = FireBase.getInstance();
+                                fireBase.editVehicle(selectedBus.getPlateNumber(),selectedBus);
+                                showVehicleList();
+                                resetField();
+                            } catch (Exception e) {
+                                throw new RuntimeException(e);
+                            }
+                        }
 
                     }
                     default -> {
+                        System.out.println("show default");
                     }
                 }
-                try {
-                    FireBase fireBase = FireBase.getInstance();
-                    fireBase.editVehicle(selected.getPlateNumber(), selected);
-                    showVehicleList();
-                    resetField();
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                }
+
 
             }
         });

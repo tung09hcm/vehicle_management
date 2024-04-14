@@ -38,6 +38,6 @@ public class Coordinate {
     }
 
     public List<Double> getList() {
-        return List.of(lng, lat);
+        return List.of(lat, lng);
     }
 }

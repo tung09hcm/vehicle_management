@@ -72,7 +72,7 @@ public class Vehicle {
     private int maintenanceCycleInDays;
     private double distanceCoverFromLastRepair;
     private String last_repair_date;
-    private int maitain_period;
+    private int maintain_period;
     private double distanceCover;
     private TypeVehicle type;
     private VehicleStatus status;
@@ -197,11 +197,11 @@ public class Vehicle {
     }
 
     public int getMaitain_period() {
-        return maitain_period;
+        return maintain_period;
     }
 
-    public void setMaitain_period(int maitain_period) {
-        this.maitain_period = maitain_period;
+    public void setMaitain_period(int maintain_period) {
+        this.maintain_period = maintain_period;
     }
 
     public String getPlateNumber() {
@@ -284,7 +284,7 @@ public class Vehicle {
         this.history = new ArrayList<>();
         this.distanceCoverFromLastRepair = 0;
         this.last_repair_date = LocalDate.now().toString();
-        this.maitain_period = 0;
+        this.maintain_period = 0;
         this.maintenanceCycleInKilometers = 0;
         this.maintenanceCycleInDays = 0;
         this.revenue = 0;

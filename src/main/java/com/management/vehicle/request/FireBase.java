@@ -622,7 +622,7 @@ public class FireBase {
      * @throws RuntimeException If there's an error during the Firebase operation.
      */
     public void addTrip(Trip trip) {
-        if (trip == null || trip.getTripID() == null) {
+        if (trip == null || trip.getTripID().isEmpty()) {
             throw new RuntimeException("Invalid input");
         }
         CompletableFuture<Void> future = new CompletableFuture<>();

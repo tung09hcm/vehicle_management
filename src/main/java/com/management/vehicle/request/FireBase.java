@@ -302,23 +302,7 @@ public class FireBase {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String prevChildKey) {
                 System.out.println("onChildAdded");
-                Vehicle vehicle = dataSnapshot.getValue(Vehicle.class);
-                switch (vehicle.getType()) {
-                    case car:
-                        vehicle = dataSnapshot.getValue(Car.class);
-                        break;
-                    case truck:
-                        vehicle = dataSnapshot.getValue(Truck.class);
-                        break;
-                    case container:
-                        vehicle = dataSnapshot.getValue(Container.class);
-                        break;
-                    case bus:
-                        vehicle = dataSnapshot.getValue(Bus.class);
-                        break;
-                    default:
-                        break;
-                }
+                Vehicle vehicle = castVehicleType(dataSnapshot);
                 vehicleList.add(vehicle);
             }
 
@@ -395,7 +379,7 @@ public class FireBase {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 System.out.println("onDataChange");
-                Vehicle vehicle = dataSnapshot.getValue(Vehicle.class);
+                Vehicle vehicle = castVehicleType(dataSnapshot);;
                 future.complete(vehicle);
             }
 
@@ -406,6 +390,27 @@ public class FireBase {
             }
         });
         return future.join();
+    }
+
+    private Vehicle castVehicleType(DataSnapshot dataSnapshot) {
+        Vehicle vehicle = dataSnapshot.getValue(Vehicle.class);
+        switch (vehicle.getType()) {
+            case car:
+                vehicle = dataSnapshot.getValue(Car.class);
+                break;
+            case truck:
+                vehicle = dataSnapshot.getValue(Truck.class);
+                break;
+            case container:
+                vehicle = dataSnapshot.getValue(Container.class);
+                break;
+            case bus:
+                vehicle = dataSnapshot.getValue(Bus.class);
+                break;
+            default:
+                break;
+        }
+        return vehicle;
     }
 
     /**

@@ -705,6 +705,19 @@ public class FireBase {
     }
 
     /**
+     * This method is used to update the status of a trip in Firebase.
+     * It creates a reference to the status of the specified trip in Firebase and updates it with the provided status.
+     *
+     * @param tripID The ID of the trip whose status is to be updated.
+     * @param status The new status to be set for the trip.
+     */
+    public void editStatusTrip(String tripID, TripStatus status) {
+        CompletableFuture<Void> future = new CompletableFuture<>();
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Trip").child(tripID).child("status");
+        updateData(status, future, ref);
+    }
+
+    /**
      * Adds a new account to Firebase.
      * The method encrypts the username and password, then stores them in the Firebase database along with the user's role.
      *

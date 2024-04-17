@@ -96,12 +96,13 @@ public class MapRequest {
      * @throws IOException If an I/O error occurs when creating the URL connection or reading from it.
      */
     public String getAddressFromCoordinate(Coordinate coordinate) throws IOException {
-        HttpsURLConnection urlConnection = getHttpsURLConnection("https://api.distancematrix.ai/maps/api/distancematrix/json?origins=" + coordinate.getLng() + "," + coordinate.getLat() + "&destinations=" + coordinate.getLng() + "," + coordinate.getLat() + "&key=" + apiKeyDistanceMatrix + "&language=vi");
+        HttpsURLConnection urlConnection = getHttpsURLConnection("https://api.distancematrix.ai/maps/api/distancematrix/json?origins=" + coordinate.getLat() + "," + coordinate.getLng() + "&destinations=" + coordinate.getLat() + "," + coordinate.getLng() + "&key=" + apiKeyDistanceMatrix + "&language=vi");
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
         StringBuilder response = new StringBuilder();
         String data;
         while ((data = bufferedReader.readLine()) != null) {
             response.append(data);
+            System.out.println(data);
         }
         if (response.indexOf("ZERO_RESULTS") != -1) return null;
         return regex("\\\"destination_addresses\\\":\\[\\\"(.*?)\\\"\\]", response.toString());

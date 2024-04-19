@@ -71,7 +71,7 @@ public class vehicleHistoryInfoController implements Initializable {
     }
     @FXML
     void addVehicleHistory(ActionEvent event) {
-        if (addVehicleHistoryText.getText().isEmpty()) dashboardController.BlankFieldVehicleAlert();
+        if (addVehicleHistoryText.getText().isEmpty()) dashboardController.BlankFieldAlert("Please fill all blank fields");
         else {
             historyVehicleOList.add(addVehicleHistoryText.getText());
             historyList.add(addVehicleHistoryText.getText());

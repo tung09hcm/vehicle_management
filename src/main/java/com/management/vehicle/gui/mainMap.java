@@ -8,6 +8,7 @@ import java.util.Set;
 
 import javax.swing.JFrame;
 
+import com.management.vehicle.trip.Coordinate;
 import org.jxmapviewer.JXMapViewer;
 import org.jxmapviewer.OSMTileFactoryInfo;
 import org.jxmapviewer.painter.CompoundPainter;
@@ -26,7 +27,24 @@ import org.jxmapviewer.viewer.WaypointPainter;
  */
 public class mainMap
 {
-    public static void display()
+    public static int[] convertToDMS(double coordinate) {
+        // Lấy phần nguyên làm độ
+        int degrees = (int) coordinate;
+        // Lấy phần thập phân còn lại
+        double fractionalPart = coordinate - degrees;
+
+        // Tính phút từ phần thập phân
+        double minutesDecimal = fractionalPart * 60;
+        int minutes = (int) minutesDecimal;
+
+        // Tính giây từ phần thập phân của phút
+        double secondsDecimal = (minutesDecimal - minutes) * 60;
+        int seconds = (int) Math.round(secondsDecimal);
+
+        // Trả về mảng chứa độ, phút, giây
+        return new int[]{degrees, minutes, seconds};
+    }
+    public static void display(Coordinate begin, Coordinate end)
     {
         JXMapViewer mapViewer = new JXMapViewer();
 
@@ -42,14 +60,16 @@ public class mainMap
         DefaultTileFactory tileFactory = new DefaultTileFactory(info);
         mapViewer.setTileFactory(tileFactory);
 
-        GeoPosition frankfurt = new GeoPosition(50,  7, 0, 8, 41, 0);
-        GeoPosition wiesbaden = new GeoPosition(50,  5, 0, 8, 14, 0);
-        GeoPosition mainz     = new GeoPosition(50,  0, 0, 8, 16, 0);
-        GeoPosition darmstadt = new GeoPosition(49, 52, 0, 8, 39, 0);
-        GeoPosition offenbach = new GeoPosition(50,  6, 0, 8, 46, 0);
+        int[] lngDMS = convertToDMS(begin.getLng());
+        int[] latDMS = convertToDMS(begin.getLat());
 
+        GeoPosition begin_map = new GeoPosition(latDMS[0],latDMS[1],latDMS[2],lngDMS[0],lngDMS[1],lngDMS[2]);
+        lngDMS = convertToDMS(end.getLng());
+        latDMS = convertToDMS(end.getLat());
+
+        GeoPosition end_map = new GeoPosition(latDMS[0],latDMS[1],latDMS[2],lngDMS[0],lngDMS[1],lngDMS[2]);
         // Create a track from the geo-positions
-        List<GeoPosition> track = Arrays.asList(frankfurt, wiesbaden, mainz, darmstadt, offenbach);
+        List<GeoPosition> track = Arrays.asList(begin_map, end_map);
         RoutePainter routePainter = new RoutePainter(track);
 
         // Set the focus
@@ -57,11 +77,8 @@ public class mainMap
 
         // Create waypoints from the geo-positions
         Set<Waypoint> waypoints = new HashSet<Waypoint>(Arrays.asList(
-                new DefaultWaypoint(frankfurt),
-                new DefaultWaypoint(wiesbaden),
-                new DefaultWaypoint(mainz),
-                new DefaultWaypoint(darmstadt),
-                new DefaultWaypoint(offenbach)));
+                new DefaultWaypoint(begin_map),
+                new DefaultWaypoint(end_map)));
 
         // Create a waypoint painter that takes all the waypoints
         WaypointPainter<Waypoint> waypointPainter = new WaypointPainter<Waypoint>();

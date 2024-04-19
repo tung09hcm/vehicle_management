@@ -302,23 +302,7 @@ public class FireBase {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String prevChildKey) {
                 System.out.println("onChildAdded");
-                Vehicle vehicle = dataSnapshot.getValue(Vehicle.class);
-                switch (vehicle.getType()) {
-                    case car:
-                        vehicle = dataSnapshot.getValue(Car.class);
-                        break;
-                    case truck:
-                        vehicle = dataSnapshot.getValue(Truck.class);
-                        break;
-                    case container:
-                        vehicle = dataSnapshot.getValue(Container.class);
-                        break;
-                    case bus:
-                        vehicle = dataSnapshot.getValue(Bus.class);
-                        break;
-                    default:
-                        break;
-                }
+                Vehicle vehicle = castVehicleType(dataSnapshot);
                 vehicleList.add(vehicle);
             }
 
@@ -395,7 +379,7 @@ public class FireBase {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 System.out.println("onDataChange");
-                Vehicle vehicle = dataSnapshot.getValue(Vehicle.class);
+                Vehicle vehicle = castVehicleType(dataSnapshot);;
                 future.complete(vehicle);
             }
 
@@ -406,6 +390,27 @@ public class FireBase {
             }
         });
         return future.join();
+    }
+
+    private Vehicle castVehicleType(DataSnapshot dataSnapshot) {
+        Vehicle vehicle = dataSnapshot.getValue(Vehicle.class);
+        switch (vehicle.getType()) {
+            case car:
+                vehicle = dataSnapshot.getValue(Car.class);
+                break;
+            case truck:
+                vehicle = dataSnapshot.getValue(Truck.class);
+                break;
+            case container:
+                vehicle = dataSnapshot.getValue(Container.class);
+                break;
+            case bus:
+                vehicle = dataSnapshot.getValue(Bus.class);
+                break;
+            default:
+                break;
+        }
+        return vehicle;
     }
 
     /**
@@ -617,7 +622,7 @@ public class FireBase {
      * @throws RuntimeException If there's an error during the Firebase operation.
      */
     public void addTrip(Trip trip) {
-        if (trip == null || trip.getTripID() == null) {
+        if (trip == null || trip.getTripID().isEmpty()) {
             throw new RuntimeException("Invalid input");
         }
         CompletableFuture<Void> future = new CompletableFuture<>();
@@ -697,6 +702,19 @@ public class FireBase {
             }
         });
         return future.join();
+    }
+
+    /**
+     * This method is used to update the status of a trip in Firebase.
+     * It creates a reference to the status of the specified trip in Firebase and updates it with the provided status.
+     *
+     * @param tripID The ID of the trip whose status is to be updated.
+     * @param status The new status to be set for the trip.
+     */
+    public void editStatusTrip(String tripID, TripStatus status) {
+        CompletableFuture<Void> future = new CompletableFuture<>();
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Trip").child(tripID).child("status");
+        updateData(status, future, ref);
     }
 
     /**

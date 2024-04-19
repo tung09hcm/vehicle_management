@@ -55,19 +55,22 @@ public class connection {
         return vehiclelist_conn;
     }
 
-    public static List<Trip> getOnDutyTrip() throws Exception {
-        FireBase fireBase = FireBase.getInstance();
-        List<Trip> result = new ArrayList<>();
-        List<Driver> driverList = fireBase.getDriverList();
-        for(Driver token : driverList)
+    public static ObservableList<Trip> getOnDutyTrip() throws Exception {
+        FireBase firebase = FireBase.getInstance();
+        ObservableList<Trip> triplist_conn = FXCollections.observableArrayList();
+        try
         {
-            for(String triptoken: token.getHistory())
+            List<Trip> tripList = firebase.getListTripOnDuty();
+            for(Trip token: tripList)
             {
-                if(fireBase.getTrip(triptoken).getStatus() == TripStatus.ON_DUTY)
-                    result.add(fireBase.getTrip(triptoken));
+                triplist_conn.add(token);
             }
         }
-        return result;
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        return triplist_conn;
     }
 
 }

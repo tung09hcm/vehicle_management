@@ -455,6 +455,7 @@ public class dashboardController implements Initializable
 
     public void showVehicleList() throws Exception {
         vehicleList.clear();
+
         vehicleList = connection.getVehicle();
 
         driverofVehicleColumn.setCellValueFactory(new PropertyValueFactory<Vehicle, String>("driverID"));
@@ -578,7 +579,7 @@ public class dashboardController implements Initializable
             }
         });
     }
-    public void updateVehicle() {
+    public void updateVehicle() throws Exception{
         Vehicle selected = vehicleTable.getSelectionModel().getSelectedItem();
         if (selected == null) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -608,17 +609,9 @@ public class dashboardController implements Initializable
                         SetFieldtoVehicle(selectedBus);
                     }
                     default -> {
+                        System.out.println("show default");
                     }
                 }
-                try {
-                    FireBase fireBase = FireBase.getInstance();
-                    fireBase.editVehicle(selected.getPlateNumber(), selected);
-                    showVehicleList();
-                    resetField();
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                }
-
             }
         });
     }

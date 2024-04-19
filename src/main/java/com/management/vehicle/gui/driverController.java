@@ -60,11 +60,11 @@ public class driverController implements Initializable  {
 
     public driverController() {}
 
-    public com.management.vehicle.driver.Driver getDriver() {
+    public Driver getDriver() {
         return driver;
     }
 
-    public static void setDriver(com.management.vehicle.driver.Driver d) {
+    public static void setDriver(Driver d) {
         driver = d;
     }
 

@@ -48,7 +48,7 @@ public class MapRequest {
     public RouteMatrix getDistanceMatrix(List fromCoordinate, List toCoordinate) throws IOException {
         RouteMatrix distanceMatrix = new RouteMatrix();
         RouteRequest routeRequest = new RouteRequest();
-        routeRequest.setPoints(List.of(List.of(fromCoordinate.get(1), fromCoordinate.get(0)), List.of(toCoordinate.get(1), toCoordinate.get(0))));
+        routeRequest.setPoints(List.of(fromCoordinate, toCoordinate));
 
         Gson gson = new Gson();
         String body = gson.toJson(routeRequest);

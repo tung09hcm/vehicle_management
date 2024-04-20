@@ -1,25 +1,134 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import com.jfoenix.controls.JFXButton?>
-<?import com.jfoenix.controls.JFXListView?>
-<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="394.0" prefWidth="602.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.management.vehicle.gui.vehicleHistoryInfoController">
+<AnchorPane fx:id="TripPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="700.0" prefWidth="921.0" style="-fx-border-color: black;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.management.vehicle.gui.vehicleHistoryInfoController">
    <children>
-      <TextField fx:id="addVehicleHistoryText" layoutX="42.0" layoutY="33.0" prefHeight="26.0" prefWidth="266.0" promptText="Lịch sử di chuyển" />
-      <TextField fx:id="searchHistoryText" layoutX="42.0" layoutY="85.0" prefHeight="26.0" prefWidth="266.0" promptText="Tìm kiếm" />
-      <JFXListView fx:id="historyVehicleListView" layoutX="41.0" layoutY="139.0" prefHeight="230.0" prefWidth="266.0" />
-      <JFXButton layoutX="355.0" layoutY="59.0" onAction="#addVehicleHistory" prefHeight="58.0" prefWidth="122.0" style="-fx-background-radius: 30; -fx-background-color: #3786bf; -fx-border-radius: 30; -fx-border-color: #f0f4f5;" text="Thêm" textFill="WHITE">
-         <font>
-            <Font name="Arial" size="18.0" />
-         </font>
-      </JFXButton>
-      <JFXButton layoutX="355.0" layoutY="168.0" onAction="#updateVehicleHistory" prefHeight="58.0" prefWidth="122.0" style="-fx-background-radius: 30; -fx-background-color: #3786bf; -fx-border-radius: 30; -fx-border-color: #f0f4f5;" text="Sửa" textFill="WHITE">
-         <font>
-            <Font name="Arial" size="18.0" />
-         </font>
-      </JFXButton>
+      <AnchorPane layoutX="31.0" layoutY="22.0" prefHeight="246.0" prefWidth="872.0" style="-fx-border-color: #3a89bd; -fx-border-radius: 30; -fx-border-width: 2; -fx-background-color: LightGray; -fx-background-radius: 30;">
+         <children>
+            <Label layoutX="321.0" layoutY="14.0" text="THÔNG TIN CHI TIẾT">
+               <font>
+                  <Font size="25.0" />
+               </font>
+            </Label>
+            <Label fx:id="typeVehicleLabel" layoutX="170.0" layoutY="70.0" text="Label">
+               <font>
+                  <Font name="Arial" size="15.0" />
+               </font>
+            </Label>
+            <Label fx:id="plateNumberVehicleLabel" layoutX="170.0" layoutY="110.0" text="Label">
+               <font>
+                  <Font name="Arial" size="15.0" />
+               </font>
+            </Label>
+            <Label fx:id="weightVehcleLable" layoutX="438.0" layoutY="108.0" text="Label">
+               <font>
+                  <Font name="Arial" size="15.0" />
+               </font>
+            </Label>
+            <Label fx:id="DriverIDLabel" layoutX="170.0" layoutY="190.0" text="Label">
+               <font>
+                  <Font name="Arial" size="15.0" />
+               </font>
+            </Label>
+            <Text layoutX="61.0" layoutY="84.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Loại xe:">
+               <font>
+                  <Font name="Arial" size="15.0" />
+               </font>
+            </Text>
+            <Text layoutX="61.0" layoutY="124.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Biển số xe:">
+               <font>
+                  <Font name="Arial" size="15.0" />
+               </font>
+            </Text>
+            <Text layoutX="287.0" layoutY="124.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Trọng tải (kg):">
+               <font>
+                  <Font name="Arial" size="15.0" />
+               </font>
+            </Text>
+            <Text layoutX="61.0" layoutY="204.0" strokeType="OUTSIDE" strokeWidth="0.0" text="ID tài xế:">
+               <font>
+                  <Font name="Arial" size="15.0" />
+               </font>
+            </Text>
+            <Label fx:id="licenseVehicleLabel" layoutX="438.0" layoutY="67.0" text="Label">
+               <font>
+                  <Font name="Arial" size="15.0" />
+               </font>
+            </Label>
+            <Label fx:id="statusVehicleLabel" layoutX="170.0" layoutY="151.0" text="Label">
+               <font>
+                  <Font name="Arial" size="15.0" />
+               </font>
+            </Label>
+            <Text layoutX="287.0" layoutY="84.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Bằng yêu cầu:">
+               <font>
+                  <Font name="Arial" size="15.0" />
+               </font>
+            </Text>
+            <Text layoutX="287.0" layoutY="164.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Kích thước (m):">
+               <font>
+                  <Font name="Arial" size="15.0" />
+               </font>
+            </Text>
+            <Text layoutX="61.0" layoutY="164.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Trạng thái:">
+               <font>
+                  <Font name="Arial" size="15.0" />
+               </font>
+            </Text>
+            <Label fx:id="wideVehicleLabel" layoutX="471.0" layoutY="148.0" text="Rộng">
+               <font>
+                  <Font name="Arial" size="15.0" />
+               </font>
+            </Label>
+            <Label fx:id="hightVehicleLabel" layoutX="515.0" layoutY="147.0" text="Cao">
+               <font>
+                  <Font name="Arial" size="16.0" />
+               </font>
+            </Label>
+            <Label fx:id="distanceCoverVehicleLabel" layoutX="439.0" layoutY="188.0" text="Label">
+               <font>
+                  <Font name="Arial" size="15.0" />
+               </font>
+            </Label>
+            <Text layoutX="287.0" layoutY="204.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Quãng đường (km):">
+               <font>
+                  <Font name="Arial" size="15.0" />
+               </font>
+            </Text>
+            <Label fx:id="lengthVehicleLabel" layoutX="438.0" layoutY="148.0" text="Dài">
+               <font>
+                  <Font name="Arial" size="15.0" />
+               </font>
+            </Label>
+         </children>
+      </AnchorPane>
+      <AnchorPane layoutX="33.0" layoutY="288.0" prefHeight="390.0" prefWidth="872.0" style="-fx-border-color: #3a89bd; -fx-border-radius: 30; -fx-border-width: 2; -fx-background-color: #3a89bd; -fx-background-radius: 30;">
+         <children>
+            <Label layoutX="324.0" layoutY="14.0" text="LỊCH SỬ CHUYẾN ĐI">
+               <font>
+                  <Font size="25.0" />
+               </font>
+            </Label>
+            <TableView fx:id="historyTripVehicleTable" layoutX="32.0" layoutY="64.0" prefHeight="298.0" prefWidth="807.0">
+               <columns>
+                  <TableColumn fx:id="beginTripColumn" prefWidth="184.79998779296875" resizable="false" text="Địa điểm đi" />
+                  <TableColumn fx:id="endTripColumn" prefWidth="183.1999969482422" resizable="false" text="Địa điểm đến" />
+                  <TableColumn fx:id="beginDateTripColumn" prefWidth="108.79998779296875" resizable="false" text="Thời gian đi" />
+                  <TableColumn fx:id="endDateTripColumn" prefWidth="104.800048828125" resizable="false" text="Thời gian đến" />
+                  <TableColumn fx:id="distanceCoverTripColumn" prefWidth="85.599853515625" resizable="false" text="Quãng đường" />
+                  <TableColumn fx:id="tripCostColumn" minWidth="0.0" prefWidth="67.2000732421875" resizable="false" text="Chi phí" />
+                  <TableColumn fx:id="tripRevenueColumn" prefWidth="70.4000122070313" resizable="false" text="Doanh thu" />
+               </columns>
+            </TableView>
+            <JFXButton layoutX="32.0" layoutY="20.0" onAction="#refreshData" style="-fx-background-color: lightgray;" text="Refresh" />
+         </children>
+      </AnchorPane>
    </children>
 </AnchorPane>

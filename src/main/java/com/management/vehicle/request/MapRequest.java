@@ -47,12 +47,12 @@ public class MapRequest {
      */
     public RouteMatrix getDistanceMatrix(List fromCoordinate, List toCoordinate) throws IOException {
         RouteMatrix distanceMatrix = new RouteMatrix();
-
         RouteRequest routeRequest = new RouteRequest();
         routeRequest.setPoints(List.of(fromCoordinate, toCoordinate));
 
         Gson gson = new Gson();
         String body = gson.toJson(routeRequest);
+        System.out.println(body);
         HttpsURLConnection urlConnection = postHttpsURLConnection("https://graphhopper.com/api/1/route?key=" + apiKeyGraphHopper, body);
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
         RouteResponse response = gson.fromJson(bufferedReader.readLine(), RouteResponse.class);
@@ -96,12 +96,13 @@ public class MapRequest {
      * @throws IOException If an I/O error occurs when creating the URL connection or reading from it.
      */
     public String getAddressFromCoordinate(Coordinate coordinate) throws IOException {
-        HttpsURLConnection urlConnection = getHttpsURLConnection("https://api.distancematrix.ai/maps/api/distancematrix/json?origins=" + coordinate.getLng() + "," + coordinate.getLat() + "&destinations=" + coordinate.getLng() + "," + coordinate.getLat() + "&key=" + apiKeyDistanceMatrix + "&language=vi");
+        HttpsURLConnection urlConnection = getHttpsURLConnection("https://api.distancematrix.ai/maps/api/distancematrix/json?origins=" + coordinate.getLat() + "," + coordinate.getLng() + "&destinations=" + coordinate.getLat() + "," + coordinate.getLng() + "&key=" + apiKeyDistanceMatrix + "&language=vi");
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
         StringBuilder response = new StringBuilder();
         String data;
         while ((data = bufferedReader.readLine()) != null) {
             response.append(data);
+            System.out.println(data);
         }
         if (response.indexOf("ZERO_RESULTS") != -1) return null;
         return regex("\\\"destination_addresses\\\":\\[\\\"(.*?)\\\"\\]", response.toString());
@@ -172,5 +173,22 @@ public class MapRequest {
             return matcher.group(1);
         }
         return null;
+    }
+
+    public static void main(String[] args) {
+        try {
+            MapRequest mapRequest = MapRequest.getInstance();
+            List<Hit> hits = mapRequest.getCoordinateList("Hanoi");
+            for (Hit hit : hits) {
+                System.out.println(hit.getPoint().getLat() + " " + hit.getPoint().getLng());
+            }
+            System.out.println(mapRequest.getAddressFromCoordinate(new Coordinate(21.0285, 105.8542)));
+            RouteMatrix r = mapRequest.getDistanceMatrix(List.of(21.0285, 105.8542), List.of(21.0285, 106.8542));
+            for (Coordinate c : r.getCoordinates()) {
+                System.out.println(c.getLat() + " " + c.getLng());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -2,6 +2,7 @@ package com.management.vehicle.trip;
 import com.management.vehicle.request.RouteMatrix;
 import com.management.vehicle.request.struct.*;
 import com.management.vehicle.request.MapRequest;
+import com.management.vehicle.vehicle.fuel;
 
 import java.util.List;
 
@@ -33,6 +34,7 @@ public class Trip {
     public void setStatus(TripStatus status) {
         this.status = status;
     }
+    private fuel fuel_trip = fuel.NONE;
     private String beginLocation;
     private String endLocation;
     private double distanceCover;
@@ -45,6 +47,14 @@ public class Trip {
     private String driverID;
     private double cost;
     private double Revenue;
+
+    public fuel getFuel_trip() {
+        return fuel_trip;
+    }
+
+    public void setFuel_trip(fuel fuel_trip) {
+        this.fuel_trip = fuel_trip;
+    }
 
     public double getCost() {
         return cost;
@@ -133,22 +143,7 @@ public class Trip {
         Revenue = revenue;
     }
 
-    public void makeTrip(String from , String to) throws Exception {
-        MapRequest mapRequest = MapRequest.getInstance();
-        List<Hit> coordinate1 = mapRequest.getCoordinateList(from);
-        List<Hit> coordinate2 = mapRequest.getCoordinateList(to);
 
-        for(Hit hit :coordinate2)
-        {
-            System.out.println(hit.getCity() + " " + hit.getCountry());
-        }
-
-        RouteMatrix result = mapRequest.getDistanceMatrix(coordinate1,coordinate2);
-
-
-        System.out.println(result.getDistance());
-        System.out.println(result.getDuration());
-    }
 
     public Trip() {
         this.distanceCover = 0;

@@ -12,7 +12,6 @@ import com.management.vehicle.trip.Coordinate;
 import com.management.vehicle.trip.Trip;
 import com.management.vehicle.trip.TripStatus;
 import com.management.vehicle.vehicle.*;
-import javafx.application.Platform;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -34,7 +33,6 @@ import tornadofx.control.DateTimePicker;
 
 import java.io.IOException;
 import java.net.URL;
-import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -67,8 +65,6 @@ public class dashboardController implements Initializable
     @FXML
     private AnchorPane VehiclePane;
 
-    @FXML
-    private Label timeLabel;
 
     @FXML
     private AnchorPane StandardField;
@@ -84,8 +80,6 @@ public class dashboardController implements Initializable
 
     @FXML
     private AnchorPane BusField;
-
-    private Boolean stopTime = false;
 
     @FXML
     private Label homeNumberVehicelLabel;
@@ -170,9 +164,6 @@ public class dashboardController implements Initializable
 
     @FXML
     private TextField driverofVehicleText;
-
-    @FXML
-    private TextField vehicleHistoryText;
 
     @FXML
     private TextField searchVehicleText;
@@ -311,9 +302,6 @@ public class dashboardController implements Initializable
     private TableColumn<Driver, String> expireDateCol;
 
     @FXML
-    private TextField issueDateText;
-
-    @FXML
     private TableColumn<Driver, String> licenseDriverCol;
 
     @FXML
@@ -349,21 +337,13 @@ public class dashboardController implements Initializable
     @FXML
     private TextField researchDriverText;
 
-    @FXML
-    private JFXButton researchDriverButton;
-
     ObservableList<DriverStatus> statusDriverObservableList = FXCollections.observableArrayList(DriverStatus.NONE, DriverStatus.ON_DUTY, DriverStatus.ON_LEAVE);
     ObservableList<Driver> driverList = FXCollections.observableArrayList();
 
 /////////////////////////////////////////////////////////////////////////////////
 
 
-    /////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////////
-
-
 ////////////////////////////////////////////////////////////////////////////////
-
 
 
 
@@ -373,23 +353,66 @@ public class dashboardController implements Initializable
         licenseLevelComboBox.setItems(licenseLevelObservableList);
         vehicleStatusComboBox.setItems(vehicleStatusObservableList);
         statusDriverComboBox.setItems(statusDriverObservableList);
-        fuelTripComboBox.setItems(fuelTripObservableList);
-        ////////////////////////////////////////////////////////////////////////////
-        ContextMenu contextMenuVehicle = new ContextMenu();
-        MenuItem menuItemVehicle1 = new MenuItem("Xem lịch sử chuyến đi");
-        menuItemVehicle1.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                try {
-                    viewDetailInforVehicle();
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        });
-        contextMenuVehicle.getItems().add(menuItemVehicle1);
-        vehicleTable.setContextMenu(contextMenuVehicle);
+        licenseDriverComboBox.setItems(licenseLevelObservableList);
 
+        fuelTripComboBox.setItems(fuelTripObservableList);
+
+        this.mouseRightClicktoHistoryInfoVehicle();
+        this.mouseRightClicktoHistoryInfoDriver();
+        this.mouseRightClickTriptoMap();
+
+        try {
+            showDriverList();
+        } catch (Exception e) {
+            System.out.println("error on loading driver list");
+            throw new RuntimeException(e);
+        }
+
+        try {
+            showVehicleList();
+        } catch (Exception e) {
+            System.out.println("error on loading vehicle list");
+            throw new RuntimeException(e);
+        }
+
+        try {
+            showTrip();
+        } catch (Exception e) {
+            System.out.println("error on loading trip");
+            throw new RuntimeException(e);
+        }
+
+        showHome();
+        HomePane.setVisible(true);
+        VehiclePane.setVisible(false);
+        DriverPane.setVisible(false);
+        TripPane.setVisible(false);
+
+        this.researchVehicle();
+        this.researchDriver();
+    }
+
+
+    public void showVehicleList() throws Exception {
+        vehicleList.clear();
+        vehicleList = connection.getVehicle();
+
+        driverofVehicleColumn.setCellValueFactory(new PropertyValueFactory<>("driverID"));
+        distanceCoverColumn.setCellValueFactory(new PropertyValueFactory<>("distanceCover"));
+        typeVehicleColumn.setCellValueFactory(new PropertyValueFactory<>("type"));
+        lengthColumn.setCellValueFactory(new PropertyValueFactory<>("length"));
+        wideColumn.setCellValueFactory(new PropertyValueFactory<>("wide"));
+        highColumn.setCellValueFactory(new PropertyValueFactory<>("high"));
+        plateNumberColumn.setCellValueFactory(new PropertyValueFactory<>("plateNumber"));
+        weightColumn.setCellValueFactory(new PropertyValueFactory<>("weight"));
+        vehicleStatusColumn.setCellValueFactory(new PropertyValueFactory<>("status"));
+        licenseLevelColumn.setCellValueFactory(new PropertyValueFactory<>("license"));
+
+        vehicleTable.setItems(vehicleList);
+    }
+
+
+    public void researchVehicle() {
         FilteredList<Vehicle> filteredDataVehicle = new FilteredList<>(vehicleList, b -> true);
         searchVehicleText.textProperty().addListener((observable, oldValue, newValue) -> {
             filteredDataVehicle.setPredicate(vehicle -> {
@@ -409,67 +432,6 @@ public class dashboardController implements Initializable
         SortedList<Vehicle> sortedData = new SortedList<>(filteredDataVehicle);
         sortedData.comparatorProperty().bind(vehicleTable.comparatorProperty());
         vehicleTable.setItems(sortedData);
-        //////////////////////////////////////////////////////////////////////////
-        ContextMenu menuBegin = new ContextMenu();
-        ContextMenu menuEnd = new ContextMenu();
-        initSuggestedLocation(beginTripText, menuBegin, true);
-        initSuggestedLocation(endTripText, menuEnd, false);
-        beginTripDatePicker.setDateTimeValue(LocalDateTime.now());
-        ContextMenu contextMenuTrip = new ContextMenu();
-        MenuItem menuItemTrip1 = new MenuItem("Xem chi tiết bản đồ");
-        menuItemTrip1.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                Trip selected = TripTable.getSelectionModel().getSelectedItem();
-                mainMap.display(selected.getBegin(),selected.getEnd());
-            }
-        });
-        contextMenuTrip.getItems().add(menuItemTrip1);
-        TripTable.setContextMenu(contextMenuTrip);
-        //////////////////////////////////////////////////////////////////////////
-        Timenow();
-        try {
-            showDriverList();
-        } catch (Exception e) {
-            System.out.println("error on loading driver list");
-            throw new RuntimeException(e);
-        }
-        try {
-            showVehicleList();
-        } catch (Exception e) {
-            System.out.println("error on loading vehicle list");
-            throw new RuntimeException(e);
-        }
-        try {
-            showTrip();
-        } catch (Exception e) {
-            System.out.println("error on loading trip");
-            throw new RuntimeException(e);
-        }
-        showHome();
-        HomePane.setVisible(true);
-        VehiclePane.setVisible(false);
-        DriverPane.setVisible(false);
-        TripPane.setVisible(false);
-    }
-
-    public void showVehicleList() throws Exception {
-        vehicleList.clear();
-
-        vehicleList = connection.getVehicle();
-
-        driverofVehicleColumn.setCellValueFactory(new PropertyValueFactory<Vehicle, String>("driverID"));
-        distanceCoverColumn.setCellValueFactory(new PropertyValueFactory<Vehicle, Double>("distanceCover"));
-        typeVehicleColumn.setCellValueFactory(new PropertyValueFactory<Vehicle, TypeVehicle>("type"));
-        lengthColumn.setCellValueFactory(new PropertyValueFactory<Vehicle, Double>("length"));
-        wideColumn.setCellValueFactory(new PropertyValueFactory<Vehicle, Double>("wide"));
-        highColumn.setCellValueFactory(new PropertyValueFactory<Vehicle, Double>("high"));
-        plateNumberColumn.setCellValueFactory(new PropertyValueFactory<Vehicle, String>("plateNumber"));
-        weightColumn.setCellValueFactory(new PropertyValueFactory<Vehicle, Double>("weight"));
-        vehicleStatusColumn.setCellValueFactory(new PropertyValueFactory<Vehicle, VehicleStatus>("status"));
-        licenseLevelColumn.setCellValueFactory(new PropertyValueFactory<Vehicle, LicenseLevel>("license"));
-
-        vehicleTable.setItems(vehicleList);
     }
 
     public void mouseSelectedVehicle() {
@@ -486,6 +448,7 @@ public class dashboardController implements Initializable
         vehicleStatusComboBox.getSelectionModel().select(selected.getStatus());
         driverofVehicleText.setText(selected.getDriverID());
     }
+
     public boolean warningBlankFieldVehicle() {
         return distanceCoverText.getText().isEmpty()
                 || typeVehicleComboBox.getSelectionModel().getSelectedItem() == null
@@ -497,6 +460,12 @@ public class dashboardController implements Initializable
                 || licenseLevelComboBox.getSelectionModel().getSelectedItem() == null
                 || vehicleStatusComboBox.getSelectionModel().getSelectedItem() == null
                 || driverofVehicleText.getText().isEmpty();
+    }
+    public static void BlankFieldVehicleAlert() {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setHeaderText(null);
+        alert.setContentText("Please fill all blank fields");
+        alert.showAndWait();
     }
 
     public void SetFieldtoVehicle(Vehicle newVehicle) {
@@ -511,6 +480,7 @@ public class dashboardController implements Initializable
         newVehicle.setLicense(licenseLevelComboBox.getValue());
         newVehicle.setDriverID(driverofVehicleText.getText());
     }
+
     public void addVehicle (ActionEvent e) throws Exception {
         for (Vehicle v : vehicleList) {
             if (Objects.equals(plateNumberText.getText(), v.getPlateNumber())) {
@@ -553,6 +523,8 @@ public class dashboardController implements Initializable
         showVehicleList();
         resetField();
     }
+
+
     public void deleteVehicle (ActionEvent e) {
         Vehicle selected = vehicleTable.getSelectionModel().getSelectedItem();
         if (selected == null) {
@@ -579,7 +551,7 @@ public class dashboardController implements Initializable
             }
         });
     }
-    public void updateVehicle() throws Exception{
+    public void updateVehicle() {
         Vehicle selected = vehicleTable.getSelectionModel().getSelectedItem();
         if (selected == null) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -588,7 +560,7 @@ public class dashboardController implements Initializable
             alert.showAndWait();
             return;
         }
-        int index = vehicleTable.getSelectionModel().getSelectedIndex();
+
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setHeaderText(null);
         alert.setContentText("Are you sure to update this vehicle information?");
@@ -615,6 +587,26 @@ public class dashboardController implements Initializable
             }
         });
     }
+
+
+    public void mouseRightClicktoHistoryInfoVehicle(){
+        ContextMenu contextMenu = new ContextMenu();
+        MenuItem menuItem1 = new MenuItem("Xem lịch sử chuyến đi");
+        menuItem1.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                try {
+                    viewDetailInforVehicle();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+        contextMenu.getItems().add(menuItem1);
+        vehicleTable.setContextMenu(contextMenu);
+    }
+
+
     public void viewDetailInforVehicle() throws IOException {
         Vehicle selected = vehicleTable.getSelectionModel().getSelectedItem();
         vehicleHistoryInfoController.selected = selected;
@@ -625,6 +617,8 @@ public class dashboardController implements Initializable
         newStage.setResizable(false);
         newStage.show();
     }
+
+
     public void resetField() {
         distanceCoverText.setText("");
         typeVehicleComboBox.getSelectionModel().select(null);
@@ -638,9 +632,12 @@ public class dashboardController implements Initializable
         vehicleTable.getSelectionModel().select(null);
         driverofVehicleText.setText("");
     }
+
+
     public void MouseClicktoUnselectVehicle() {
         vehicleTable.getSelectionModel().select(null);
     }
+
 
 ////////////////////////////////////////////////////////
 
@@ -664,6 +661,7 @@ public class dashboardController implements Initializable
         TableListDriver.setItems(driverList);
         //System.out.println("SIGNAL on showDriverList() - 4");
     }
+
 
     public void addDriver() throws Exception {
         if (warningBlankFieldDriver()) {
@@ -695,11 +693,15 @@ public class dashboardController implements Initializable
         newDriver.setAddress(addressDriverText.getText());
         newDriver.setStatus(statusDriverComboBox.getValue());
 
-        LocalDate localDate = issueDatePicker.getValue();
-        localDate = localDate.plusYears(5);
+        newDriver.getLicense().setType(licenseDriverComboBox.getValue());
+
+        LocalDate localIssueDate = issueDatePicker.getValue();
+        LocalDate localExpiryDate = localIssueDate.plusYears(5);
         String pattern = "dd-MM-yyyy";
-        String datePattern = localDate.format(DateTimeFormatter.ofPattern(pattern));
-        newDriver.getLicense().setExpiryDate(datePattern);
+        String dateIssue = localIssueDate.format(DateTimeFormatter.ofPattern(pattern));
+        String dateExpiry = localExpiryDate.format(DateTimeFormatter.ofPattern(pattern));
+        newDriver.getLicense().setIssueDate(dateIssue);
+        newDriver.getLicense().setExpiryDate(dateExpiry);
 
         FireBase.getInstance().addDriver(newDriver);
 
@@ -707,6 +709,7 @@ public class dashboardController implements Initializable
 
         resetFieldDriver();
     }
+
 
     public void removeDriver() throws Exception {
         Driver seleted = TableListDriver.getSelectionModel().getSelectedItem();
@@ -736,6 +739,7 @@ public class dashboardController implements Initializable
         resetFieldDriver();
     }
 
+
     private void updateDriver() {
         Driver seleted = TableListDriver.getSelectionModel().getSelectedItem();
         if(seleted==null){
@@ -757,21 +761,17 @@ public class dashboardController implements Initializable
                     resetFieldDriver();
                     return;
                 }
-                for(Driver driver: driverList)
+                if(!Objects.equals(seleted.getId(), driverIDText.getText()) )
                 {
-                    if(Objects.equals(seleted, driver)) continue;
-                    if(Objects.equals(driver.getId(), driverIDText.getText()) )
-                    {
-                        BlankFieldAlert("Same ID of driver error");
-                        resetFieldDriver();
-                        return;
-                    }
-                    //if(Objects.equals(driver.getPhoneNumber(), phoneDriverText.getText()))
-                    //{
-                        //BlankFieldAlert("Same phoneNumber of driver error");
-                        //resetFieldDriver();
-                        //return;
-                    //}
+                    BlankFieldAlert("Can't update ID of Driver");
+                    resetFieldDriver();
+                    return;
+                }
+                if(!Objects.equals(seleted.getPhoneNumber(), phoneDriverText.getText()))
+                {
+                    BlankFieldAlert("Can't update phoneNumber of Driver");
+                    resetFieldDriver();
+                    return;
                 }
                 seleted.setId(driverIDText.getText());
                 seleted.setName(nameDriverText.getText());
@@ -779,10 +779,13 @@ public class dashboardController implements Initializable
                 seleted.setAddress(addressDriverText.getText());
                 seleted.setStatus(statusDriverComboBox.getValue());
 
-                LocalDate localDate = issueDatePicker.getValue();
+                LocalDate localIssueDate = issueDatePicker.getValue();
+                LocalDate localExpiryDate = localIssueDate.plusYears(5);
                 String pattern = "dd-MM-yyyy";
-                String datePattern = localDate.format(DateTimeFormatter.ofPattern(pattern));
-                seleted.getLicense().setExpiryDate(datePattern);
+                String dateIssue = localIssueDate.format(DateTimeFormatter.ofPattern(pattern));
+                String dateExpiry = localExpiryDate.format(DateTimeFormatter.ofPattern(pattern));
+                seleted.getLicense().setIssueDate(dateIssue);
+                seleted.getLicense().setExpiryDate(dateExpiry);
 
 
                 try {
@@ -799,6 +802,29 @@ public class dashboardController implements Initializable
 
     }
 
+    public void researchDriver() {
+        FilteredList<Driver> filteredDataDriver = new FilteredList<>(driverList, b -> true);
+        researchDriverText.textProperty().addListener((observable, oldValue, newValue) -> {
+            filteredDataDriver.setPredicate(vehicle -> {
+                if (newValue == null || newValue.isEmpty() || newValue.isBlank()) {
+                    return true;
+                }
+                String lowerCaseFilter = newValue.toLowerCase();
+                if (vehicle.getId().toLowerCase().contains(lowerCaseFilter)) {
+                    return true; // Filter matches first name.
+                } else // Does not match.
+                    if (vehicle.getName().toString().toLowerCase().contains(lowerCaseFilter)) {
+                        return true; // Filter matches last name.
+                    }
+                    else return vehicle.getPhoneNumber().toLowerCase().contains(lowerCaseFilter);
+            });
+        });
+        SortedList<Driver> sortedData = new SortedList<>(filteredDataDriver);
+        sortedData.comparatorProperty().bind(TableListDriver.comparatorProperty());
+        TableListDriver.setItems(sortedData);
+    }
+
+
     public void resetFieldDriver() {
         driverIDText.setText(null);
         nameDriverText.setText(null);
@@ -809,9 +835,42 @@ public class dashboardController implements Initializable
         TableListDriver.getSelectionModel().select(null);
     }
 
+
+    public void mouseRightClicktoHistoryInfoDriver() {
+        ContextMenu contextMenu = new ContextMenu();
+        MenuItem menuItem1 = new MenuItem("Xem lịch sử chuyến đi");
+        menuItem1.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                try {
+                    viewHistoryInfoDriver();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+        contextMenu.getItems().add(menuItem1);
+        TableListDriver.setContextMenu(contextMenu);
+    }
+
+
+    public void viewHistoryInfoDriver() throws IOException {
+        Driver selected = TableListDriver.getSelectionModel().getSelectedItem();
+        DriverHistoryInfoController.selected = selected;
+        Stage newStage = new Stage();
+        newStage.setTitle("History of Driver with ID: " + selected.getId());
+        Parent root = FXMLLoader.load(getClass().getResource("/driverHistoryInfo.fxml"));
+        newStage.setScene(new Scene(root));
+        newStage.setResizable(false);
+        newStage.show();
+    }
+
+
     public void mouseClicktoUnselectDriver() {
         TableListDriver.getSelectionModel().select(null);
     }
+
+
     public void mouseClicktoselecrDriver() {
         Driver selected = TableListDriver.getSelectionModel().getSelectedItem();
         if(selected==null) return;
@@ -821,9 +880,10 @@ public class dashboardController implements Initializable
         addressDriverText.setText(selected.getAddress());
         statusDriverComboBox.getSelectionModel().select(selected.getStatus());
 
-        LocalDate localDate = LocalDate.parse(selected.getLicense().getExpiryDate(), DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+        LocalDate localDate = LocalDate.parse(selected.getLicense().getIssueDate(), DateTimeFormatter.ofPattern("dd-MM-yyyy"));
         issueDatePicker.setValue(localDate);
     }
+
 
     public Boolean warningBlankFieldDriver() {
         return driverIDText.getText().isEmpty()
@@ -841,23 +901,7 @@ public class dashboardController implements Initializable
     }
 
     ////////////////////////////////////////////////////////
-    public void controllDriver(ActionEvent e) throws Exception {
-        if(e.getSource()==addDriverButton)
-            addDriver();
-        else if(e.getSource()==removeDriverButton)
-            removeDriver();
-        else if(e.getSource()==clearFilledButton)
-            resetFieldDriver();
-        else if(e.getSource()==updateDriverButton)
-            updateDriver();
-    }
 
-    public void showHome() {
-        homeNumberVehicelLabel.setText(String.valueOf(vehicleList.size()));
-        homeNumberDriverLabel.setText(String.valueOf(driverList.size()));
-        homeNumberTripLabel.setText(String.valueOf(tripList.size()));
-    }
-    /////////////////////////////////////////////////////////////////////////////////
     public void showTrip() throws Exception {
         tripList.clear();
         tripList = connection.getOnDutyTrip();
@@ -891,6 +935,7 @@ public class dashboardController implements Initializable
         revenueTripColumn.setCellValueFactory(new PropertyValueFactory<Trip, String>("Revenue"));
         TripTable.setItems(tripList);
     }
+
     public void typeVehicleChange() throws Exception {
         Vehicle v = FireBase.getInstance().getVehicle(plateNumberTripText.getText());
         if (plateNumberTripText.getText().isEmpty()) {
@@ -929,38 +974,17 @@ public class dashboardController implements Initializable
             BusField.setVisible(true);
         }
     }
-    public void initSuggestedLocation(TextField text, ContextMenu menu, boolean begin) {
-        text.setOnAction(event -> {
-            String t = text.getText();
-            menu.getItems().clear();
-            try {
-                MapRequest i = MapRequest.getInstance();
-                List<Hit> listHit = i.getCoordinateList(t);
-                for(Hit hit : listHit)
-                {
-                    MenuItem menuItem = new MenuItem(hit.getName() + " " + hit.getCity() + " " + hit.getCountry());
-                    menuItem.setOnAction(menuEvent -> {
-                        text.setText(menuItem.getText());
-                        if (begin) selectedHitBegin = hit;
-                        else selectedHitEnd = hit;
-                    });
-                    menu.getItems().add(menuItem);
-                }
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-            menu.show(text, text.getScene().getWindow().getX() + text.getLayoutX(),
-                    text.getScene().getWindow().getY() + text.getLayoutY() + text.getHeight());
-        });
-    }
+
     public String dateTimetoString(LocalDateTime localDateTime) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
         return localDateTime.format(formatter);
     }
+
     public LocalDateTime stringtoDateTime(String s) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
         return LocalDateTime.parse(s, formatter);
     }
+
     public void setCar(Car car) {
         car.setCustomername(carCustomerNameText.getText());
         car.setCustomerid(carCustomerIDText.getText());
@@ -975,27 +999,32 @@ public class dashboardController implements Initializable
         datePattern = localDate.format(DateTimeFormatter.ofPattern(pattern));
         car.setReturnDate(datePattern);
     }
+
     public void setTruck(Truck truck) {
         truck.setGoodsType(truckGoodTypeText.getText());
         truck.setGoodsWeight(Double.parseDouble(truckGoodWeightText.getText()));
     }
+
     public void setContainer(Container container) {
         container.setGoodsType(containerGoodTypeText.getText());
         container.setGoodsWeight(Double.parseDouble(containerGoodWeightText.getText()));
     }
+
     public void setBus(Bus bus) {
         bus.setNumberOfCustomer(Integer.parseInt(busNumCustomerText.getText()));
         bus.setPricePerSeat(Double.parseDouble(busPriceText.getText()));
         bus.setNumberOfCustomer(Integer.parseInt(busNumSeatText.getText()));
     }
+
     public boolean warningBlankFieldTrip() {
         return beginTripText.getText().isEmpty()
                 || endTripText.getText().isEmpty()
                 || plateNumberTripText.getText().isEmpty()
                 || driverIDTripText.getText().isEmpty()
                 || fuelTripComboBox.getSelectionModel().getSelectedItem() == null;
-            //doanh thu
+        //doanh thu
     }
+
     public void updateInforTrip() throws Exception {
         if (warningBlankFieldTrip()) {
             BlankFieldAlert("Please fill all blank fields");
@@ -1069,6 +1098,7 @@ public class dashboardController implements Initializable
         costText.setText(String.valueOf(cost));
         distanceCoverTripText.setText(String.valueOf(routeMatrix.getDistance()/1000));
     }
+
     public void addTrip() throws Exception {
         if (endTripDatePicker.getText().isEmpty() || costText.getText().isEmpty()) {
             BlankFieldAlert("Hãy tính toán chuyến đi trước");
@@ -1154,6 +1184,8 @@ public class dashboardController implements Initializable
         showTrip();
         resetFieldTrip();
     }
+
+
     public void refreshTrip() throws Exception {
         FireBase fireBase = FireBase.getInstance();
         showTrip();
@@ -1186,6 +1218,8 @@ public class dashboardController implements Initializable
         showTrip();
         resetFieldTrip();
     }
+
+
     public void mouseSelectedTrip() throws Exception {
         Trip selected = TripTable.getSelectionModel().getSelectedItem();
         if (selected == null) return;
@@ -1228,6 +1262,8 @@ public class dashboardController implements Initializable
             default -> {}
         }
     }
+
+
     public void resetFieldTrip() {
         beginTripText.setText("");
         endTripText.setText("");
@@ -1255,6 +1291,80 @@ public class dashboardController implements Initializable
         busNumSeatText.setText("");
     }
 
+
+    public void mouseRightClickTriptoMap(){
+        ContextMenu menuBegin = new ContextMenu();
+        ContextMenu menuEnd = new ContextMenu();
+        initSuggestedLocation(beginTripText, menuBegin, true);
+        initSuggestedLocation(endTripText, menuEnd, false);
+        beginTripDatePicker.setDateTimeValue(LocalDateTime.now());
+        ContextMenu contextMenuTrip = new ContextMenu();
+        MenuItem menuItemTrip1 = new MenuItem("Xem chi tiết bản đồ");
+        menuItemTrip1.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                Trip selected = TripTable.getSelectionModel().getSelectedItem();
+
+                try {
+                    MapRequest i = MapRequest.getInstance();
+                    RouteMatrix routeMatrix = i.getDistanceMatrix(selected.getBegin().getList(), selected.getEnd().getList());
+                    System.out.println("-----------");
+                    mainMap.display(routeMatrix.getCoordinates());
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+        contextMenuTrip.getItems().add(menuItemTrip1);
+        TripTable.setContextMenu(contextMenuTrip);
+    }
+
+
+
+
+    ///////////////////////////////////////////////////////
+    public void controllDriver(ActionEvent e) throws Exception {
+        if(e.getSource()==addDriverButton)
+            addDriver();
+        else if(e.getSource()==removeDriverButton)
+            removeDriver();
+        else if(e.getSource()==clearFilledButton)
+            resetFieldDriver();
+        else if(e.getSource()==updateDriverButton)
+            updateDriver();
+    }
+
+
+    public void showHome() {
+        homeNumberVehicelLabel.setText(String.valueOf(vehicleList.size()));
+        homeNumberDriverLabel.setText(String.valueOf(driverList.size()));
+        homeNumberTripLabel.setText(String.valueOf(tripList.size()));
+    }
+
+    public void initSuggestedLocation(TextField text, ContextMenu menu, boolean begin) {
+        text.setOnAction(event -> {
+            String t = text.getText();
+            menu.getItems().clear();
+            try {
+                MapRequest i = MapRequest.getInstance();
+                List<Hit> listHit = i.getCoordinateList(t);
+                for(Hit hit : listHit)
+                {
+                    MenuItem menuItem = new MenuItem(hit.getName() + " " + hit.getCity() + " " + hit.getCountry());
+                    menuItem.setOnAction(menuEvent -> {
+                        text.setText(menuItem.getText());
+                        if (begin) selectedHitBegin = hit;
+                        else selectedHitEnd = hit;
+                    });
+                    menu.getItems().add(menuItem);
+                }
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+            menu.show(text, text.getScene().getWindow().getX() + text.getLayoutX(),
+                    text.getScene().getWindow().getY() + text.getLayoutY() + text.getHeight());
+        });
+    }
     public void switchForm(ActionEvent e){
         if (e.getSource()==HomeButton){
             showHome();
@@ -1278,13 +1388,14 @@ public class dashboardController implements Initializable
         else if (e.getSource()==LogOutButton){
             logOut();
         }
-        else {
+        else if(e.getSource()==TripButton){
             HomePane.setVisible(false);
             VehiclePane.setVisible(false);
             DriverPane.setVisible(false);
             TripPane.setVisible(true);
         }
     }
+
 
     public void logOut() {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
@@ -1294,7 +1405,6 @@ public class dashboardController implements Initializable
         Optional<ButtonType> option = alert.showAndWait();
         try {
             if(option.get().equals(ButtonType.OK)) {
-                stopTime = true;
                 LogOutButton.getScene().getWindow().hide();
 
                 Stage stage = new Stage();
@@ -1308,20 +1418,21 @@ public class dashboardController implements Initializable
         } catch (Exception e) {e.printStackTrace();}
     }
 
-    public void Timenow() {
-        Thread thread = new Thread( () ->{
-            SimpleDateFormat sdf = new SimpleDateFormat("hh:mm:ss");
-            while(!stopTime) {
-                try {
-                    Thread.sleep(1000);
-                } catch (Exception e) {e.printStackTrace();}
-                final String timenow = sdf.format(new Date());
-                Platform.runLater( ()-> {
-                    timeLabel.setText(timenow);
-                });
-            }
-        });
-        thread.start();
-    }
+
+//    public void Timenow() {
+//        Thread thread = new Thread( () ->{
+//            SimpleDateFormat sdf = new SimpleDateFormat("hh:mm:ss");
+//            while(!stopTime) {
+//                try {
+//                    Thread.sleep(1000);
+//                } catch (Exception e) {e.printStackTrace();}
+//                final String timenow = sdf.format(new Date());
+//                Platform.runLater( ()-> {
+//                    timeLabel.setText(timenow);
+//                });
+//            }
+//        });
+//        thread.start();
+//    }
 
 }

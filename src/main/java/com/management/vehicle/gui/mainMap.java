@@ -9,6 +9,7 @@ import java.util.Set;
 import javax.swing.JFrame;
 
 import com.management.vehicle.trip.Coordinate;
+import org.checkerframework.checker.units.qual.C;
 import org.jxmapviewer.JXMapViewer;
 import org.jxmapviewer.OSMTileFactoryInfo;
 import org.jxmapviewer.painter.CompoundPainter;
@@ -79,6 +80,55 @@ public class mainMap
         Set<Waypoint> waypoints = new HashSet<Waypoint>(Arrays.asList(
                 new DefaultWaypoint(begin_map),
                 new DefaultWaypoint(end_map)));
+
+        // Create a waypoint painter that takes all the waypoints
+        WaypointPainter<Waypoint> waypointPainter = new WaypointPainter<Waypoint>();
+        waypointPainter.setWaypoints(waypoints);
+
+        // Create a compound painter that uses both the route-painter and the waypoint-painter
+        List<Painter<JXMapViewer>> painters = new ArrayList<Painter<JXMapViewer>>();
+        painters.add(routePainter);
+        painters.add(waypointPainter);
+
+        CompoundPainter<JXMapViewer> painter = new CompoundPainter<JXMapViewer>(painters);
+        mapViewer.setOverlayPainter(painter);
+    }
+
+    public static void display(List<Coordinate> listCoordinate)
+    {
+        JXMapViewer mapViewer = new JXMapViewer();
+
+        // Display the viewer in a JFrame
+        JFrame frame = new JFrame("JXMapviewer2 Example 2");
+        frame.getContentPane().add(mapViewer);
+        frame.setSize(800, 600);
+        frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+        frame.setVisible(true);
+
+        // Create a TileFactoryInfo for OpenStreetMap
+        TileFactoryInfo info = new OSMTileFactoryInfo();
+        DefaultTileFactory tileFactory = new DefaultTileFactory(info);
+        mapViewer.setTileFactory(tileFactory);
+
+        List<GeoPosition> track = new ArrayList<>();
+
+        for(Coordinate coordinate: listCoordinate) {
+            int[] lngDMS = convertToDMS(coordinate.getLng());
+            int[] latDMS = convertToDMS(coordinate.getLat());
+
+            track.add(new GeoPosition(latDMS[0],latDMS[1],latDMS[2],lngDMS[0],lngDMS[1],lngDMS[2]));
+        }
+
+        RoutePainter routePainter = new RoutePainter(track);
+
+        // Set the focus
+        mapViewer.zoomToBestFit(new HashSet<GeoPosition>(track), 0.7);
+
+
+        // Create waypoints from the geo-positions
+        Set<Waypoint> waypoints = new HashSet<Waypoint>(Arrays.asList(
+                new DefaultWaypoint(track.get(0)),
+                new DefaultWaypoint(track.get(track.size() - 1))));
 
         // Create a waypoint painter that takes all the waypoints
         WaypointPainter<Waypoint> waypointPainter = new WaypointPainter<Waypoint>();

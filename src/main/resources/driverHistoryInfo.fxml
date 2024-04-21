@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane fx:id="TripPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="700.0" prefWidth="921.0" style="-fx-border-color: black;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.management.vehicle.gui.DriverHistoryInfoController">
+   <children>
+      <AnchorPane layoutX="31.0" layoutY="22.0" prefHeight="246.0" prefWidth="872.0" style="-fx-border-color: #3a89bd; -fx-border-radius: 30; -fx-border-width: 2; -fx-background-color: LightGray; -fx-background-radius: 30;">
+         <children>
+            <Label layoutX="321.0" layoutY="14.0" text="THÔNG TIN CHI TIẾT">
+               <font>
+                  <Font size="25.0" />
+               </font>
+            </Label>
+            <Label fx:id="driverIDLabel" layoutX="281.0" layoutY="68.0" text="Label">
+               <font>
+                  <Font name="Arial" size="16.0" />
+               </font>
+            </Label>
+            <Label fx:id="nameDriverLabel" layoutX="281.0" layoutY="108.0" text="Label">
+               <font>
+                  <Font name="Arial" size="16.0" />
+               </font>
+            </Label>
+            <Label fx:id="phoneDriverLabel" layoutX="281.0" layoutY="148.0" text="Label">
+               <font>
+                  <Font name="Arial" size="16.0" />
+               </font>
+            </Label>
+            <Label fx:id="addressDriverLabel" layoutX="281.0" layoutY="188.0" text="Label">
+               <font>
+                  <Font name="Arial" size="16.0" />
+               </font>
+            </Label>
+            <Text layoutX="171.0" layoutY="85.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Mã ID:">
+               <font>
+                  <Font name="Arial" size="16.0" />
+               </font>
+            </Text>
+            <Text layoutX="171.0" layoutY="125.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Họ và Tên:">
+               <font>
+                  <Font name="Arial" size="16.0" />
+               </font>
+            </Text>
+            <Text layoutX="171.0" layoutY="165.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Số điện thoại:">
+               <font>
+                  <Font name="Arial" size="16.0" />
+               </font>
+            </Text>
+            <Text layoutX="170.0" layoutY="205.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Địa chỉ">
+               <font>
+                  <Font name="Arial" size="16.0" />
+               </font>
+            </Text>
+            <Label fx:id="licenseDriverLabel" layoutX="593.0" layoutY="60.0" text="Label">
+               <font>
+                  <Font name="Arial" size="16.0" />
+               </font>
+            </Label>
+            <Label fx:id="issueDateDriverLabel" layoutX="593.0" layoutY="100.0" text="Label">
+               <font>
+                  <Font name="Arial" size="16.0" />
+               </font>
+            </Label>
+            <Label fx:id="statusDriverLabel" layoutX="593.0" layoutY="140.0" text="Label">
+               <font>
+                  <Font name="Arial" size="16.0" />
+               </font>
+            </Label>
+            <Text layoutX="502.0" layoutY="77.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Bằng lái:">
+               <font>
+                  <Font name="Arial" size="16.0" />
+               </font>
+            </Text>
+            <Text layoutX="502.0" layoutY="117.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Ngày cấp:">
+               <font>
+                  <Font name="Arial" size="16.0" />
+               </font>
+            </Text>
+            <Text layoutX="502.0" layoutY="157.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Trạng thái:">
+               <font>
+                  <Font name="Arial" size="16.0" />
+               </font>
+            </Text>
+         </children>
+      </AnchorPane>
+      <AnchorPane layoutX="33.0" layoutY="288.0" prefHeight="390.0" prefWidth="872.0" style="-fx-border-color: #3a89bd; -fx-border-radius: 30; -fx-border-width: 2; -fx-background-color: #3a89bd; -fx-background-radius: 30;">
+         <children>
+            <Label layoutX="324.0" layoutY="14.0" text="LỊCH SỬ CHUYẾN ĐI">
+               <font>
+                  <Font size="25.0" />
+               </font>
+            </Label>
+            <TableView fx:id="historyTripDriverTable" layoutX="32.0" layoutY="64.0" prefHeight="298.0" prefWidth="807.0">
+               <columns>
+                  <TableColumn fx:id="beginTripColumn" prefWidth="184.79998779296875" resizable="false" text="Địa điểm đi" />
+                  <TableColumn fx:id="endTripColumn" prefWidth="183.1999969482422" resizable="false" text="Địa điểm đến" />
+                  <TableColumn fx:id="beginDateTripColumn" prefWidth="108.79998779296875" resizable="false" text="Thời gian đi" />
+                  <TableColumn fx:id="endDateTripColumn" prefWidth="104.800048828125" resizable="false" text="Thời gian đến" />
+                  <TableColumn fx:id="plateNumberTripColumn" prefWidth="85.599853515625" resizable="false" text="Biển số xe" />
+                  <TableColumn fx:id="tripCostColumn" minWidth="0.0" prefWidth="67.2000732421875" resizable="false" text="Chi phí" />
+                  <TableColumn fx:id="tripRevenueColumn" prefWidth="70.4000122070313" resizable="false" text="Doanh thu" />
+               </columns>
+            </TableView>
+            <JFXButton layoutX="32.0" layoutY="20.0" onAction="#refreshData" style="-fx-background-color: lightgray;" text="Refresh" />
+         </children>
+      </AnchorPane>
+   </children>
+</AnchorPane>

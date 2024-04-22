@@ -2,6 +2,8 @@ package com.management.vehicle.gui;
 
 import com.management.vehicle.driver.Driver;
 import com.jfoenix.controls.JFXButton;
+import com.management.vehicle.driver.DriverStatus;
+import com.management.vehicle.request.FireBase;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -9,10 +11,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Label;
+import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
@@ -29,15 +28,11 @@ public class driverController implements Initializable  {
     @FXML
     private JFXButton Home;
     @FXML
-    private JFXButton RequestLeave;
-    @FXML
     private JFXButton RequestTrip;
     @FXML
     private JFXButton LogOut;
     @FXML
     private AnchorPane HomePane;
-    @FXML
-    private AnchorPane LeavePane;
     @FXML
     private AnchorPane TripPane;
     @FXML
@@ -56,33 +51,79 @@ public class driverController implements Initializable  {
     private Label ExpiryDate;
     @FXML
     private Label Status;
+    @FXML
+    private JFXButton leaveRequestButton;
+    @FXML
+    private JFXButton endLeaveRequestButton;
+
     private static Driver driver;
 
     public driverController() {}
 
-    public com.management.vehicle.driver.Driver getDriver() {
+    public Driver getDriver() {
         return driver;
     }
 
     public static void setDriver(com.management.vehicle.driver.Driver d) {
         driver = d;
     }
-
+    public void leaveRequestCreation() {
+        if (driver.getStatus() == DriverStatus.NONE) {
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Xác nhận thông tin");
+            alert.setHeaderText(null);
+            alert.setContentText("Do you want to request a leave?");
+            Optional<ButtonType> option = alert.showAndWait();
+            try {
+                if (option.get().equals(ButtonType.OK)) {
+                    driver.setStatus(DriverStatus.ON_LEAVE);
+                    FireBase.getInstance().editDriverStatus(driver.getId(), DriverStatus.ON_LEAVE);
+                    setInfo();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        else {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setHeaderText(null);
+            alert.setContentText("Your request is invalid");
+            alert.showAndWait();
+        }
+    }
+    public void endLeaveRequestCreation() {
+        if (driver.getStatus() == DriverStatus.ON_LEAVE) {
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Xác nhận thông tin");
+            alert.setHeaderText(null);
+            alert.setContentText("Do you want to end a leave?");
+            Optional<ButtonType> option = alert.showAndWait();
+            try {
+                if (option.get().equals(ButtonType.OK)) {
+                    driver.setStatus(DriverStatus.NONE);
+                    FireBase.getInstance().editDriverStatus(driver.getId(), DriverStatus.NONE);
+                    setInfo();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        else {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setHeaderText(null);
+            alert.setContentText("Your request is invalid");
+            alert.showAndWait();
+        }
+    }
     public void switchForm(ActionEvent e){
         if (e.getSource()==Home){
             HomePane.setVisible(true);
-            LeavePane.setVisible(false);
             TripPane.setVisible(false);
             setDate();
-        }
-        else if (e.getSource()==RequestLeave) {
-            HomePane.setVisible(false);
-            LeavePane.setVisible(true);
-            TripPane.setVisible(false);
+            setInfo();
         }
         else if(e.getSource()==RequestTrip) {
             HomePane.setVisible(false);
-            LeavePane.setVisible(false);
             TripPane.setVisible(true);
         }
         else {
@@ -162,12 +203,11 @@ public class driverController implements Initializable  {
         String Year = Integer.toString(date.getYear());
         Date.setText(Day + ", ngày " + DateOfMonth + " tháng " + Month + " năm " + Year);
     }
-    private void init() {
-        setInfo();
-        setDate();
-    }
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        init();
+        setInfo();
+        setDate();
+        HomePane.setVisible(true);
+        TripPane.setVisible(false);
     }
 }

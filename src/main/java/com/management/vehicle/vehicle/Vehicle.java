@@ -48,8 +48,9 @@ public class Vehicle {
         long daysFromLastRepair = Math.round(distanceCoverFromLastRepair/maintenanceCycleInKilometers*maintenanceCycleInDays);
         return date.plusDays(daysFromLastRepair).format(formatter);
     }
-    private int limitKilometers = 0;
-    private int maintenanceCycleInKilometers;
+
+    private double limitKilometers = 0;
+    private double maintenanceCycleInKilometers;
     private int maintenanceCycleInDays;
     private double distanceCoverFromLastRepair;
     private String last_repair_date;
@@ -88,7 +89,7 @@ public class Vehicle {
         this.fuel_v = fuel_v;
     }
 
-    public int getLimitKilometers() {
+    public double getLimitKilometers() {
         return limitKilometers;
     }
 
@@ -96,7 +97,7 @@ public class Vehicle {
         this.limitKilometers = limitKilometers;
     }
 
-    public int getMaintenanceCycleInKilometers() {
+    public double getMaintenanceCycleInKilometers() {
         return maintenanceCycleInKilometers;
     }
 

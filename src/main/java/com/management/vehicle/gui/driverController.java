@@ -31,10 +31,9 @@ import java.text.SimpleDateFormat;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
-import java.util.ResourceBundle;
+import java.util.*;
+
+import static com.management.vehicle.gui.dashboardController.BlankFieldAlert;
 
 public class driverController implements Initializable  {
     @FXML private JFXButton Home;
@@ -60,9 +59,16 @@ public class driverController implements Initializable  {
     @FXML private TableColumn<Trip, String> homePlateNumber;
     @FXML private TableColumn<Trip, String> homeCost;
     @FXML private TableColumn<Trip, String> homeRevenue;
+    @FXML private TextField beginLocationText;
+    @FXML private TextField endLocationText;
+    @FXML private DatePicker beginDatePicker;
+    @FXML private TextField plateNumberText;
+    @FXML private JFXButton tripRequestButton;
 
     private static Driver driver;
     private ObservableList<Trip> tripList = FXCollections.observableArrayList();
+    private Hit selectedHitBegin;
+    private Hit selectedHitEnd;
 
     public driverController() {}
 
@@ -99,7 +105,7 @@ public class driverController implements Initializable  {
     }
     public void showTrip() throws Exception {
         tripList.clear();
-        tripList = connection.getOnDutyTrip();
+        tripList = connection.getOnDutyTripConstraint(driver.getId());
         homeBeginDate.setCellValueFactory(new PropertyValueFactory<Trip, String>("begin_date"));
         homeEndDate.setCellValueFactory(new PropertyValueFactory<Trip, String>("end_date"));
         homeBeginLocation.setCellValueFactory(cellData -> {
@@ -151,6 +157,41 @@ public class driverController implements Initializable  {
             alert.setHeaderText(null);
             alert.setContentText("Your request is invalid");
             alert.showAndWait();
+        }
+    }
+    public void mouseRightClickTripToMap() {
+        ContextMenu contextMenuTrip = new ContextMenu();
+        MenuItem menuItemTrip1 = new MenuItem("Xem chi tiết bản đồ");
+        menuItemTrip1.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                Trip selected = homeTripTable.getSelectionModel().getSelectedItem();
+
+                try {
+                    MapRequest i = MapRequest.getInstance();
+                    RouteMatrix routeMatrix = i.getDistanceMatrix(selected.getBegin().getList(), selected.getEnd().getList());
+                    System.out.println("-----------");
+                    mainMap.display(routeMatrix.getCoordinates());
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+        contextMenuTrip.getItems().add(menuItemTrip1);
+        homeTripTable.setContextMenu(contextMenuTrip);
+    }
+    public void addTripRequest() {
+        if (beginLocationText.getText().isEmpty() || endLocationText.getText().isEmpty() ||
+beginDatePicker.getValue() == null || plateNumberText.getText().isEmpty())
+            BlankFieldAlert("Please fill all blank fields");
+        else {
+            Trip newTrip = new Trip();
+            UUID uuid = UUID.randomUUID();
+            newTrip.setTripID(uuid.toString());
+            newTrip.setBeginLocation(beginLocationText.getText());
+            newTrip.setEndLocation(endLocationText.getText());
+            newTrip.setDriverID(driver.getId());
+
         }
     }
     public void switchForm(ActionEvent e){
@@ -241,61 +282,19 @@ public class driverController implements Initializable  {
         String Year = Integer.toString(date.getYear());
         Date.setText(Day + ", ngày " + DateOfMonth + " tháng " + Month + " năm " + Year);
     }
-//    public void initSuggestedLocation(TextField text, ContextMenu menu, boolean begin) {
-//        text.setOnAction(event -> {
-//            String t = text.getText();
-//            menu.getItems().clear();
-//            try {
-//                MapRequest i = MapRequest.getInstance();
-//                List<Hit> listHit = i.getCoordinateList(t);
-//                for(Hit hit : listHit)
-//                {
-//                    MenuItem menuItem = new MenuItem(hit.getName() + " " + hit.getCity() + " " + hit.getCountry());
-//                    menuItem.setOnAction(menuEvent -> {
-//                        text.setText(menuItem.getText());
-//                        if (begin) selectedHitBegin = hit;
-//                        else selectedHitEnd = hit;
-//                    });
-//                    menu.getItems().add(menuItem);
-//                }
-//            } catch (Exception e) {
-//                throw new RuntimeException(e);
-//            }
-//            menu.show(text, text.getScene().getWindow().getX() + text.getLayoutX(),
-//                    text.getScene().getWindow().getY() + text.getLayoutY() + text.getHeight());
-//        });
-//    }
-//    void mouseRightClickTriptoMap() {
-//        ContextMenu menuBegin = new ContextMenu();
-//        ContextMenu menuEnd = new ContextMenu();
-//        initSuggestedLocation(beginTripText, menuBegin, true);
-//        initSuggestedLocation(endTripText, menuEnd, false);
-//        beginTripDatePicker.setDateTimeValue(LocalDateTime.now());
-//        ContextMenu contextMenuTrip = new ContextMenu();
-//        MenuItem menuItemTrip1 = new MenuItem("Xem chi tiết bản đồ");
-//        menuItemTrip1.setOnAction(new EventHandler<ActionEvent>() {
-//            @Override
-//            public void handle(ActionEvent event) {
-//                Trip selected = TripTable.getSelectionModel().getSelectedItem();
-//
-//                try {
-//                    MapRequest i = MapRequest.getInstance();
-//                    RouteMatrix routeMatrix = i.getDistanceMatrix(selected.getBegin().getList(), selected.getEnd().getList());
-//                    System.out.println("-----------");
-//                    mainMap.display(routeMatrix.getCoordinates());
-//                } catch (Exception e) {
-//                    throw new RuntimeException(e);
-//                }
-//            }
-//        });
-//        contextMenuTrip.getItems().add(menuItemTrip1);
-//        TripTable.setContextMenu(contextMenuTrip);
-//    }
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         setInfo();
         setDate();
         HomePane.setVisible(true);
         TripPane.setVisible(false);
+
+        try {
+            showTrip();
+        } catch (Exception e) {
+            System.out.println("error on loading trip");
+            throw new RuntimeException(e);
+        }
+        this.mouseRightClickTripToMap();
     }
 }

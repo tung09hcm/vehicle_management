@@ -325,6 +325,18 @@ busNumChairText.getText().isEmpty() || busTicketPriceText.getText().isEmpty() ||
                 newTrip.setBegin_date(beginDatePicker.getValue().format(DateTimeFormatter.ofPattern(pattern)));
                 newTrip.setFuel_trip(fuelComboBox.getValue());
                 newTrip.setPlateNumber(busPlateNumberComboBox.getValue());
+                newTrip.setCost(0);
+                newTrip.setRevenue(0);
+                try {
+                    FireBase fireBase = FireBase.getInstance();
+                    fireBase.editDriverStatus(driver.getId(), DriverStatus.ON_DUTY);
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+
+                FireBase.getInstance().addTrip(newTrip);
+                homeShowTrip();
+                requestShowTrip();
             }
         }
         else if (vehicleTypeComboBox.getValue() == TypeVehicle.car) {
@@ -343,6 +355,18 @@ busNumChairText.getText().isEmpty() || busTicketPriceText.getText().isEmpty() ||
                 newTrip.setBegin_date(beginDatePicker.getValue().format(DateTimeFormatter.ofPattern(pattern)));
                 newTrip.setFuel_trip(fuelComboBox.getValue());
                 newTrip.setPlateNumber(carPlateNumberComboBox.getValue());
+                newTrip.setCost(0);
+                newTrip.setRevenue(0);
+                try {
+                    FireBase fireBase = FireBase.getInstance();
+                    fireBase.editDriverStatus(driver.getId(), DriverStatus.ON_DUTY);
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+
+                FireBase.getInstance().addTrip(newTrip);
+                homeShowTrip();
+                requestShowTrip();
             }
         }
         else if (vehicleTypeComboBox.getValue() == TypeVehicle.container) {
@@ -360,6 +384,18 @@ busNumChairText.getText().isEmpty() || busTicketPriceText.getText().isEmpty() ||
                 newTrip.setBegin_date(beginDatePicker.getValue().format(DateTimeFormatter.ofPattern(pattern)));
                 newTrip.setFuel_trip(fuelComboBox.getValue());
                 newTrip.setPlateNumber(containerPlateNumberComboBox.getValue());
+                newTrip.setCost(0);
+                newTrip.setRevenue(0);
+                try {
+                    FireBase fireBase = FireBase.getInstance();
+                    fireBase.editDriverStatus(driver.getId(), DriverStatus.ON_DUTY);
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+
+                FireBase.getInstance().addTrip(newTrip);
+                homeShowTrip();
+                requestShowTrip();
             }
         }
         else if (vehicleTypeComboBox.getValue() == TypeVehicle.truck) {

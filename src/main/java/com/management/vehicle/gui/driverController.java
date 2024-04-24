@@ -91,6 +91,14 @@ public class driverController implements Initializable  {
     @FXML private ComboBox<String> truckPlateNumberComboBox;
     @FXML private TextField truckGoodsTypeText;
     @FXML private TextField truckGoodsWeightText;
+    @FXML private TableView<Trip> requestTripTable;
+    @FXML private TableColumn<Trip, String> requestBeginLocation;
+    @FXML private TableColumn<Trip, String> requestEndLocation;
+    @FXML private TableColumn<Trip, String> requestBeginDate;
+    @FXML private TableColumn<Trip, String> requestEndDate;
+    @FXML private TableColumn<Trip, String> requestPlateNumber;
+    @FXML private TableColumn<Trip, String> requestCost;
+    @FXML private TableColumn<Trip, String> requestRevenue;
 
     @FXML private ObservableList<fuel> fuelObservableList = FXCollections.observableArrayList(fuel.DIESEL, fuel.RON95, fuel.RON97);
     @FXML private ObservableList<TypeVehicle> vehicleTypeObservableList = FXCollections.observableArrayList(TypeVehicle.bus, TypeVehicle.car, TypeVehicle.container, TypeVehicle.truck);
@@ -99,7 +107,8 @@ public class driverController implements Initializable  {
     @FXML private ObservableList<String> containerPlateNumberList = getPlateNumberVehicle(TypeVehicle.container);
     @FXML private ObservableList<String> truckPlateNumberList = getPlateNumberVehicle(TypeVehicle.truck);
     private static Driver driver;
-    private ObservableList<Trip> tripList = FXCollections.observableArrayList();
+    private ObservableList<Trip> homeTripList = FXCollections.observableArrayList();
+    private ObservableList<Trip> requestTripList = FXCollections.observableArrayList();
     private Hit selectedHitBegin;
     private Hit selectedHitEnd;
 
@@ -112,33 +121,9 @@ public class driverController implements Initializable  {
     public static void setDriver(com.management.vehicle.driver.Driver d) {
         driver = d;
     }
-    public void leaveRequestCreation() {
-        if (driver.getStatus() == DriverStatus.NONE) {
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-            alert.setTitle("Xác nhận thông tin");
-            alert.setHeaderText(null);
-            alert.setContentText("Do you want to request a leave?");
-            Optional<ButtonType> option = alert.showAndWait();
-            try {
-                if (option.get().equals(ButtonType.OK)) {
-                    driver.setStatus(DriverStatus.ON_LEAVE);
-                    FireBase.getInstance().editDriverStatus(driver.getId(), DriverStatus.ON_LEAVE);
-                    setInfo();
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        else {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setHeaderText(null);
-            alert.setContentText("Your request is invalid");
-            alert.showAndWait();
-        }
-    }
-    public void showTrip() throws Exception {
-        tripList.clear();
-        tripList = connection.getOnDutyTripConstraint(driver.getId());
+    public void homeShowTrip() throws Exception {
+        homeTripList.clear();
+        homeTripList = connection.getOnDutyTripConstraint(driver.getId());
         homeBeginDate.setCellValueFactory(new PropertyValueFactory<Trip, String>("begin_date"));
         homeEndDate.setCellValueFactory(new PropertyValueFactory<Trip, String>("end_date"));
         homeBeginLocation.setCellValueFactory(cellData -> {
@@ -166,7 +151,63 @@ public class driverController implements Initializable  {
         homePlateNumber.setCellValueFactory(new PropertyValueFactory<Trip, String>("plateNumber"));
         homeCost.setCellValueFactory(new PropertyValueFactory<Trip, String>("cost"));
         homeRevenue.setCellValueFactory(new PropertyValueFactory<Trip, String>("revenue"));
-        homeTripTable.setItems(tripList);
+        homeTripTable.setItems(homeTripList);
+    }
+    public void requestShowTrip() throws Exception {
+        requestTripList.clear();
+        requestTripList = connection.getOnDutyTripConstraint(driver.getId());
+        requestBeginDate.setCellValueFactory(new PropertyValueFactory<Trip, String>("begin_date"));
+        requestEndDate.setCellValueFactory(new PropertyValueFactory<Trip, String>("end_date"));
+        requestBeginLocation.setCellValueFactory(cellData -> {
+            Trip trip = cellData.getValue();
+            Coordinate coord = trip.getBegin();
+            String address = null;
+            try {
+                address = MapRequest.getInstance().getAddressFromCoordinate(coord);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+            return new SimpleObjectProperty<>(address);
+        });
+        requestEndLocation.setCellValueFactory(cellData -> {
+            Trip trip = cellData.getValue();
+            Coordinate coord = trip.getEnd();
+            String address = null;
+            try {
+                address = MapRequest.getInstance().getAddressFromCoordinate(coord);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+            return new SimpleObjectProperty<>(address);
+        });
+        requestPlateNumber.setCellValueFactory(new PropertyValueFactory<Trip, String>("plateNumber"));
+        requestCost.setCellValueFactory(new PropertyValueFactory<Trip, String>("cost"));
+        requestRevenue.setCellValueFactory(new PropertyValueFactory<Trip, String>("revenue"));
+        requestTripTable.setItems(requestTripList);
+    }
+    public void leaveRequestCreation() {
+        if (driver.getStatus() == DriverStatus.NONE) {
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Xác nhận thông tin");
+            alert.setHeaderText(null);
+            alert.setContentText("Do you want to request a leave?");
+            Optional<ButtonType> option = alert.showAndWait();
+            try {
+                if (option.get().equals(ButtonType.OK)) {
+                    driver.setStatus(DriverStatus.ON_LEAVE);
+                    FireBase.getInstance().editDriverStatus(driver.getId(), DriverStatus.ON_LEAVE);
+                    setInfo();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        else {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setHeaderText(null);
+            alert.setContentText("Your request is invalid");
+            alert.showAndWait();
+        }
     }
     public void endLeaveRequestCreation() {
         if (driver.getStatus() == DriverStatus.ON_LEAVE) {
@@ -192,7 +233,7 @@ public class driverController implements Initializable  {
             alert.showAndWait();
         }
     }
-    public void mouseRightClickTripToMap() {
+    public void homeMouseRightClickTripToMap() {
         ContextMenu contextMenuTrip = new ContextMenu();
         MenuItem menuItemTrip1 = new MenuItem("Xem chi tiết bản đồ");
         menuItemTrip1.setOnAction(new EventHandler<ActionEvent>() {
@@ -213,7 +254,28 @@ public class driverController implements Initializable  {
         contextMenuTrip.getItems().add(menuItemTrip1);
         homeTripTable.setContextMenu(contextMenuTrip);
     }
-    public void addTripRequest() {
+    public void requestMouseRightClickTripToMap() {
+        ContextMenu contextMenuTrip = new ContextMenu();
+        MenuItem menuItemTrip1 = new MenuItem("Xem chi tiết bản đồ");
+        menuItemTrip1.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                Trip selected = requestTripTable.getSelectionModel().getSelectedItem();
+
+                try {
+                    MapRequest i = MapRequest.getInstance();
+                    RouteMatrix routeMatrix = i.getDistanceMatrix(selected.getBegin().getList(), selected.getEnd().getList());
+                    System.out.println("-----------");
+                    mainMap.display(routeMatrix.getCoordinates());
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+        contextMenuTrip.getItems().add(menuItemTrip1);
+        requestTripTable.setContextMenu(contextMenuTrip);
+    }
+    public void addTripRequest() throws Exception {
         if (beginLocationText.getText().isEmpty() || endLocationText.getText().isEmpty() ||
 beginDatePicker.getValue() == null || fuelComboBox.getSelectionModel().getSelectedItem() == null ||
 vehicleTypeComboBox.getSelectionModel().getSelectedItem() == null)
@@ -285,6 +347,18 @@ busNumChairText.getText().isEmpty() || busTicketPriceText.getText().isEmpty() ||
                 newTrip.setBegin_date(beginDatePicker.getValue().format(DateTimeFormatter.ofPattern(pattern)));
                 newTrip.setFuel_trip(fuelComboBox.getValue());
                 newTrip.setPlateNumber(truckPlateNumberComboBox.getValue());
+                newTrip.setCost(0);
+                newTrip.setRevenue(0);
+                try {
+                    FireBase fireBase = FireBase.getInstance();
+                    fireBase.editDriverStatus(driver.getId(), DriverStatus.ON_DUTY);
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+
+                FireBase.getInstance().addTrip(newTrip);
+                homeShowTrip();
+                requestShowTrip();
             }
         }
         else return;
@@ -427,11 +501,13 @@ busNumChairText.getText().isEmpty() || busTicketPriceText.getText().isEmpty() ||
         truckPlateNumberComboBox.setItems(truckPlateNumberList);
 
         try {
-            showTrip();
+            homeShowTrip();
+            requestShowTrip();
         } catch (Exception e) {
             System.out.println("error on loading trip");
             throw new RuntimeException(e);
         }
-        this.mouseRightClickTripToMap();
+        this.homeMouseRightClickTripToMap();
+        this.requestMouseRightClickTripToMap();
     }
 }

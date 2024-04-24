@@ -278,15 +278,15 @@
             </AnchorPane>
             <AnchorPane layoutX="100.0" layoutY="300.0" prefHeight="275.0" prefWidth="1000.0" style="-fx-background-color: #3a89bdb2;">
                <children>
-                  <TableView layoutX="20.0" layoutY="20.0" prefHeight="235.0" prefWidth="960.0">
+                  <TableView fx:id="requestTripTable" layoutX="10.0" layoutY="10.0" prefHeight="255.0" prefWidth="980.0">
                      <columns>
-                        <TableColumn prefWidth="100.0" text="ID chuyến đi" />
-                        <TableColumn prefWidth="150.0" text="Địa điểm bắt đầu" />
-                        <TableColumn prefWidth="150.0" text="Địa điểm kết thúc" />
-                        <TableColumn prefWidth="125.0" text="Ngày bắt đầu" />
-                        <TableColumn prefWidth="125.0" text="Ngày kết thúc" />
-                        <TableColumn prefWidth="150.0" text="Biển số xe" />
-                        <TableColumn prefWidth="160.0" text="Ngày tạo yêu cầu" />
+                        <TableColumn fx:id="requestBeginLocation" minWidth="-1.0" prefWidth="160.0" text="Địa điểm đi" />
+                        <TableColumn fx:id="requestEndLocation" minWidth="-1.0" prefWidth="160.0" text="Địa điểm đến" />
+                        <TableColumn fx:id="requestBeginDate" minWidth="-1.0" prefWidth="125.0" text="Ngày xuất phát" />
+                        <TableColumn fx:id="requestEndDate" minWidth="-1.0" prefWidth="125.0" text="Ngày kết thúc" />
+                        <TableColumn fx:id="requestPlateNumber" prefWidth="120.0" text="Biển số xe" />
+                        <TableColumn fx:id="requestCost" minWidth="-1.0" prefWidth="145.0" text="Chi phí ước tính" />
+                        <TableColumn fx:id="requestRevenue" prefWidth="145.0" text="Doanh thu" />
                      </columns>
                   </TableView>
                </children>

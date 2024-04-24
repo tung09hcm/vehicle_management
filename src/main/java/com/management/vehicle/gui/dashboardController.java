@@ -1294,6 +1294,13 @@ public class dashboardController implements Initializable
         }
         d.setStatus(DriverStatus.ON_DUTY);
         d.setDistanceCoverAll(d.getDistanceCoverAll() + Double.parseDouble(distanceCoverText.getText()));
+        List<String> tmp = d.getHistory();
+        tmp.add(uuid.toString());
+        d.setHistory(tmp);
+
+        tmp = v.getHistory();
+        tmp.add(uuid.toString());
+        v.setHistory(tmp);
 
         try {
             FireBase fireBase = FireBase.getInstance();

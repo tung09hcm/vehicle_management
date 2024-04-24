@@ -1,5 +1,6 @@
 package com.management.vehicle.gui;
 
+import com.management.vehicle.available.AvailableVehicle;
 import com.management.vehicle.driver.Driver;
 import com.jfoenix.controls.JFXButton;
 import com.management.vehicle.driver.DriverStatus;
@@ -9,6 +10,9 @@ import com.management.vehicle.request.RouteMatrix;
 import com.management.vehicle.request.struct.Hit;
 import com.management.vehicle.trip.Coordinate;
 import com.management.vehicle.trip.Trip;
+import com.management.vehicle.vehicle.TypeVehicle;
+import com.management.vehicle.vehicle.Vehicle;
+import com.management.vehicle.vehicle.fuel;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
@@ -31,8 +35,10 @@ import java.text.SimpleDateFormat;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
+import static com.management.vehicle.available.AvailableVehicle.getPlateNumberVehicle;
 import static com.management.vehicle.gui.dashboardController.BlankFieldAlert;
 
 public class driverController implements Initializable  {
@@ -62,15 +68,42 @@ public class driverController implements Initializable  {
     @FXML private TextField beginLocationText;
     @FXML private TextField endLocationText;
     @FXML private DatePicker beginDatePicker;
-    @FXML private TextField plateNumberText;
-    @FXML private JFXButton tripRequestButton;
+    @FXML private ComboBox<fuel> fuelComboBox;
+    @FXML private ComboBox<TypeVehicle> vehicleTypeComboBox;
+    @FXML private AnchorPane busPane;
+    @FXML private ComboBox<String> busPlateNumberComboBox;
+    @FXML private TextField busNumChairText;
+    @FXML private TextField busTicketPriceText;
+    @FXML private TextField busNumCustomerText;
+    @FXML private AnchorPane carPane;
+    @FXML private ComboBox<String> carPlateNumberComboBox;
+    @FXML private TextField carCustomerNameText;
+    @FXML private TextField carPhoneNumberText;
+    @FXML private TextField carCustomerIDText;
+    @FXML private TextField carCustomerAddressText;
+    @FXML private DatePicker carHireDatePicker;
+    @FXML private DatePicker carReturnDatePicker;
+    @FXML private AnchorPane containerPane;
+    @FXML private ComboBox<String> containerPlateNumberComboBox;
+    @FXML private TextField containerGoodsTypeText;
+    @FXML private TextField containerGoodsWeightText;
+    @FXML private AnchorPane truckPane;
+    @FXML private ComboBox<String> truckPlateNumberComboBox;
+    @FXML private TextField truckGoodsTypeText;
+    @FXML private TextField truckGoodsWeightText;
 
+    @FXML private ObservableList<fuel> fuelObservableList = FXCollections.observableArrayList(fuel.DIESEL, fuel.RON95, fuel.RON97);
+    @FXML private ObservableList<TypeVehicle> vehicleTypeObservableList = FXCollections.observableArrayList(TypeVehicle.bus, TypeVehicle.car, TypeVehicle.container, TypeVehicle.truck);
+    @FXML private ObservableList<String> busPlateNumberList = getPlateNumberVehicle(TypeVehicle.bus);
+    @FXML private ObservableList<String> carPlateNumberList = getPlateNumberVehicle(TypeVehicle.car);
+    @FXML private ObservableList<String> containerPlateNumberList = getPlateNumberVehicle(TypeVehicle.container);
+    @FXML private ObservableList<String> truckPlateNumberList = getPlateNumberVehicle(TypeVehicle.truck);
     private static Driver driver;
     private ObservableList<Trip> tripList = FXCollections.observableArrayList();
     private Hit selectedHitBegin;
     private Hit selectedHitEnd;
 
-    public driverController() {}
+    public driverController() throws Exception {}
 
     public Driver getDriver() {
         return driver;
@@ -182,16 +215,110 @@ public class driverController implements Initializable  {
     }
     public void addTripRequest() {
         if (beginLocationText.getText().isEmpty() || endLocationText.getText().isEmpty() ||
-beginDatePicker.getValue() == null || plateNumberText.getText().isEmpty())
+beginDatePicker.getValue() == null || fuelComboBox.getSelectionModel().getSelectedItem() == null ||
+vehicleTypeComboBox.getSelectionModel().getSelectedItem() == null)
             BlankFieldAlert("Please fill all blank fields");
+        else if (vehicleTypeComboBox.getValue() == TypeVehicle.bus) {
+            if (busPlateNumberComboBox.getSelectionModel().getSelectedItem() == null ||
+busNumChairText.getText().isEmpty() || busTicketPriceText.getText().isEmpty() || busNumCustomerText.getText().isEmpty())
+                BlankFieldAlert("Please fill all blank fields");
+            else {
+                Trip newTrip = new Trip();
+                UUID uuid = UUID.randomUUID();
+                newTrip.setTripID(uuid.toString());
+                newTrip.setBeginLocation(beginLocationText.getText());
+                newTrip.setEndLocation(endLocationText.getText());
+                newTrip.setDriverID(driver.getId());
+                String pattern = "dd-MM-yyyy";
+                newTrip.setBegin_date(beginDatePicker.getValue().format(DateTimeFormatter.ofPattern(pattern)));
+                newTrip.setFuel_trip(fuelComboBox.getValue());
+                newTrip.setPlateNumber(busPlateNumberComboBox.getValue());
+            }
+        }
+        else if (vehicleTypeComboBox.getValue() == TypeVehicle.car) {
+            if (carPlateNumberComboBox.getSelectionModel().getSelectedItem() == null || carCustomerNameText.getText().isEmpty()
+|| carPhoneNumberText.getText().isEmpty() || carCustomerIDText.getText().isEmpty() || carCustomerAddressText.getText().isEmpty()
+|| carHireDatePicker.getValue() == null || carReturnDatePicker.getValue() == null)
+                BlankFieldAlert("Please fill all blank fields");
+            else {
+                Trip newTrip = new Trip();
+                UUID uuid = UUID.randomUUID();
+                newTrip.setTripID(uuid.toString());
+                newTrip.setBeginLocation(beginLocationText.getText());
+                newTrip.setEndLocation(endLocationText.getText());
+                newTrip.setDriverID(driver.getId());
+                String pattern = "dd-MM-yyyy";
+                newTrip.setBegin_date(beginDatePicker.getValue().format(DateTimeFormatter.ofPattern(pattern)));
+                newTrip.setFuel_trip(fuelComboBox.getValue());
+                newTrip.setPlateNumber(carPlateNumberComboBox.getValue());
+            }
+        }
+        else if (vehicleTypeComboBox.getValue() == TypeVehicle.container) {
+            if (containerPlateNumberComboBox.getSelectionModel().getSelectedItem() == null || containerGoodsTypeText.getText().isEmpty()
+|| containerGoodsWeightText.getText().isEmpty())
+                BlankFieldAlert("Please fill all blank fields");
+            else {
+                Trip newTrip = new Trip();
+                UUID uuid = UUID.randomUUID();
+                newTrip.setTripID(uuid.toString());
+                newTrip.setBeginLocation(beginLocationText.getText());
+                newTrip.setEndLocation(endLocationText.getText());
+                newTrip.setDriverID(driver.getId());
+                String pattern = "dd-MM-yyyy";
+                newTrip.setBegin_date(beginDatePicker.getValue().format(DateTimeFormatter.ofPattern(pattern)));
+                newTrip.setFuel_trip(fuelComboBox.getValue());
+                newTrip.setPlateNumber(containerPlateNumberComboBox.getValue());
+            }
+        }
+        else if (vehicleTypeComboBox.getValue() == TypeVehicle.truck) {
+            if (truckPlateNumberComboBox.getSelectionModel().getSelectedItem() == null || truckGoodsTypeText.getText().isEmpty()
+|| truckGoodsWeightText.getText().isEmpty())
+                BlankFieldAlert("Please fill all blank fields");
+            else {
+                Trip newTrip = new Trip();
+                UUID uuid = UUID.randomUUID();
+                newTrip.setTripID(uuid.toString());
+                newTrip.setBeginLocation(beginLocationText.getText());
+                newTrip.setEndLocation(endLocationText.getText());
+                newTrip.setDriverID(driver.getId());
+                String pattern = "dd-MM-yyyy";
+                newTrip.setBegin_date(beginDatePicker.getValue().format(DateTimeFormatter.ofPattern(pattern)));
+                newTrip.setFuel_trip(fuelComboBox.getValue());
+                newTrip.setPlateNumber(truckPlateNumberComboBox.getValue());
+            }
+        }
+        else return;
+    }
+    public void vehicleSelection() {
+        if (vehicleTypeComboBox.getValue() == TypeVehicle.bus) {
+            busPane.setVisible(true);
+            carPane.setVisible(false);
+            containerPane.setVisible(false);
+            truckPane.setVisible(false);
+        }
+        else if (vehicleTypeComboBox.getValue() == TypeVehicle.car) {
+            busPane.setVisible(false);
+            carPane.setVisible(true);
+            containerPane.setVisible(false);
+            truckPane.setVisible(false);
+        }
+        else if (vehicleTypeComboBox.getValue() == TypeVehicle.container) {
+            busPane.setVisible(false);
+            carPane.setVisible(false);
+            containerPane.setVisible(true);
+            truckPane.setVisible(false);
+        }
+        else if (vehicleTypeComboBox.getValue() == TypeVehicle.truck) {
+            busPane.setVisible(false);
+            carPane.setVisible(false);
+            containerPane.setVisible(false);
+            truckPane.setVisible(true);
+        }
         else {
-            Trip newTrip = new Trip();
-            UUID uuid = UUID.randomUUID();
-            newTrip.setTripID(uuid.toString());
-            newTrip.setBeginLocation(beginLocationText.getText());
-            newTrip.setEndLocation(endLocationText.getText());
-            newTrip.setDriverID(driver.getId());
-
+            busPane.setVisible(false);
+            carPane.setVisible(false);
+            containerPane.setVisible(false);
+            truckPane.setVisible(false);
         }
     }
     public void switchForm(ActionEvent e){
@@ -288,6 +415,16 @@ beginDatePicker.getValue() == null || plateNumberText.getText().isEmpty())
         setDate();
         HomePane.setVisible(true);
         TripPane.setVisible(false);
+        busPane.setVisible(false);
+        carPane.setVisible(false);
+        containerPane.setVisible(false);
+        truckPane.setVisible(false);
+        fuelComboBox.setItems(fuelObservableList);
+        vehicleTypeComboBox.setItems(vehicleTypeObservableList);
+        busPlateNumberComboBox.setItems(busPlateNumberList);
+        carPlateNumberComboBox.setItems(carPlateNumberList);
+        containerPlateNumberComboBox.setItems(containerPlateNumberList);
+        truckPlateNumberComboBox.setItems(truckPlateNumberList);
 
         try {
             showTrip();

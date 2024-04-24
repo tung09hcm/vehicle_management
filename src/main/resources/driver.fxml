@@ -2,6 +2,7 @@
 
 <?import com.jfoenix.controls.JFXButton?>
 <?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
@@ -129,37 +130,150 @@
                   <Font name="Arial Bold" size="30.0" />
                </font>
             </Label>
-            <AnchorPane fx:id="addTripRequest" layoutX="100.0" layoutY="75.0" prefHeight="200.0" prefWidth="1000.0" style="-fx-background-color: LightGray;">
+            <AnchorPane layoutX="100.0" layoutY="75.0" prefHeight="200.0" prefWidth="1000.0" style="-fx-background-color: LightGray;">
                <children>
-                  <Label layoutX="325.0" layoutY="10.0" text="Địa điểm bắt đầu: ">
+                  <Label layoutX="100.0" layoutY="10.0" text="Địa điểm bắt đầu: ">
                      <font>
                         <Font name="Arial" size="18.0" />
                      </font>
                   </Label>
-                  <TextField fx:id="beginLocationText" layoutX="525.0" layoutY="10.0" />
-                  <Label layoutX="325.0" layoutY="45.0" text="Địa điểm kết thúc: ">
+                  <TextField fx:id="beginLocationText" layoutX="275.0" layoutY="10.0" />
+                  <Label layoutX="100.0" layoutY="40.0" text="Địa điểm kết thúc: ">
                      <font>
                         <Font name="Arial" size="18.0" />
                      </font>
                   </Label>
-                  <TextField fx:id="endLocationText" layoutX="525.0" layoutY="45.0" />
-                  <Label layoutX="325.0" layoutY="80.0" text="Ngày bắt đầu: ">
+                  <TextField fx:id="endLocationText" layoutX="275.0" layoutY="40.0" />
+                  <Label layoutX="100.0" layoutY="70.0" text="Ngày bắt đầu: ">
                      <font>
                         <Font name="Arial" size="18.0" />
                      </font>
                   </Label>
-                  <DatePicker fx:id="beginDatePicker" layoutX="525.0" layoutY="80.0" />
-                  <Label layoutX="325.0" layoutY="115.0" text="Biển số xe: ">
+                  <DatePicker fx:id="beginDatePicker" layoutX="275.0" layoutY="70.0" />
+                  <Label layoutX="100.0" layoutY="100.0" text="Nhiên liệu: ">
                      <font>
                         <Font name="Arial" size="18.0" />
                      </font>
                   </Label>
-                  <TextField fx:id="plateNumberText" layoutX="525.0" layoutY="115.0" />
-                  <JFXButton fx:id="tripRequestButton" layoutX="436.0" layoutY="150.0" style="-fx-background-color: #3a89bd;" text="Tạo yêu cầu" textFill="WHITE">
+                  <ComboBox fx:id="fuelComboBox" layoutX="275.0" layoutY="100.0" prefWidth="150.0" />
+                  <Label layoutX="100.0" layoutY="130.0" text="Loại xe: ">
+                     <font>
+                        <Font name="Arial" size="18.0" />
+                     </font>
+                  </Label>
+                  <JFXButton layoutX="427.0" layoutY="162.0" onAction="#addTripRequest" style="-fx-background-color: #3a89bd;" text="Tạo chuyến đi" textFill="WHITE">
                      <font>
                         <Font name="Arial Bold" size="18.0" />
                      </font>
                   </JFXButton>
+                  <ComboBox fx:id="vehicleTypeComboBox" layoutX="275.0" layoutY="130.0" onAction="#vehicleSelection" prefWidth="150.0" />
+                  <AnchorPane fx:id="busPane" layoutX="608.0" prefHeight="200.0" prefWidth="367.0" style="-fx-background-color: LightGrey;" visible="false">
+                     <children>
+                        <Label layoutX="10.0" layoutY="10.0" text="Biển số xe: ">
+                           <font>
+                              <Font name="Arial" size="18.0" />
+                           </font>
+                        </Label>
+                        <Label layoutX="10.0" layoutY="40.0" text="Số lượng ghế: ">
+                           <font>
+                              <Font name="Arial" size="18.0" />
+                           </font>
+                        </Label>
+                        <Label layoutX="10.0" layoutY="70.0" text="Giá vé: ">
+                           <font>
+                              <Font name="Arial" size="18.0" />
+                           </font>
+                        </Label>
+                        <Label layoutX="10.0" layoutY="100.0" text="Số lượng khách: ">
+                           <font>
+                              <Font name="Arial" size="18.0" />
+                           </font>
+                        </Label>
+                        <ComboBox fx:id="busPlateNumberComboBox" layoutX="185.0" layoutY="10.0" prefWidth="150.0" />
+                        <TextField fx:id="busNumChairText" layoutX="185.0" layoutY="40.0" />
+                        <TextField fx:id="busTicketPriceText" layoutX="185.0" layoutY="70.0" />
+                        <TextField fx:id="busNumCustomerText" layoutX="185.0" layoutY="100.0" />
+                     </children></AnchorPane>
+                  <AnchorPane fx:id="carPane" layoutX="475.0" prefHeight="160.0" prefWidth="475.0" style="-fx-background-color: LightGrey;" visible="false">
+                     <children>
+                        <Label layoutX="10.0" layoutY="10.0" text="Biển số xe: ">
+                           <font>
+                              <Font name="Arial" size="18.0" />
+                           </font>
+                        </Label>
+                        <Label layoutX="10.0" layoutY="40.0" text="Tên khách hàng: ">
+                           <font>
+                              <Font name="Arial" size="18.0" />
+                           </font>
+                        </Label>
+                        <Label layoutX="10.0" layoutY="70.0" text="SĐT khách hàng: ">
+                           <font>
+                              <Font name="Arial" size="18.0" />
+                           </font>
+                        </Label>
+                        <Label layoutX="10.0" layoutY="100.0" text="CCCD khách hàng: ">
+                           <font>
+                              <Font name="Arial" size="18.0" />
+                           </font>
+                        </Label>
+                        <Label layoutX="10.0" layoutY="130.0" text="Địa chỉ khách hàng: ">
+                           <font>
+                              <Font name="Arial" size="18.0" />
+                           </font>
+                        </Label>
+                        <ComboBox fx:id="carPlateNumberComboBox" layoutX="185.0" layoutY="10.0" prefWidth="150.0" />
+                        <TextField fx:id="carCustomerNameText" layoutX="185.0" layoutY="40.0" />
+                        <TextField fx:id="carPhoneNumberText" layoutX="185.0" layoutY="70.0" />
+                        <TextField fx:id="carCustomerIDText" layoutX="185.0" layoutY="100.0" />
+                        <TextField fx:id="carCustomerAddressText" layoutX="185.0" layoutY="130.0" />
+                        <DatePicker fx:id="carHireDatePicker" layoutX="347.0" layoutY="40.0" promptText="Ngày thuê: " />
+                        <DatePicker fx:id="carReturnDatePicker" layoutX="347.0" layoutY="100.0" promptText="Ngày trả: " />
+                     </children>
+                  </AnchorPane>
+                  <AnchorPane fx:id="containerPane" layoutX="608.0" prefHeight="200.0" prefWidth="367.0" style="-fx-background-color: LightGrey;" visible="false">
+                     <children>
+                        <Label layoutX="10.0" layoutY="40.0" text="Biển số xe: ">
+                           <font>
+                              <Font name="Arial" size="18.0" />
+                           </font>
+                        </Label>
+                        <Label layoutX="10.0" layoutY="70.0" text="Loại hàng: ">
+                           <font>
+                              <Font name="Arial" size="18.0" />
+                           </font>
+                        </Label>
+                        <Label layoutX="10.0" layoutY="100.0" text="Khối lượng hàng: ">
+                           <font>
+                              <Font name="Arial" size="18.0" />
+                           </font>
+                        </Label>
+                        <ComboBox fx:id="containerPlateNumberComboBox" layoutX="185.0" layoutY="40.0" prefWidth="150.0" />
+                        <TextField fx:id="containerGoodsTypeText" layoutX="185.0" layoutY="70.0" />
+                        <TextField fx:id="containerGoodsWeightText" layoutX="185.0" layoutY="100.0" />
+                     </children>
+                  </AnchorPane>
+                  <AnchorPane fx:id="truckPane" layoutX="608.0" prefHeight="200.0" prefWidth="367.0">
+                     <children>
+                        <Label layoutX="10.0" layoutY="40.0" text="Biển số xe: ">
+                           <font>
+                              <Font name="Arial" size="18.0" />
+                           </font>
+                        </Label>
+                        <Label layoutX="10.0" layoutY="70.0" text="Loại hàng: ">
+                           <font>
+                              <Font name="Arial" size="18.0" />
+                           </font>
+                        </Label>
+                        <Label layoutX="10.0" layoutY="100.0" text="Khối lượng hàng: ">
+                           <font>
+                              <Font name="Arial" size="18.0" />
+                           </font>
+                        </Label>
+                        <ComboBox fx:id="truckPlateNumberComboBox" layoutX="185.0" layoutY="40.0" prefWidth="150.0" />
+                        <TextField fx:id="truckGoodsTypeText" layoutX="185.0" layoutY="70.0" />
+                        <TextField fx:id="truckGoodsWeightText" layoutX="185.0" layoutY="100.0" />
+                     </children>
+                  </AnchorPane>
                </children>
             </AnchorPane>
             <AnchorPane layoutX="100.0" layoutY="300.0" prefHeight="275.0" prefWidth="1000.0" style="-fx-background-color: #3a89bdb2;">

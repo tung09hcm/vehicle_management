@@ -3,6 +3,8 @@ package com.management.vehicle.available;
 import com.management.vehicle.driver.Driver;
 import com.management.vehicle.driver.DriverStatus;
 import com.management.vehicle.request.FireBase;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -61,5 +63,24 @@ public class AvailableDriver {
             }
         }
         return result;
+    }
+    public static ObservableList<Driver> getDriver(double tripdistance) throws Exception {
+        ObservableList<Driver> driverlist_conn = FXCollections.observableArrayList();
+        try
+        {
+            // System.out.println("SIGNAL on showDriverList() - 2.3");
+//            firebase.getAllDriver();
+            // System.out.println("SIGNAL on showDriverList() - 2.4");
+            List<Driver> driverList = getAvailableDriver(tripdistance);
+            for(Driver token: driverList)
+            {
+                driverlist_conn.add(token);
+            }
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        return driverlist_conn;
     }
 }

@@ -327,6 +327,7 @@ busNumChairText.getText().isEmpty() || busTicketPriceText.getText().isEmpty() ||
                 newTrip.setPlateNumber(busPlateNumberComboBox.getValue());
                 newTrip.setCost(0);
                 newTrip.setRevenue(0);
+                driver.setStatus(DriverStatus.ON_DUTY);
                 try {
                     FireBase fireBase = FireBase.getInstance();
                     fireBase.editDriverStatus(driver.getId(), DriverStatus.ON_DUTY);
@@ -357,6 +358,7 @@ busNumChairText.getText().isEmpty() || busTicketPriceText.getText().isEmpty() ||
                 newTrip.setPlateNumber(carPlateNumberComboBox.getValue());
                 newTrip.setCost(0);
                 newTrip.setRevenue(0);
+                driver.setStatus(DriverStatus.ON_DUTY);
                 try {
                     FireBase fireBase = FireBase.getInstance();
                     fireBase.editDriverStatus(driver.getId(), DriverStatus.ON_DUTY);
@@ -386,6 +388,7 @@ busNumChairText.getText().isEmpty() || busTicketPriceText.getText().isEmpty() ||
                 newTrip.setPlateNumber(containerPlateNumberComboBox.getValue());
                 newTrip.setCost(0);
                 newTrip.setRevenue(0);
+                driver.setStatus(DriverStatus.ON_DUTY);
                 try {
                     FireBase fireBase = FireBase.getInstance();
                     fireBase.editDriverStatus(driver.getId(), DriverStatus.ON_DUTY);
@@ -415,6 +418,7 @@ busNumChairText.getText().isEmpty() || busTicketPriceText.getText().isEmpty() ||
                 newTrip.setPlateNumber(truckPlateNumberComboBox.getValue());
                 newTrip.setCost(0);
                 newTrip.setRevenue(0);
+                driver.setStatus(DriverStatus.ON_DUTY);
                 try {
                     FireBase fireBase = FireBase.getInstance();
                     fireBase.editDriverStatus(driver.getId(), DriverStatus.ON_DUTY);

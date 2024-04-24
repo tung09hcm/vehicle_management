@@ -1,5 +1,6 @@
 package com.management.vehicle.driver;
 import com.management.vehicle.license.License;
+import com.management.vehicle.license.LicenseLevel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,22 +24,37 @@ public class Driver {
 
         return buffer.toString();
     }
+    private double distanceCoverAll = 0; // đơn vị km
+
+    private String username;
+
     private String name;
     private String phoneNumber;
     private String address;
     private String recentPlateNumber;
     private String id;
-    public List<License> getLicense() {
+
+    public License getLicense() {
         return license;
     }
 
-    public void setLicense(List<License> license) {
+    public void setLicense(License license) {
         this.license = license;
     }
 
-    private List<License> license;
+    private License license;
     private DriverStatus status;
     private List<String> history;
+
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
 
     public String getName() {
         return name;
@@ -49,6 +65,8 @@ public class Driver {
     public String getAddress() {
         return address;
     }
+
+
 
     public DriverStatus getStatus() {
         return status;
@@ -65,6 +83,14 @@ public class Driver {
     }
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    public double getDistanceCoverAll() {
+        return distanceCoverAll;
+    }
+
+    public void setDistanceCoverAll(double distanceCoverAll) {
+        this.distanceCoverAll = distanceCoverAll;
     }
 
     public void setStatus(DriverStatus status) {
@@ -98,15 +124,16 @@ public class Driver {
         this.name = "";
         this.phoneNumber = "";
         this.address = "";
-        this.license = new ArrayList<>();
+        this.license = new License();
         this.status = DriverStatus.NONE;
         this.history = new ArrayList<>();
         this.recentPlateNumber = "";
         this.id = "";
         this.history = new ArrayList<>();
+        this.username = "";
     }
 
-    public Driver(String name, String phoneNumber, String address, String recentPlateNumber, String id, List<License> license, DriverStatus status, List<String> history) {
+    public Driver(String name, String phoneNumber, String address, String recentPlateNumber, String id, License license, DriverStatus status, List<String> history) {
         this.name = name;
         this.phoneNumber = phoneNumber;
         this.address = address;
@@ -115,6 +142,10 @@ public class Driver {
         this.license = license;
         this.status = status;
         this.history = history;
+
+    }
+    public void addTrip(String idTrip)
+    {
+        history.add(idTrip);
     }
 }
-

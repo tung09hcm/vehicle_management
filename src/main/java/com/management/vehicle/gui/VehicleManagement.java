@@ -5,8 +5,10 @@
  */
 package com.management.vehicle.gui;
 
+import com.management.vehicle.request.FireBase;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Group;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -23,6 +25,14 @@ public class VehicleManagement extends Application {
     }
     @Override
     public void start(Stage stage) throws Exception {
+        FireBase instance = null;
+        try {
+            instance = FireBase.getInstance();
+            instance.getAllDriver();
+            instance.getAllVehicle();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
         Parent root1 = FXMLLoader.load(getClass().getResource("/login.fxml"));
         stage.setTitle("Hello FX");
         stage.setScene(new Scene(root1));

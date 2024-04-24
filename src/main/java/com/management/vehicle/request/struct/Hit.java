@@ -50,8 +50,4 @@ public class Hit {
     public String getOsm_value() {
         return osm_value;
     }
-
-    public List<Double> getPointList() {
-        return List.of(point.getLng(), point.getLat());
-    }
 }

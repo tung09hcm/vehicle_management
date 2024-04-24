@@ -1,14 +1,17 @@
 package com.management.vehicle.vehicle;
 import com.management.vehicle.license.LicenseLevel;
 import com.management.vehicle.trip.Trip;
+import io.grpc.internal.JsonUtil;
 
+import java.time.LocalDate;
 import java.util.List;
 
 
 public class Bus extends Vehicle {
-    private int NumberOfSeat;
-    private double PricePerSeat;
+    private int NumberOfSeat = 0;
+    private double PricePerSeat = 0;
     private int NumberOfCustomer = 0;
+
     public int getNumberOfSeat() {
         return NumberOfSeat;
     }
@@ -30,7 +33,6 @@ public class Bus extends Vehicle {
         NumberOfCustomer = numberOfCustomer;
     }
 
-
     public Bus()
     {
         super();
@@ -38,7 +40,11 @@ public class Bus extends Vehicle {
         NumberOfSeat = 0;
         PricePerSeat = 0;
         NumberOfCustomer = 0;
+        setMaintenanceCycleInDays(90);
+        setMaintenanceCycleInKilometers(4000);
+        setRevenue(getNumberOfCustomer() * getPricePerSeat());
+        setLimitKilometers(5000);
+        setFuel_per_kilometer(0.07);
     }
 
 }
-

@@ -10,9 +10,8 @@ import com.management.vehicle.license.License;
 import com.management.vehicle.license.LicenseLevel;
 import com.management.vehicle.role.Role;
 import com.management.vehicle.trip.Trip;
-import com.management.vehicle.vehicle.TypeVehicle;
-import com.management.vehicle.vehicle.Vehicle;
-import com.management.vehicle.vehicle.VehicleStatus;
+import com.management.vehicle.trip.TripStatus;
+import com.management.vehicle.vehicle.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
@@ -24,6 +23,7 @@ import java.util.concurrent.CompletableFuture;
 public class FireBase {
     private static FireBase instance;
     private final Security security = new Security();
+
     private final List<Driver> driverList = new ArrayList<>();
     private final List<Vehicle> vehicleList = new ArrayList<>();
 
@@ -56,6 +56,22 @@ public class FireBase {
             instance = new FireBase();
         }
         return instance;
+    }
+
+    /**
+     * Retrieves the list of Driver objects.
+     * @return A list of Driver objects.
+     */
+    public List<Driver> getDriverList() {
+        return driverList;
+    }
+
+    /**
+     * Retrieves the list of Vehicle objects.
+     * @return A list of Vehicle objects.
+     */
+    public List<Vehicle> getVehicleList() {
+        return vehicleList;
     }
 
     /**
@@ -93,11 +109,24 @@ public class FireBase {
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String prevChildKey) {
                 System.out.println("onChildChanged");
+                for (Driver driver : driverList) {
+                    if (driver.getId().equals(dataSnapshot.getKey())) {
+                        driverList.remove(driver);
+                        driverList.add(dataSnapshot.getValue(Driver.class));
+                        break;
+                    }
+                }
             }
 
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
                 System.out.println("onChildRemoved");
+                for (Driver driver : driverList) {
+                    if (driver.getId().equals(dataSnapshot.getKey())) {
+                        driverList.remove(driver);
+                        break;
+                    }
+                }
             }
 
             @Override
@@ -161,7 +190,7 @@ public class FireBase {
      */
     public void addDriver(Driver driver) {
         CompletableFuture<Void> future = new CompletableFuture<>();
-        DatabaseReference newDriverRef = FirebaseDatabase.getInstance().getReference("Driver").child(String.valueOf(driverList.size()));
+        DatabaseReference newDriverRef = FirebaseDatabase.getInstance().getReference("Driver").child(String.valueOf(driver.getId()));
         newDriverRef.setValue(driver, (databaseError, databaseReference) -> {
             if (databaseError != null) {
                 System.out.println("Data could not be saved " + databaseError.getMessage());
@@ -273,7 +302,7 @@ public class FireBase {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String prevChildKey) {
                 System.out.println("onChildAdded");
-                Vehicle vehicle = dataSnapshot.getValue(Vehicle.class);
+                Vehicle vehicle = castVehicleType(dataSnapshot);
                 vehicleList.add(vehicle);
             }
 
@@ -285,6 +314,12 @@ public class FireBase {
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
                 System.out.println("onChildRemoved");
+                for (Vehicle vehicle : vehicleList) {
+                    if (vehicle.getPlateNumber().equals(dataSnapshot.getKey())) {
+                        vehicleList.remove(vehicle);
+                        break;
+                    }
+                }
             }
 
             @Override
@@ -335,6 +370,47 @@ public class FireBase {
             }
         });
         future.join();
+    }
+
+    public Vehicle getVehicle(String plateNumber) {
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Vehicle").child(plateNumber);
+        CompletableFuture<Vehicle> future = new CompletableFuture<>();
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                System.out.println("onDataChange");
+                Vehicle vehicle = castVehicleType(dataSnapshot);;
+                future.complete(vehicle);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                System.out.println("The read failed: " + databaseError.getCode());
+                future.completeExceptionally(databaseError.toException());
+            }
+        });
+        return future.join();
+    }
+
+    private Vehicle castVehicleType(DataSnapshot dataSnapshot) {
+        Vehicle vehicle = dataSnapshot.getValue(Vehicle.class);
+        switch (vehicle.getType()) {
+            case car:
+                vehicle = dataSnapshot.getValue(Car.class);
+                break;
+            case truck:
+                vehicle = dataSnapshot.getValue(Truck.class);
+                break;
+            case container:
+                vehicle = dataSnapshot.getValue(Container.class);
+                break;
+            case bus:
+                vehicle = dataSnapshot.getValue(Bus.class);
+                break;
+            default:
+                break;
+        }
+        return vehicle;
     }
 
     /**
@@ -516,6 +592,9 @@ public class FireBase {
      * @return The Trip object retrieved from Firebase.
      */
     public Trip getTrip(String tripID) {
+        if (tripID == null) {
+            throw new RuntimeException("Invalid input");
+        }
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Trip").child(tripID);
         CompletableFuture<Trip> future = new CompletableFuture<>();
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -543,6 +622,9 @@ public class FireBase {
      * @throws RuntimeException If there's an error during the Firebase operation.
      */
     public void addTrip(Trip trip) {
+        if (trip == null || trip.getTripID().isEmpty()) {
+            throw new RuntimeException("Invalid input");
+        }
         CompletableFuture<Void> future = new CompletableFuture<>();
         DatabaseReference newTripRef = FirebaseDatabase.getInstance().getReference("Trip").child(trip.getTripID());
         newTripRef.setValue(trip, (databaseError, databaseReference) -> {
@@ -557,6 +639,84 @@ public class FireBase {
         future.join();
     }
 
+    public List<Trip> getListTripOnDuty() {
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Trip");
+        CompletableFuture<List<Trip>> future = new CompletableFuture<>();
+        List<Trip> listTrip = new ArrayList<>();
+        ref.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String prevChildKey) {
+                System.out.println("onChildAdded");
+                Trip trip = dataSnapshot.getValue(Trip.class);
+                if (trip.getStatus() == TripStatus.ON_DUTY) {
+                    listTrip.add(trip);
+                }
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String prevChildKey) {
+                System.out.println("onChildChanged");
+                for (Trip trip : listTrip) {
+                    if (trip.getTripID().equals(dataSnapshot.getKey())) {
+                        listTrip.remove(trip);
+                        listTrip.add(dataSnapshot.getValue(Trip.class));
+                        break;
+                    }
+                }
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+                System.out.println("onChildRemoved");
+                for (Trip trip : listTrip) {
+                    if (trip.getTripID().equals(dataSnapshot.getKey())) {
+                        listTrip.remove(trip);
+                        break;
+                    }
+                }
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String prevChildKey) {
+                System.out.println("onChildMoved");
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                System.out.println("The read failed: " + databaseError.getCode());
+                future.completeExceptionally(databaseError.toException());
+            }
+        });
+
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                System.out.println("onDataChange");
+                future.complete(listTrip);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                System.out.println("The read failed: " + databaseError.getCode());
+                future.completeExceptionally(databaseError.toException());
+            }
+        });
+        return future.join();
+    }
+
+    /**
+     * This method is used to update the status of a trip in Firebase.
+     * It creates a reference to the status of the specified trip in Firebase and updates it with the provided status.
+     *
+     * @param tripID The ID of the trip whose status is to be updated.
+     * @param status The new status to be set for the trip.
+     */
+    public void editStatusTrip(String tripID, TripStatus status) {
+        CompletableFuture<Void> future = new CompletableFuture<>();
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Trip").child(tripID).child("status");
+        updateData(status, future, ref);
+    }
+
     /**
      * Adds a new account to Firebase.
      * The method encrypts the username and password, then stores them in the Firebase database along with the user's role.
@@ -567,6 +727,12 @@ public class FireBase {
      * @throws Exception If there's an error during the encryption.
      */
     public void addAccount(String username, String password, Role role) throws Exception {
+        if (role == null || username == null || password == null) {
+            throw new RuntimeException("Invalid input");
+        }
+        if (checkAccountExist(username)) {
+            throw new RuntimeException("Account already exists");
+        }
         String encryptedUsername = security.bytesToHex(security.encrypt(username.getBytes()));
         String encryptedPassword = security.bytesToHex(security.encrypt(password.getBytes()));
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("User").child(encryptedUsername).child(encryptedPassword);
@@ -580,6 +746,7 @@ public class FireBase {
                 future.complete(null);
             }
         });
+        future.join();
     }
 
     /**
@@ -592,6 +759,9 @@ public class FireBase {
      * @throws Exception If there's an error during the encryption.
      */
     public Role login(String username, String password) throws Exception {
+        if (username == null || password == null) {
+            throw new RuntimeException("Invalid input");
+        }
         String encryptedUsername = security.bytesToHex(security.encrypt(username.getBytes()));
         String encryptedPassword = security.bytesToHex(security.encrypt(password.getBytes()));
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("User").child(encryptedUsername).child(encryptedPassword);
@@ -601,8 +771,28 @@ public class FireBase {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 System.out.println("onDataChange");
                 Role role = dataSnapshot.getValue(Role.class);
-                System.out.println(role);
                 future.complete(role);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                System.out.println("The read failed: " + databaseError.getCode());
+                future.completeExceptionally(databaseError.toException());
+            }
+        });
+        return future.join();
+    }
+
+    private Boolean checkAccountExist(String username) throws Exception {
+        String encryptedUsername = security.bytesToHex(security.encrypt(username.getBytes()));
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("User").child(encryptedUsername);
+        CompletableFuture<Boolean> future = new CompletableFuture<>();
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                System.out.println("onDataChange");
+                Boolean exist = dataSnapshot.exists();
+                future.complete(exist);
             }
 
             @Override
@@ -620,8 +810,8 @@ public class FireBase {
      * @return The decrypted API key as a string.
      * @throws RuntimeException If there's an error during the decryption.
      */
-    public String getAPIKey() {
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("API").child("graphhopper");
+    public String getAPIKey(String key) {
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("API").child(key);
         CompletableFuture<String> future = new CompletableFuture<>();
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override

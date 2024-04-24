@@ -111,7 +111,37 @@ public class driverController implements Initializable  {
     private ObservableList<Trip> requestTripList = FXCollections.observableArrayList();
     private Hit selectedHitBegin;
     private Hit selectedHitEnd;
+    public void initSuggestedLocation(TextField text, ContextMenu menu, boolean begin) {
+        text.setOnAction(event -> {
+            String t = text.getText();
+            menu.getItems().clear();
+            try {
+                MapRequest i = MapRequest.getInstance();
+                List<Hit> listHit = i.getCoordinateList(t);
+                for(Hit hit : listHit)
+                {
+                    MenuItem menuItem = new MenuItem(hit.getName() + " " + hit.getCity() + " " + hit.getCountry());
+                    menuItem.setOnAction(menuEvent -> {
+                        text.setText(menuItem.getText());
+                        if (begin) selectedHitBegin = hit;
+                        else selectedHitEnd = hit;
+                    });
+                    menu.getItems().add(menuItem);
+                }
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+            menu.show(text, text.getScene().getWindow().getX() + text.getLayoutX(),
+                    text.getScene().getWindow().getY() + text.getLayoutY() + text.getHeight());
+        });
+    }
+    public void mouseRightClickTriptoMap(){
+        ContextMenu menuBegin = new ContextMenu();
+        ContextMenu menuEnd = new ContextMenu();
+        initSuggestedLocation(beginLocationText, menuBegin, true);
+        initSuggestedLocation(endLocationText, menuEnd, false);
 
+    }
     public driverController() throws Exception {}
 
     public Driver getDriver() {
@@ -507,6 +537,7 @@ busNumChairText.getText().isEmpty() || busTicketPriceText.getText().isEmpty() ||
             System.out.println("error on loading trip");
             throw new RuntimeException(e);
         }
+        this.mouseRightClickTriptoMap();
         this.homeMouseRightClickTripToMap();
         this.requestMouseRightClickTripToMap();
     }

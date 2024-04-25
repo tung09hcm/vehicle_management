@@ -1017,21 +1017,52 @@ public class dashboardController implements Initializable
     }
 
     public boolean warningBlankFieldTrip() {
-        return beginTripText.getText().isEmpty()
-                || endTripText.getText().isEmpty()
-                || plateNumberTripText.getText().isEmpty()
-                || driverIDTripText.getText().isEmpty()
-                || fuelTripComboBox.getSelectionModel().getSelectedItem() == null;
+
+        System.out.println("signal");
+        if(beginTripText.getText().isEmpty())
+        {
+            System.out.println("begin null");
+            return true;
+        }
+        if(endTripText.getText().isEmpty())
+        {
+            System.out.println("end null");
+            return true;
+        }
+        if(plateNumberTripText.getText().isEmpty())
+        {
+            System.out.println("plate null");
+            return true;
+        }
+        if(driverIDTripText.getText().isEmpty())
+        {
+            System.out.println("driverid null");
+            return true;
+        }
+        if(fuelTripComboBox.getSelectionModel().getSelectedItem()== null)
+        {
+            System.out.println("fueltrip null");
+            return true;
+        }
+        else
+        {
+            System.out.println(" ko null j hết");
+            return false;
+        }
+
         //doanh thu
     }
 
     public void updateInforTrip() throws Exception {
         if (warningBlankFieldTrip()) {
+            System.out.println("??????");
             BlankFieldAlert("Please fill all blank fields");
             return;
         }
+
         Vehicle v = FireBase.getInstance().getVehicle(plateNumberTripText.getText());
         Driver d = FireBase.getInstance().getDriver(driverIDTripText.getText());
+
         if (v == null || v.getStatus() == VehicleStatus.ON_DUTY) {
             BlankFieldAlert("Không có tt xe hoặc xe đang bận");
             return;
@@ -1095,6 +1126,7 @@ public class dashboardController implements Initializable
         LocalDateTime end_dt = begin_dt.plus(Duration.ofMillis(routeMatrix.getDuration()));
         endTripDatePicker.setText(dateTimetoString(end_dt));
         double cost = fuelTripComboBox.getValue().getPricePerLiter()*v.getFuel_per_kilometer()*routeMatrix.getDistance()/1000;
+        cost = Math.round(cost / 1000) * 1000;
         costText.setText(String.valueOf(cost));
         distanceCoverTripText.setText(String.valueOf(routeMatrix.getDistance()/1000));
     }
@@ -1104,6 +1136,7 @@ public class dashboardController implements Initializable
             BlankFieldAlert("Hãy tính toán chuyến đi trước");
             return;
         }
+
         Vehicle v = FireBase.getInstance().getVehicle(plateNumberTripText.getText());
         Driver d = FireBase.getInstance().getDriver(driverIDTripText.getText());
 
@@ -1127,6 +1160,22 @@ public class dashboardController implements Initializable
             case Car selectedCar -> {
                 setCar(selectedCar);
                 selectedCar.setStatus(VehicleStatus.ON_DUTY);
+                selectedCar.setDistanceCover(selectedCar.getDistanceCover() + Double.parseDouble(distanceCoverText.getText()));
+                selectedCar.setDistanceCoverFromLastRepair(selectedCar.getDistanceCoverFromLastRepair() + Double.parseDouble(distanceCoverText.getText()));
+
+                if(selectedCar.getDistanceCoverFromLastRepair() > selectedCar.getLimitKilometers())
+                {
+                    selectedCar.setStatus(VehicleStatus.NEED_REPAIR);
+                    try {
+                        FireBase fireBase = FireBase.getInstance();
+                        fireBase.editVehicle(v.getPlateNumber(), selectedCar);
+                        showVehicleList();
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                    return;
+                }
+
                 try {
                     FireBase fireBase = FireBase.getInstance();
                     fireBase.editVehicle(v.getPlateNumber(), selectedCar);
@@ -1138,6 +1187,22 @@ public class dashboardController implements Initializable
             case Truck selectedTruck -> {
                 setTruck(selectedTruck);
                 selectedTruck.setStatus(VehicleStatus.ON_DUTY);
+                selectedTruck.setDistanceCover(selectedTruck.getDistanceCover() + Double.parseDouble(distanceCoverText.getText()));
+                selectedTruck.setDistanceCoverFromLastRepair(selectedTruck.getDistanceCoverFromLastRepair() + Double.parseDouble(distanceCoverText.getText()));
+
+                if(selectedTruck.getDistanceCoverFromLastRepair() > selectedTruck.getLimitKilometers())
+                {
+                    selectedTruck.setStatus(VehicleStatus.NEED_REPAIR);
+                    try {
+                        FireBase fireBase = FireBase.getInstance();
+                        fireBase.editVehicle(v.getPlateNumber(), selectedTruck);
+                        showVehicleList();
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                    return;
+                }
+
                 try {
                     FireBase fireBase = FireBase.getInstance();
                     fireBase.editVehicle(v.getPlateNumber(), selectedTruck);
@@ -1149,6 +1214,22 @@ public class dashboardController implements Initializable
             case Container selectedContainer -> {
                 setContainer(selectedContainer);
                 selectedContainer.setStatus(VehicleStatus.ON_DUTY);
+                selectedContainer.setDistanceCover(selectedContainer.getDistanceCover() + Double.parseDouble(distanceCoverText.getText()));
+                selectedContainer.setDistanceCoverFromLastRepair(selectedContainer.getDistanceCoverFromLastRepair() + Double.parseDouble(distanceCoverText.getText()));
+
+                if(selectedContainer.getDistanceCoverFromLastRepair() > selectedContainer.getLimitKilometers())
+                {
+                    selectedContainer.setStatus(VehicleStatus.NEED_REPAIR);
+                    try {
+                        FireBase fireBase = FireBase.getInstance();
+                        fireBase.editVehicle(v.getPlateNumber(), selectedContainer);
+                        showVehicleList();
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                    return;
+                }
+
                 try {
                     FireBase fireBase = FireBase.getInstance();
                     fireBase.editVehicle(v.getPlateNumber(), selectedContainer);
@@ -1160,6 +1241,22 @@ public class dashboardController implements Initializable
             case Bus selectedBus -> {
                 setBus(selectedBus);
                 selectedBus.setStatus(VehicleStatus.ON_DUTY);
+                selectedBus.setDistanceCover(selectedBus.getDistanceCover() + Double.parseDouble(distanceCoverText.getText()));
+                selectedBus.setDistanceCoverFromLastRepair(selectedBus.getDistanceCoverFromLastRepair() + Double.parseDouble(distanceCoverText.getText()));
+
+                if(selectedBus.getDistanceCoverFromLastRepair() > selectedBus.getLimitKilometers())
+                {
+                    selectedBus.setStatus(VehicleStatus.NEED_REPAIR);
+                    try {
+                        FireBase fireBase = FireBase.getInstance();
+                        fireBase.editVehicle(v.getPlateNumber(), selectedBus);
+                        showVehicleList();
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                    return;
+                }
+
                 try {
                     FireBase fireBase = FireBase.getInstance();
                     fireBase.editVehicle(v.getPlateNumber(), selectedBus);
@@ -1172,6 +1269,15 @@ public class dashboardController implements Initializable
             {}
         }
         d.setStatus(DriverStatus.ON_DUTY);
+        d.setDistanceCoverAll(d.getDistanceCoverAll() + Double.parseDouble(distanceCoverText.getText()));
+        List<String> tmp = d.getHistory();
+        tmp.add(uuid.toString());
+        d.setHistory(tmp);
+
+        tmp = v.getHistory();
+        tmp.add(uuid.toString());
+        v.setHistory(tmp);
+
         try {
             FireBase fireBase = FireBase.getInstance();
             fireBase.editDriverStatus(d.getId(), DriverStatus.ON_DUTY);
@@ -1187,6 +1293,7 @@ public class dashboardController implements Initializable
 
 
     public void refreshTrip() throws Exception {
+        // chưa có cập nhật trip khi chuyến đi xong
         FireBase fireBase = FireBase.getInstance();
         for (Trip trip : tripList) {
             LocalDateTime dateTime = stringtoDateTime(trip.getEnd_date());

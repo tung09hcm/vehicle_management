@@ -24,7 +24,7 @@ public class Driver {
 
         return buffer.toString();
     }
-    private double distanceCoverAll = 0;
+    private double distanceCoverAll = 0; // đơn vị km
 
     private String username;
 

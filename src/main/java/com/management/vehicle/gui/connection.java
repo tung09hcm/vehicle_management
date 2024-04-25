@@ -5,11 +5,12 @@ import com.management.vehicle.request.FireBase;
 import com.management.vehicle.trip.Trip;
 import com.management.vehicle.trip.TripStatus;
 import com.management.vehicle.vehicle.Vehicle;
+import javafx.beans.InvalidationListener;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class connection {
     FireBase instance = null;
@@ -72,5 +73,25 @@ public class connection {
         }
         return triplist_conn;
     }
-
+    public static ObservableList<Trip> getOnDutyTripConstraint(String ID) throws Exception {
+        FireBase firebase = FireBase.getInstance();
+        ObservableList<Trip> triplist_conn = FXCollections.observableArrayList();
+        try
+        {
+            List<Trip> tripList = firebase.getListTripOnDuty();
+            for(Trip token: tripList)
+            {
+                triplist_conn.add(token);
+            }
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        ObservableList<Trip> ans = FXCollections.observableArrayList();
+        for (Trip trip: triplist_conn) {
+            if (ID.equals(trip.getDriverID())) ans.add(trip);
+        }
+        return ans;
+    }
 }

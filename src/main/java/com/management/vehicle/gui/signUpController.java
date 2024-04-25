@@ -7,20 +7,25 @@ import com.management.vehicle.license.License;
 import com.management.vehicle.license.LicenseLevel;
 import com.management.vehicle.request.FireBase;
 import com.management.vehicle.role.Role;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.net.URL;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
+import java.util.ResourceBundle;
 
-public class signUpController {
+public class signUpController implements Initializable {
     @FXML
     private TextField fullName;
     @FXML
@@ -34,13 +39,15 @@ public class signUpController {
     @FXML
     private TextField ID;
     @FXML
-    private TextField license;
+    private ComboBox<LicenseLevel> licenseComboBox;
     @FXML
     private Button signUp;
     @FXML
     private JFXButton login;
     @FXML
     private DatePicker issueDate;
+    @FXML
+    ObservableList<LicenseLevel> licenseLevelObservableList = FXCollections.observableArrayList(LicenseLevel.NONE,LicenseLevel.B1,LicenseLevel.B2,LicenseLevel.C,LicenseLevel.D,LicenseLevel.E,LicenseLevel.F);
 
     private final FireBase connection = FireBase.getInstance();
     public signUpController() throws Exception {
@@ -51,7 +58,7 @@ public class signUpController {
         try {
             if (ID.getText().isEmpty() || fullName.getText().isEmpty() || password.getText().isEmpty() ||
 confirmPassword.getText().isEmpty() || phoneNumber.getText().isEmpty() || address.getText().isEmpty() ||
-license.getText().isEmpty()) {
+licenseComboBox.getSelectionModel().getSelectedItem() == null || issueDate.getValue() == null) {
                 alert = new Alert(Alert.AlertType.ERROR);
                 alert.setHeaderText(null);
                 alert.setContentText("Please fill all blank fields");
@@ -82,39 +89,7 @@ license.getText().isEmpty()) {
                 driver.setPhoneNumber(phoneNumber.getText());
                 driver.setAddress(address.getText());
                 License license1 = new License();
-                LicenseLevel level;
-                switch (license.getText()) {
-                    case "B1" -> {
-                        level = LicenseLevel.B1;
-                        break;
-                    }
-                    case "B2" -> {
-                        level = LicenseLevel.B2;
-                        break;
-                    }
-                    case "C" -> {
-                        level = LicenseLevel.C;
-                        break;
-                    }
-                    case "D" -> {
-                        level = LicenseLevel.D;
-                        break;
-                    }
-                    case "E" -> {
-                        level = LicenseLevel.E;
-                        break;
-                    }
-                    case "F" -> {
-                        level = LicenseLevel.F;
-                        break;
-                    }
-                    case "FC" -> {
-                        level = LicenseLevel.FC;
-                        break;
-                    }
-                    default -> level = LicenseLevel.NONE;
-                }
-                license1.setType(level);
+                license1.setType(licenseComboBox.getValue());
                 LocalDate localDate1 = issueDate.getValue();
                 LocalDate localDate2 = localDate1.plusYears(5);
                 String pattern = "dd-MM-yyyy";
@@ -184,5 +159,10 @@ license.getText().isEmpty()) {
         stage.setScene(scene);
         stage.setResizable(false);
         stage.show();
+    }
+
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        licenseComboBox.setItems(licenseLevelObservableList);
     }
 }

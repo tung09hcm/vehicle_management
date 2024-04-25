@@ -270,7 +270,7 @@ public class driverController implements Initializable  {
             @Override
             public void handle(ActionEvent event) {
                 Trip selected = homeTripTable.getSelectionModel().getSelectedItem();
-
+                if (selected == null) return;
                 try {
                     MapRequest i = MapRequest.getInstance();
                     RouteMatrix routeMatrix = i.getDistanceMatrix(selected.getBegin().getList(), selected.getEnd().getList());
@@ -291,7 +291,7 @@ public class driverController implements Initializable  {
             @Override
             public void handle(ActionEvent event) {
                 Trip selected = requestTripTable.getSelectionModel().getSelectedItem();
-
+                if (selected == null) return;
                 try {
                     MapRequest i = MapRequest.getInstance();
                     RouteMatrix routeMatrix = i.getDistanceMatrix(selected.getBegin().getList(), selected.getEnd().getList());

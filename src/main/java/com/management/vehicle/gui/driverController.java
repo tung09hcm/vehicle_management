@@ -68,7 +68,6 @@ public class driverController implements Initializable  {
     @FXML private TextField beginLocationText;
     @FXML private TextField endLocationText;
     @FXML private DatePicker beginDatePicker;
-    @FXML private ComboBox<fuel> fuelComboBox;
     @FXML private ComboBox<TypeVehicle> vehicleTypeComboBox;
     @FXML private AnchorPane busPane;
     @FXML private ComboBox<String> busPlateNumberComboBox;
@@ -100,7 +99,6 @@ public class driverController implements Initializable  {
     @FXML private TableColumn<Trip, String> requestCost;
     @FXML private TableColumn<Trip, String> requestRevenue;
 
-    @FXML private ObservableList<fuel> fuelObservableList = FXCollections.observableArrayList(fuel.DIESEL, fuel.RON95, fuel.RON97);
     @FXML private ObservableList<TypeVehicle> vehicleTypeObservableList = FXCollections.observableArrayList(TypeVehicle.bus, TypeVehicle.car, TypeVehicle.container, TypeVehicle.truck);
     @FXML private ObservableList<String> busPlateNumberList = getPlateNumberVehicle(TypeVehicle.bus);
     @FXML private ObservableList<String> carPlateNumberList = getPlateNumberVehicle(TypeVehicle.car);
@@ -111,6 +109,7 @@ public class driverController implements Initializable  {
     private ObservableList<Trip> requestTripList = FXCollections.observableArrayList();
     private Hit selectedHitBegin;
     private Hit selectedHitEnd;
+
     public void initSuggestedLocation(TextField text, ContextMenu menu, boolean begin) {
         text.setOnAction(event -> {
             String t = text.getText();
@@ -307,8 +306,7 @@ public class driverController implements Initializable  {
     }
     public void addTripRequest() throws Exception {
         if (beginLocationText.getText().isEmpty() || endLocationText.getText().isEmpty() ||
-beginDatePicker.getValue() == null || fuelComboBox.getSelectionModel().getSelectedItem() == null ||
-vehicleTypeComboBox.getSelectionModel().getSelectedItem() == null)
+beginDatePicker.getValue() == null || vehicleTypeComboBox.getSelectionModel().getSelectedItem() == null)
             BlankFieldAlert("Please fill all blank fields");
         else if (vehicleTypeComboBox.getValue() == TypeVehicle.bus) {
             if (busPlateNumberComboBox.getSelectionModel().getSelectedItem() == null ||
@@ -323,7 +321,6 @@ busNumChairText.getText().isEmpty() || busTicketPriceText.getText().isEmpty() ||
                 newTrip.setDriverID(driver.getId());
                 String pattern = "dd-MM-yyyy";
                 newTrip.setBegin_date(beginDatePicker.getValue().format(DateTimeFormatter.ofPattern(pattern)));
-                newTrip.setFuel_trip(fuelComboBox.getValue());
                 newTrip.setPlateNumber(busPlateNumberComboBox.getValue());
                 newTrip.setCost(0);
                 newTrip.setRevenue(0);
@@ -354,7 +351,6 @@ busNumChairText.getText().isEmpty() || busTicketPriceText.getText().isEmpty() ||
                 newTrip.setDriverID(driver.getId());
                 String pattern = "dd-MM-yyyy";
                 newTrip.setBegin_date(beginDatePicker.getValue().format(DateTimeFormatter.ofPattern(pattern)));
-                newTrip.setFuel_trip(fuelComboBox.getValue());
                 newTrip.setPlateNumber(carPlateNumberComboBox.getValue());
                 newTrip.setCost(0);
                 newTrip.setRevenue(0);
@@ -384,7 +380,6 @@ busNumChairText.getText().isEmpty() || busTicketPriceText.getText().isEmpty() ||
                 newTrip.setDriverID(driver.getId());
                 String pattern = "dd-MM-yyyy";
                 newTrip.setBegin_date(beginDatePicker.getValue().format(DateTimeFormatter.ofPattern(pattern)));
-                newTrip.setFuel_trip(fuelComboBox.getValue());
                 newTrip.setPlateNumber(containerPlateNumberComboBox.getValue());
                 newTrip.setCost(0);
                 newTrip.setRevenue(0);
@@ -414,7 +409,6 @@ busNumChairText.getText().isEmpty() || busTicketPriceText.getText().isEmpty() ||
                 newTrip.setDriverID(driver.getId());
                 String pattern = "dd-MM-yyyy";
                 newTrip.setBegin_date(beginDatePicker.getValue().format(DateTimeFormatter.ofPattern(pattern)));
-                newTrip.setFuel_trip(fuelComboBox.getValue());
                 newTrip.setPlateNumber(truckPlateNumberComboBox.getValue());
                 newTrip.setCost(0);
                 newTrip.setRevenue(0);
@@ -563,7 +557,6 @@ busNumChairText.getText().isEmpty() || busTicketPriceText.getText().isEmpty() ||
         carPane.setVisible(false);
         containerPane.setVisible(false);
         truckPane.setVisible(false);
-        fuelComboBox.setItems(fuelObservableList);
         vehicleTypeComboBox.setItems(vehicleTypeObservableList);
         busPlateNumberComboBox.setItems(busPlateNumberList);
         carPlateNumberComboBox.setItems(carPlateNumberList);

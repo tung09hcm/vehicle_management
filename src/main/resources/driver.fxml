@@ -132,31 +132,25 @@
             </Label>
             <AnchorPane layoutX="100.0" layoutY="75.0" prefHeight="200.0" prefWidth="1000.0" style="-fx-background-color: LightGray;">
                <children>
-                  <Label layoutX="100.0" layoutY="10.0" text="Địa điểm bắt đầu: ">
+                  <Label layoutX="100.0" layoutY="25.0" text="Địa điểm bắt đầu: ">
                      <font>
                         <Font name="Arial" size="18.0" />
                      </font>
                   </Label>
-                  <TextField fx:id="beginLocationText" layoutX="275.0" layoutY="10.0" />
-                  <Label layoutX="100.0" layoutY="40.0" text="Địa điểm kết thúc: ">
+                  <TextField fx:id="beginLocationText" layoutX="275.0" layoutY="25.0" />
+                  <Label layoutX="100.0" layoutY="55.0" text="Địa điểm kết thúc: ">
                      <font>
                         <Font name="Arial" size="18.0" />
                      </font>
                   </Label>
-                  <TextField fx:id="endLocationText" layoutX="275.0" layoutY="40.0" />
-                  <Label layoutX="100.0" layoutY="70.0" text="Ngày bắt đầu: ">
+                  <TextField fx:id="endLocationText" layoutX="275.0" layoutY="55.0" />
+                  <Label layoutX="100.0" layoutY="85.0" text="Ngày bắt đầu: ">
                      <font>
                         <Font name="Arial" size="18.0" />
                      </font>
                   </Label>
-                  <DatePicker fx:id="beginDatePicker" layoutX="275.0" layoutY="70.0" />
-                  <Label layoutX="100.0" layoutY="100.0" text="Nhiên liệu: ">
-                     <font>
-                        <Font name="Arial" size="18.0" />
-                     </font>
-                  </Label>
-                  <ComboBox fx:id="fuelComboBox" layoutX="275.0" layoutY="100.0" prefWidth="150.0" />
-                  <Label layoutX="100.0" layoutY="130.0" text="Loại xe: ">
+                  <DatePicker fx:id="beginDatePicker" layoutX="275.0" layoutY="85.0" />
+                  <Label layoutX="100.0" layoutY="115.0" text="Loại xe: ">
                      <font>
                         <Font name="Arial" size="18.0" />
                      </font>
@@ -166,7 +160,7 @@
                         <Font name="Arial Bold" size="18.0" />
                      </font>
                   </JFXButton>
-                  <ComboBox fx:id="vehicleTypeComboBox" layoutX="275.0" layoutY="130.0" onAction="#vehicleSelection" prefWidth="150.0" />
+                  <ComboBox fx:id="vehicleTypeComboBox" layoutX="275.0" layoutY="115.0" onAction="#vehicleSelection" prefWidth="150.0" />
                   <AnchorPane fx:id="busPane" layoutX="608.0" prefHeight="200.0" prefWidth="367.0" style="-fx-background-color: LightGrey;" visible="false">
                      <children>
                         <Label layoutX="10.0" layoutY="10.0" text="Biển số xe: ">

@@ -1188,7 +1188,6 @@ public class dashboardController implements Initializable
 
     public void refreshTrip() throws Exception {
         FireBase fireBase = FireBase.getInstance();
-        showTrip();
         for (Trip trip : tripList) {
             LocalDateTime dateTime = stringtoDateTime(trip.getEnd_date());
             if (dateTime.isBefore(LocalDateTime.now())) {

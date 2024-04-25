@@ -102,7 +102,7 @@ public class MapRequest {
         String data;
         while ((data = bufferedReader.readLine()) != null) {
             response.append(data);
-            //System.out.println(data);
+            System.out.println(data);
         }
         if (response.indexOf("ZERO_RESULTS") != -1) return null;
         return regex("\\\"destination_addresses\\\":\\[\\\"(.*?)\\\"\\]", response.toString());

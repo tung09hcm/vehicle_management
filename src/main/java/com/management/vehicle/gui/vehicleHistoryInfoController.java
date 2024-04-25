@@ -118,6 +118,7 @@ public class vehicleHistoryInfoController implements Initializable {
 
         for(String tripID : selected.getHistory())
         {
+            System.out.println(tripID);
             Trip trip = null;
             try {
                 trip = FireBase.getInstance().getTrip(tripID);

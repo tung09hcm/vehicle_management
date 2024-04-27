@@ -13,6 +13,7 @@ import com.management.vehicle.trip.Trip;
 import com.management.vehicle.trip.TripStatus;
 import com.management.vehicle.vehicle.TypeVehicle;
 import com.management.vehicle.vehicle.Vehicle;
+import com.management.vehicle.vehicle.VehicleStatus;
 import com.management.vehicle.vehicle.fuel;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleObjectProperty;
@@ -69,7 +70,7 @@ public class driverController implements Initializable  {
     @FXML private TableColumn<Trip, String> homeRevenue;
     @FXML private TextField beginLocationText;
     @FXML private TextField endLocationText;
-    @FXML private DatePicker beginDatePicker;
+    @FXML private TextField revenueText;
     @FXML private ComboBox<TypeVehicle> vehicleTypeComboBox;
     @FXML private AnchorPane busPane;
     @FXML private ComboBox<String> busPlateNumberComboBox;
@@ -155,8 +156,7 @@ public class driverController implements Initializable  {
     public void updateTrip() throws Exception {
         homeTripList.clear();
         homeTripList = connection.getOnDutyTripConstraint(driver.getId());
-        requestTripList.clear();
-        requestTripList = connection.getOnDutyTripConstraint(driver.getId());
+        requestTripList = homeTripList;
     }
     public void homeShowTrip() throws Exception {
         homeBeginDate.setCellValueFactory(new PropertyValueFactory<Trip, String>("begin_date"));
@@ -323,7 +323,7 @@ public class driverController implements Initializable  {
             return;
         }
         if (beginLocationText.getText().isEmpty() || endLocationText.getText().isEmpty() ||
-beginDatePicker.getValue() == null || vehicleTypeComboBox.getSelectionModel().getSelectedItem() == null)
+revenueText.getText().isEmpty() || vehicleTypeComboBox.getSelectionModel().getSelectedItem() == null)
             BlankFieldAlert("Please fill all blank fields");
         else if (vehicleTypeComboBox.getValue() == TypeVehicle.bus) {
             if (busPlateNumberComboBox.getSelectionModel().getSelectedItem() == null ||
@@ -335,13 +335,12 @@ busNumChairText.getText().isEmpty() || busTicketPriceText.getText().isEmpty() ||
                 newTrip.setTripID(uuid.toString());
                 newTrip.setBeginLocation(beginLocationText.getText());
                 newTrip.setEndLocation(endLocationText.getText());
+                newTrip.setBegin(new Coordinate(selectedHitBegin.getPoint().getLng(), selectedHitBegin.getPoint().getLat()));
+                newTrip.setEnd(new Coordinate(selectedHitEnd.getPoint().getLng(), selectedHitEnd.getPoint().getLat()));
+                newTrip.setRevenue(Double.parseDouble(revenueText.getText()));
                 newTrip.setDriverID(driver.getId());
-                String pattern = "dd-MM-yyyy";
-                newTrip.setBegin_date(beginDatePicker.getValue().format(DateTimeFormatter.ofPattern(pattern)));
+                newTrip.setBegin_date(dateTimetoString(LocalDateTime.now()));
                 newTrip.setPlateNumber(busPlateNumberComboBox.getValue());
-                newTrip.setCost(0);
-                newTrip.setRevenue(0);
-                driver.setStatus(DriverStatus.ON_DUTY);
                 newTrip.setStatus(TripStatus.ON_DUTY);
                 Vehicle v = FireBase.getInstance().getVehicle(busPlateNumberComboBox.getValue());
                 List begin = selectedHitBegin.getPoint().getList();
@@ -359,6 +358,8 @@ busNumChairText.getText().isEmpty() || busTicketPriceText.getText().isEmpty() ||
                 try {
                     FireBase fireBase = FireBase.getInstance();
                     fireBase.editDriverStatus(driver.getId(), DriverStatus.ON_DUTY);
+                    driver.setStatus(DriverStatus.ON_DUTY);
+                    fireBase.editVehicleStatus(v.getPlateNumber(), VehicleStatus.ON_DUTY);
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 }
@@ -367,6 +368,7 @@ busNumChairText.getText().isEmpty() || busTicketPriceText.getText().isEmpty() ||
                 requestTripList.add(newTrip);
                 homeShowTrip();
                 requestShowTrip();
+                setInfo();
             }
         }
         else if (vehicleTypeComboBox.getValue() == TypeVehicle.car) {
@@ -380,13 +382,12 @@ busNumChairText.getText().isEmpty() || busTicketPriceText.getText().isEmpty() ||
                 newTrip.setTripID(uuid.toString());
                 newTrip.setBeginLocation(beginLocationText.getText());
                 newTrip.setEndLocation(endLocationText.getText());
+                newTrip.setBegin(new Coordinate(selectedHitBegin.getPoint().getLng(), selectedHitBegin.getPoint().getLat()));
+                newTrip.setEnd(new Coordinate(selectedHitEnd.getPoint().getLng(), selectedHitEnd.getPoint().getLat()));
+                newTrip.setRevenue(Double.parseDouble(revenueText.getText()));
                 newTrip.setDriverID(driver.getId());
-                String pattern = "dd-MM-yyyy";
-                newTrip.setBegin_date(beginDatePicker.getValue().format(DateTimeFormatter.ofPattern(pattern)));
-                newTrip.setPlateNumber(busPlateNumberComboBox.getValue());
-                newTrip.setCost(0);
-                newTrip.setRevenue(0);
-                driver.setStatus(DriverStatus.ON_DUTY);
+                newTrip.setBegin_date(dateTimetoString(LocalDateTime.now()));
+                newTrip.setPlateNumber(carPlateNumberComboBox.getValue());
                 newTrip.setStatus(TripStatus.ON_DUTY);
                 Vehicle v = FireBase.getInstance().getVehicle(carPlateNumberComboBox.getValue());
                 List begin = selectedHitBegin.getPoint().getList();
@@ -404,6 +405,8 @@ busNumChairText.getText().isEmpty() || busTicketPriceText.getText().isEmpty() ||
                 try {
                     FireBase fireBase = FireBase.getInstance();
                     fireBase.editDriverStatus(driver.getId(), DriverStatus.ON_DUTY);
+                    driver.setStatus(DriverStatus.ON_DUTY);
+                    fireBase.editVehicleStatus(v.getPlateNumber(), VehicleStatus.ON_DUTY);
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 }
@@ -412,6 +415,7 @@ busNumChairText.getText().isEmpty() || busTicketPriceText.getText().isEmpty() ||
                 requestTripList.add(newTrip);
                 homeShowTrip();
                 requestShowTrip();
+                setInfo();
             }
         }
         else if (vehicleTypeComboBox.getValue() == TypeVehicle.container) {
@@ -424,13 +428,12 @@ busNumChairText.getText().isEmpty() || busTicketPriceText.getText().isEmpty() ||
                 newTrip.setTripID(uuid.toString());
                 newTrip.setBeginLocation(beginLocationText.getText());
                 newTrip.setEndLocation(endLocationText.getText());
+                newTrip.setBegin(new Coordinate(selectedHitBegin.getPoint().getLng(), selectedHitBegin.getPoint().getLat()));
+                newTrip.setEnd(new Coordinate(selectedHitEnd.getPoint().getLng(), selectedHitEnd.getPoint().getLat()));
+                newTrip.setRevenue(Double.parseDouble(revenueText.getText()));
                 newTrip.setDriverID(driver.getId());
-                String pattern = "dd-MM-yyyy";
-                newTrip.setBegin_date(beginDatePicker.getValue().format(DateTimeFormatter.ofPattern(pattern)));
-                newTrip.setPlateNumber(busPlateNumberComboBox.getValue());
-                newTrip.setCost(0);
-                newTrip.setRevenue(0);
-                driver.setStatus(DriverStatus.ON_DUTY);
+                newTrip.setBegin_date(dateTimetoString(LocalDateTime.now()));
+                newTrip.setPlateNumber(containerPlateNumberComboBox.getValue());
                 newTrip.setStatus(TripStatus.ON_DUTY);
                 Vehicle v = FireBase.getInstance().getVehicle(containerPlateNumberComboBox.getValue());
                 List begin = selectedHitBegin.getPoint().getList();
@@ -448,6 +451,8 @@ busNumChairText.getText().isEmpty() || busTicketPriceText.getText().isEmpty() ||
                 try {
                     FireBase fireBase = FireBase.getInstance();
                     fireBase.editDriverStatus(driver.getId(), DriverStatus.ON_DUTY);
+                    driver.setStatus(DriverStatus.ON_DUTY);
+                    fireBase.editVehicleStatus(v.getPlateNumber(), VehicleStatus.ON_DUTY);
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 }
@@ -456,6 +461,7 @@ busNumChairText.getText().isEmpty() || busTicketPriceText.getText().isEmpty() ||
                 requestTripList.add(newTrip);
                 homeShowTrip();
                 requestShowTrip();
+                setInfo();
             }
         }
         else if (vehicleTypeComboBox.getValue() == TypeVehicle.truck) {
@@ -468,13 +474,12 @@ busNumChairText.getText().isEmpty() || busTicketPriceText.getText().isEmpty() ||
                 newTrip.setTripID(uuid.toString());
                 newTrip.setBeginLocation(beginLocationText.getText());
                 newTrip.setEndLocation(endLocationText.getText());
+                newTrip.setBegin(new Coordinate(selectedHitBegin.getPoint().getLng(), selectedHitBegin.getPoint().getLat()));
+                newTrip.setEnd(new Coordinate(selectedHitEnd.getPoint().getLng(), selectedHitEnd.getPoint().getLat()));
+                newTrip.setRevenue(Double.parseDouble(revenueText.getText()));
                 newTrip.setDriverID(driver.getId());
-                String pattern = "dd-MM-yyyy";
-                newTrip.setBegin_date(beginDatePicker.getValue().format(DateTimeFormatter.ofPattern(pattern)));
-                newTrip.setPlateNumber(busPlateNumberComboBox.getValue());
-                newTrip.setCost(0);
-                newTrip.setRevenue(0);
-                driver.setStatus(DriverStatus.ON_DUTY);
+                newTrip.setBegin_date(dateTimetoString(LocalDateTime.now()));
+                newTrip.setPlateNumber(truckPlateNumberComboBox.getValue());
                 newTrip.setStatus(TripStatus.ON_DUTY);
                 Vehicle v = FireBase.getInstance().getVehicle(truckPlateNumberComboBox.getValue());
                 List begin = selectedHitBegin.getPoint().getList();
@@ -492,6 +497,8 @@ busNumChairText.getText().isEmpty() || busTicketPriceText.getText().isEmpty() ||
                 try {
                     FireBase fireBase = FireBase.getInstance();
                     fireBase.editDriverStatus(driver.getId(), DriverStatus.ON_DUTY);
+                    driver.setStatus(DriverStatus.ON_DUTY);
+                    fireBase.editVehicleStatus(v.getPlateNumber(), VehicleStatus.ON_DUTY);
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 }
@@ -500,6 +507,7 @@ busNumChairText.getText().isEmpty() || busTicketPriceText.getText().isEmpty() ||
                 requestTripList.add(newTrip);
                 homeShowTrip();
                 requestShowTrip();
+                setInfo();
             }
         }
         else return;
@@ -571,7 +579,8 @@ busNumChairText.getText().isEmpty() || busTicketPriceText.getText().isEmpty() ||
             }
         } catch (Exception e) {e.printStackTrace();}
     }
-    public void setInfo() {
+    public void setInfo() throws Exception {
+        FireBase fireBase = FireBase.getInstance();
         DriverName.setText(driver.getName());
         Name.setText(driver.getName());
         Phone.setText(driver.getPhoneNumber());
@@ -587,11 +596,21 @@ busNumChairText.getText().isEmpty() || busTicketPriceText.getText().isEmpty() ||
             default -> License.setText("NONE");
         }
         ExpiryDate.setText(driver.getLicense().getExpiryDate());
-        switch (driver.getStatus()) {
-            case ON_DUTY -> Status.setText("ON DUTY");
-            case ON_LEAVE -> Status.setText("ON LEAVE");
-            default -> Status.setText("NONE");
+        if (driver.getStatus() == DriverStatus.ON_LEAVE) {
+            Status.setText("ON LEAVE");
+            fireBase.editDriverStatus(driver.getId(), DriverStatus.ON_LEAVE);
+            return;
         }
+        DriverStatus status = DriverStatus.NONE;
+        for (Trip trip: homeTripList) {
+            if (!LocalDateTime.now().isAfter(stringtoDateTime(trip.getEnd_date()))) {
+                Status.setText("ON DUTY");
+                fireBase.editDriverStatus(driver.getId(), DriverStatus.ON_DUTY);
+                return;
+            }
+        }
+        Status.setText("NONE");
+        fireBase.editDriverStatus(driver.getId(), DriverStatus.NONE);
     }
     public void setDate() {
         LocalDate date = LocalDate.now();
@@ -626,7 +645,6 @@ busNumChairText.getText().isEmpty() || busTicketPriceText.getText().isEmpty() ||
     }
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        setInfo();
         setDate();
         HomePane.setVisible(true);
         TripPane.setVisible(false);
@@ -648,6 +666,7 @@ busNumChairText.getText().isEmpty() || busTicketPriceText.getText().isEmpty() ||
             System.out.println("error on loading trip");
             throw new RuntimeException(e);
         }
+        setInfo();
         this.mouseRightClickTriptoMap();
         this.homeMouseRightClickTripToMap();
         this.requestMouseRightClickTripToMap();

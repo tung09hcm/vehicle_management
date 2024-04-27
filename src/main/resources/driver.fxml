@@ -144,12 +144,12 @@
                      </font>
                   </Label>
                   <TextField fx:id="endLocationText" layoutX="275.0" layoutY="55.0" />
-                  <Label layoutX="100.0" layoutY="85.0" text="Ngày bắt đầu: ">
+                  <Label layoutX="100.0" layoutY="85.0" text="Doanh thu: ">
                      <font>
                         <Font name="Arial" size="18.0" />
                      </font>
                   </Label>
-                  <DatePicker fx:id="beginDatePicker" layoutX="275.0" layoutY="85.0" />
+                  <TextField fx:id="revenueText" layoutX="275.0" layoutY="85.0" />
                   <Label layoutX="100.0" layoutY="115.0" text="Loại xe: ">
                      <font>
                         <Font name="Arial" size="18.0" />

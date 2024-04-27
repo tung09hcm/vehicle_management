@@ -10,6 +10,7 @@ import com.management.vehicle.request.RouteMatrix;
 import com.management.vehicle.request.struct.Hit;
 import com.management.vehicle.trip.Coordinate;
 import com.management.vehicle.trip.Trip;
+import com.management.vehicle.trip.TripStatus;
 import com.management.vehicle.vehicle.TypeVehicle;
 import com.management.vehicle.vehicle.Vehicle;
 import com.management.vehicle.vehicle.fuel;
@@ -33,6 +34,7 @@ import java.awt.event.MouseEvent;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.time.DayOfWeek;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -150,9 +152,13 @@ public class driverController implements Initializable  {
     public static void setDriver(com.management.vehicle.driver.Driver d) {
         driver = d;
     }
-    public void homeShowTrip() throws Exception {
+    public void updateTrip() throws Exception {
         homeTripList.clear();
         homeTripList = connection.getOnDutyTripConstraint(driver.getId());
+        requestTripList.clear();
+        requestTripList = connection.getOnDutyTripConstraint(driver.getId());
+    }
+    public void homeShowTrip() throws Exception {
         homeBeginDate.setCellValueFactory(new PropertyValueFactory<Trip, String>("begin_date"));
         homeEndDate.setCellValueFactory(new PropertyValueFactory<Trip, String>("end_date"));
         homeBeginLocation.setCellValueFactory(cellData -> {
@@ -183,8 +189,6 @@ public class driverController implements Initializable  {
         homeTripTable.setItems(homeTripList);
     }
     public void requestShowTrip() throws Exception {
-        requestTripList.clear();
-        requestTripList = connection.getOnDutyTripConstraint(driver.getId());
         requestBeginDate.setCellValueFactory(new PropertyValueFactory<Trip, String>("begin_date"));
         requestEndDate.setCellValueFactory(new PropertyValueFactory<Trip, String>("end_date"));
         requestBeginLocation.setCellValueFactory(cellData -> {
@@ -304,7 +308,20 @@ public class driverController implements Initializable  {
         contextMenuTrip.getItems().add(menuItemTrip1);
         requestTripTable.setContextMenu(contextMenuTrip);
     }
+    public String dateTimetoString(LocalDateTime localDateTime) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+        return localDateTime.format(formatter);
+    }
+
+    public LocalDateTime stringtoDateTime(String s) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+        return LocalDateTime.parse(s, formatter);
+    }
     public void addTripRequest() throws Exception {
+        if (driver.getStatus() != DriverStatus.NONE) {
+            BlankFieldAlert("You are not ready to request a trip now.");
+            return;
+        }
         if (beginLocationText.getText().isEmpty() || endLocationText.getText().isEmpty() ||
 beginDatePicker.getValue() == null || vehicleTypeComboBox.getSelectionModel().getSelectedItem() == null)
             BlankFieldAlert("Please fill all blank fields");
@@ -325,14 +342,29 @@ busNumChairText.getText().isEmpty() || busTicketPriceText.getText().isEmpty() ||
                 newTrip.setCost(0);
                 newTrip.setRevenue(0);
                 driver.setStatus(DriverStatus.ON_DUTY);
+                newTrip.setStatus(TripStatus.ON_DUTY);
+                Vehicle v = FireBase.getInstance().getVehicle(busPlateNumberComboBox.getValue());
+                List begin = selectedHitBegin.getPoint().getList();
+                List end = selectedHitEnd.getPoint().getList();
+                MapRequest i = MapRequest.getInstance();
+                RouteMatrix routeMatrix = i.getDistanceMatrix(begin, end);
+                LocalDateTime begin_dt = LocalDateTime.now();
+                newTrip.setBegin_date(dateTimetoString(begin_dt));
+                LocalDateTime end_dt = begin_dt.plus(Duration.ofMillis(routeMatrix.getDuration()));
+                newTrip.setEnd_date(dateTimetoString(end_dt));
+                double cost = v.getFuelType().getPricePerLiter()*v.getFuel_per_kilometer()*routeMatrix.getDistance()/1000;
+                cost = Math.round(cost / 1000) * 1000;
+                newTrip.setCost(cost);
+                newTrip.setDistanceCover(routeMatrix.getDistance()/1000);
                 try {
                     FireBase fireBase = FireBase.getInstance();
                     fireBase.editDriverStatus(driver.getId(), DriverStatus.ON_DUTY);
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 }
-
                 FireBase.getInstance().addTrip(newTrip);
+                homeTripList.add(newTrip);
+                requestTripList.add(newTrip);
                 homeShowTrip();
                 requestShowTrip();
             }
@@ -351,18 +383,33 @@ busNumChairText.getText().isEmpty() || busTicketPriceText.getText().isEmpty() ||
                 newTrip.setDriverID(driver.getId());
                 String pattern = "dd-MM-yyyy";
                 newTrip.setBegin_date(beginDatePicker.getValue().format(DateTimeFormatter.ofPattern(pattern)));
-                newTrip.setPlateNumber(carPlateNumberComboBox.getValue());
+                newTrip.setPlateNumber(busPlateNumberComboBox.getValue());
                 newTrip.setCost(0);
                 newTrip.setRevenue(0);
                 driver.setStatus(DriverStatus.ON_DUTY);
+                newTrip.setStatus(TripStatus.ON_DUTY);
+                Vehicle v = FireBase.getInstance().getVehicle(carPlateNumberComboBox.getValue());
+                List begin = selectedHitBegin.getPoint().getList();
+                List end = selectedHitEnd.getPoint().getList();
+                MapRequest i = MapRequest.getInstance();
+                RouteMatrix routeMatrix = i.getDistanceMatrix(begin, end);
+                LocalDateTime begin_dt = LocalDateTime.now();
+                newTrip.setBegin_date(dateTimetoString(begin_dt));
+                LocalDateTime end_dt = begin_dt.plus(Duration.ofMillis(routeMatrix.getDuration()));
+                newTrip.setEnd_date(dateTimetoString(end_dt));
+                double cost = v.getFuelType().getPricePerLiter()*v.getFuel_per_kilometer()*routeMatrix.getDistance()/1000;
+                cost = Math.round(cost / 1000) * 1000;
+                newTrip.setCost(cost);
+                newTrip.setDistanceCover(routeMatrix.getDistance()/1000);
                 try {
                     FireBase fireBase = FireBase.getInstance();
                     fireBase.editDriverStatus(driver.getId(), DriverStatus.ON_DUTY);
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 }
-
                 FireBase.getInstance().addTrip(newTrip);
+                homeTripList.add(newTrip);
+                requestTripList.add(newTrip);
                 homeShowTrip();
                 requestShowTrip();
             }
@@ -380,18 +427,33 @@ busNumChairText.getText().isEmpty() || busTicketPriceText.getText().isEmpty() ||
                 newTrip.setDriverID(driver.getId());
                 String pattern = "dd-MM-yyyy";
                 newTrip.setBegin_date(beginDatePicker.getValue().format(DateTimeFormatter.ofPattern(pattern)));
-                newTrip.setPlateNumber(containerPlateNumberComboBox.getValue());
+                newTrip.setPlateNumber(busPlateNumberComboBox.getValue());
                 newTrip.setCost(0);
                 newTrip.setRevenue(0);
                 driver.setStatus(DriverStatus.ON_DUTY);
+                newTrip.setStatus(TripStatus.ON_DUTY);
+                Vehicle v = FireBase.getInstance().getVehicle(containerPlateNumberComboBox.getValue());
+                List begin = selectedHitBegin.getPoint().getList();
+                List end = selectedHitEnd.getPoint().getList();
+                MapRequest i = MapRequest.getInstance();
+                RouteMatrix routeMatrix = i.getDistanceMatrix(begin, end);
+                LocalDateTime begin_dt = LocalDateTime.now();
+                newTrip.setBegin_date(dateTimetoString(begin_dt));
+                LocalDateTime end_dt = begin_dt.plus(Duration.ofMillis(routeMatrix.getDuration()));
+                newTrip.setEnd_date(dateTimetoString(end_dt));
+                double cost = v.getFuelType().getPricePerLiter()*v.getFuel_per_kilometer()*routeMatrix.getDistance()/1000;
+                cost = Math.round(cost / 1000) * 1000;
+                newTrip.setCost(cost);
+                newTrip.setDistanceCover(routeMatrix.getDistance()/1000);
                 try {
                     FireBase fireBase = FireBase.getInstance();
                     fireBase.editDriverStatus(driver.getId(), DriverStatus.ON_DUTY);
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 }
-
                 FireBase.getInstance().addTrip(newTrip);
+                homeTripList.add(newTrip);
+                requestTripList.add(newTrip);
                 homeShowTrip();
                 requestShowTrip();
             }
@@ -409,18 +471,33 @@ busNumChairText.getText().isEmpty() || busTicketPriceText.getText().isEmpty() ||
                 newTrip.setDriverID(driver.getId());
                 String pattern = "dd-MM-yyyy";
                 newTrip.setBegin_date(beginDatePicker.getValue().format(DateTimeFormatter.ofPattern(pattern)));
-                newTrip.setPlateNumber(truckPlateNumberComboBox.getValue());
+                newTrip.setPlateNumber(busPlateNumberComboBox.getValue());
                 newTrip.setCost(0);
                 newTrip.setRevenue(0);
                 driver.setStatus(DriverStatus.ON_DUTY);
+                newTrip.setStatus(TripStatus.ON_DUTY);
+                Vehicle v = FireBase.getInstance().getVehicle(truckPlateNumberComboBox.getValue());
+                List begin = selectedHitBegin.getPoint().getList();
+                List end = selectedHitEnd.getPoint().getList();
+                MapRequest i = MapRequest.getInstance();
+                RouteMatrix routeMatrix = i.getDistanceMatrix(begin, end);
+                LocalDateTime begin_dt = LocalDateTime.now();
+                newTrip.setBegin_date(dateTimetoString(begin_dt));
+                LocalDateTime end_dt = begin_dt.plus(Duration.ofMillis(routeMatrix.getDuration()));
+                newTrip.setEnd_date(dateTimetoString(end_dt));
+                double cost = v.getFuelType().getPricePerLiter()*v.getFuel_per_kilometer()*routeMatrix.getDistance()/1000;
+                cost = Math.round(cost / 1000) * 1000;
+                newTrip.setCost(cost);
+                newTrip.setDistanceCover(routeMatrix.getDistance()/1000);
                 try {
                     FireBase fireBase = FireBase.getInstance();
                     fireBase.editDriverStatus(driver.getId(), DriverStatus.ON_DUTY);
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 }
-
                 FireBase.getInstance().addTrip(newTrip);
+                homeTripList.add(newTrip);
+                requestTripList.add(newTrip);
                 homeShowTrip();
                 requestShowTrip();
             }
@@ -564,6 +641,7 @@ busNumChairText.getText().isEmpty() || busTicketPriceText.getText().isEmpty() ||
         truckPlateNumberComboBox.setItems(truckPlateNumberList);
 
         try {
+            updateTrip();
             homeShowTrip();
             requestShowTrip();
         } catch (Exception e) {

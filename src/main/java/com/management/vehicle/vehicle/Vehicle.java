@@ -69,9 +69,15 @@ public class Vehicle {
     private double revenue;  // currency: đ
     private fuel fuel_v = fuel.NONE;
     private double fuel_per_kilometer = 0;
+    private fuel fuelType = fuel.NONE;
 
+    public fuel getFuelType() {
+        return fuelType;
+    }
 
-
+    public void setFuelType(fuel fuelType) {
+        this.fuelType = fuelType;
+    }
 
     public double getFuel_per_kilometer() {
         return fuel_per_kilometer;

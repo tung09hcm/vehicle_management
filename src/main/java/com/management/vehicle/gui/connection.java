@@ -4,7 +4,7 @@ import com.management.vehicle.driver.Driver;
 import com.management.vehicle.request.FireBase;
 import com.management.vehicle.trip.Trip;
 import com.management.vehicle.trip.TripStatus;
-import com.management.vehicle.vehicle.Vehicle;
+import com.management.vehicle.vehicle.*;
 import javafx.beans.InvalidationListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
@@ -14,7 +14,31 @@ import java.util.*;
 
 public class connection {
     FireBase instance = null;
-
+    public double CalculateRevenue(double cost, Vehicle v)
+    {
+        if(v.getType() == TypeVehicle.car)
+        {
+            return cost*1.2;
+        }
+        else if(v.getType() == TypeVehicle.bus)
+        {
+            Bus bus = (Bus)v;
+            return cost + ((Bus) v).getNumberOfSeat() * ((Bus) v).getPricePerSeat();
+        }
+        else if(v.getType() == TypeVehicle.truck)
+        {
+            Truck truck = (Truck)v;
+            return cost*1.2 + ((Truck) v).getGoodsWeight()*5000;
+        }
+        else if (v.getType() == TypeVehicle.container)
+        {
+            Container container = (Container)v;
+            return cost*1.3 + ((Container) v).getGoodsWeight()*5000;
+        }
+        else {
+            return cost;
+        }
+    }
     public static ObservableList<Driver> getDriver() throws Exception {
         FireBase firebase = FireBase.getInstance();
         // System.out.println("SIGNAL on showDriverList() - 2.1");
@@ -55,7 +79,6 @@ public class connection {
         }
         return vehiclelist_conn;
     }
-
     public static ObservableList<Trip> getOnDutyTrip() throws Exception {
         FireBase firebase = FireBase.getInstance();
         ObservableList<Trip> triplist_conn = FXCollections.observableArrayList();

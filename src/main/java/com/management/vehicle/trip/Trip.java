@@ -2,7 +2,7 @@ package com.management.vehicle.trip;
 import com.management.vehicle.request.RouteMatrix;
 import com.management.vehicle.request.struct.*;
 import com.management.vehicle.request.MapRequest;
-import com.management.vehicle.vehicle.fuel;
+import com.management.vehicle.vehicle.*;
 
 import java.util.List;
 
@@ -142,7 +142,6 @@ public class Trip {
     public void setRevenue(double revenue) {
         Revenue = revenue;
     }
-
 
 
     public Trip() {

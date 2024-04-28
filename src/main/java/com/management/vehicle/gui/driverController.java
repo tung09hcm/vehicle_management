@@ -544,7 +544,7 @@ busNumChairText.getText().isEmpty() || busTicketPriceText.getText().isEmpty() ||
             truckPane.setVisible(false);
         }
     }
-    public void switchForm(ActionEvent e){
+    public void switchForm(ActionEvent e) throws Exception {
         if (e.getSource()==Home){
             HomePane.setVisible(true);
             TripPane.setVisible(false);
@@ -666,7 +666,11 @@ busNumChairText.getText().isEmpty() || busTicketPriceText.getText().isEmpty() ||
             System.out.println("error on loading trip");
             throw new RuntimeException(e);
         }
-        setInfo();
+        try {
+            setInfo();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
         this.mouseRightClickTriptoMap();
         this.homeMouseRightClickTripToMap();
         this.requestMouseRightClickTripToMap();

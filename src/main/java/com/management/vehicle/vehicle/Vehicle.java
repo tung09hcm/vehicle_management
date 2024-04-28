@@ -17,7 +17,6 @@ public class Vehicle {
         buffer.append("--------------------------\n");
         buffer.append("distanceCoverFromLastRepair: ").append(distanceCoverFromLastRepair).append("\n");
         buffer.append("last_repair_date: ").append(last_repair_date).append("\n");
-        buffer.append("distanceCover: ").append(distanceCover).append("\n");
         buffer.append("type: ").append(type).append("\n");
         buffer.append("status: ").append(status).append("\n");
         buffer.append("driverID: ").append(driverID).append("\n");
@@ -31,19 +30,9 @@ public class Vehicle {
         buffer.append("--------------------------\n");
         return buffer.toString();
     }
-    public long subDate()
-    {
-        LocalDate localDate = LocalDate.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
-        // Chuyển đổi chuỗi thành LocalDate
-        LocalDate date = LocalDate.parse(last_repair_date, formatter);
-
-        return ChronoUnit.DAYS.between(localDate, date);
-
-    }
     public String guessMaintenanceDate() {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
         LocalDate date = LocalDate.parse(last_repair_date, formatter);
         long daysFromLastRepair = Math.round(distanceCoverFromLastRepair/maintenanceCycleInKilometers*maintenanceCycleInDays);
         return date.plusDays(daysFromLastRepair).format(formatter);
@@ -55,13 +44,14 @@ public class Vehicle {
     private double distanceCoverFromLastRepair;
     private String last_repair_date;
     private int maintain_period;
-    private double distanceCover;
+
     private TypeVehicle type;
     private VehicleStatus status;
     private String driverID ;
     private double length;
     private double wide;
     private double high;
+    private List<String> maintenanceHistory;
     private String plateNumber;
     private double weight;
     private LicenseLevel license;
@@ -70,6 +60,23 @@ public class Vehicle {
     private fuel fuel_v = fuel.NONE;
     private double fuel_per_kilometer = 0;
     private fuel fuelType = fuel.NONE;
+
+
+    public void setLimitKilometers(double limitKilometers) {
+        this.limitKilometers = limitKilometers;
+    }
+
+    public void setMaintenanceCycleInKilometers(double maintenanceCycleInKilometers) {
+        this.maintenanceCycleInKilometers = maintenanceCycleInKilometers;
+    }
+
+    public int getMaintain_period() {
+        return maintain_period;
+    }
+
+    public void setMaintain_period(int maintain_period) {
+        this.maintain_period = maintain_period;
+    }
 
     public fuel getFuelType() {
         return fuelType;
@@ -144,13 +151,7 @@ public class Vehicle {
     }
 
 
-    public double getDistanceCover() {
-        return distanceCover;
-    }
 
-    public void setDistanceCover(double distanceCover) {
-        this.distanceCover = distanceCover;
-    }
 
     public TypeVehicle getType() {
         return type;
@@ -240,10 +241,12 @@ public class Vehicle {
         return history;
     }
     public void setMaintenance(){}
+    public void AddMaintance(String day)
+    {
+        maintenanceHistory.add(day);
+    }
 
-
-    public Vehicle(String last_repair_date, double distanceCoverFromLastRepair,List<String> history,String driverID,int distanceCover, TypeVehicle type, double length, double wide, double high, String plateNumber, double weight, VehicleStatus status, LicenseLevel license) {
-        this.distanceCover = distanceCover;
+    public Vehicle(String last_repair_date, double distanceCoverFromLastRepair,List<String> history,String driverID, TypeVehicle type, double length, double wide, double high, String plateNumber, double weight, VehicleStatus status, LicenseLevel license) {
         this.type = type;
         this.length = length;
         this.wide = wide;
@@ -259,7 +262,6 @@ public class Vehicle {
     }
     public Vehicle()
     {
-        this.distanceCover = 0;
         this.type = TypeVehicle.NONE;
         this.length = 0;
         this.wide = 0;
@@ -276,6 +278,7 @@ public class Vehicle {
         this.maintenanceCycleInKilometers = 0;
         this.maintenanceCycleInDays = 0;
         this.revenue = 0;
+        this.maintenanceHistory = new ArrayList<>();
     }
     public void addTrip(String idTrip)
     {

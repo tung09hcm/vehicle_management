@@ -45,6 +45,8 @@ public class Bus extends Vehicle {
         setRevenue(getNumberOfCustomer() * getPricePerSeat());
         setLimitKilometers(5000);
         setFuel_per_kilometer(0.07);
+        setFuel_v(fuel.DIESEL);
+        setVehicleLifespan(500000);
     }
 
 }

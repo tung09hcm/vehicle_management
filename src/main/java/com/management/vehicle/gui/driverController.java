@@ -323,7 +323,6 @@ busNumChairText.getText().isEmpty() || busTicketPriceText.getText().isEmpty() ||
                 newTrip.setDriverID(driver.getId());
                 String pattern = "dd-MM-yyyy";
                 newTrip.setBegin_date(beginDatePicker.getValue().format(DateTimeFormatter.ofPattern(pattern)));
-                newTrip.setFuel_trip(fuelComboBox.getValue());
                 newTrip.setPlateNumber(busPlateNumberComboBox.getValue());
                 newTrip.setCost(0);
                 newTrip.setRevenue(0);
@@ -353,7 +352,6 @@ busNumChairText.getText().isEmpty() || busTicketPriceText.getText().isEmpty() ||
                 newTrip.setDriverID(driver.getId());
                 String pattern = "dd-MM-yyyy";
                 newTrip.setBegin_date(beginDatePicker.getValue().format(DateTimeFormatter.ofPattern(pattern)));
-                newTrip.setFuel_trip(fuelComboBox.getValue());
                 newTrip.setPlateNumber(carPlateNumberComboBox.getValue());
                 newTrip.setCost(0);
                 newTrip.setRevenue(0);
@@ -382,7 +380,6 @@ busNumChairText.getText().isEmpty() || busTicketPriceText.getText().isEmpty() ||
                 newTrip.setDriverID(driver.getId());
                 String pattern = "dd-MM-yyyy";
                 newTrip.setBegin_date(beginDatePicker.getValue().format(DateTimeFormatter.ofPattern(pattern)));
-                newTrip.setFuel_trip(fuelComboBox.getValue());
                 newTrip.setPlateNumber(containerPlateNumberComboBox.getValue());
                 newTrip.setCost(0);
                 newTrip.setRevenue(0);
@@ -411,7 +408,6 @@ busNumChairText.getText().isEmpty() || busTicketPriceText.getText().isEmpty() ||
                 newTrip.setDriverID(driver.getId());
                 String pattern = "dd-MM-yyyy";
                 newTrip.setBegin_date(beginDatePicker.getValue().format(DateTimeFormatter.ofPattern(pattern)));
-                newTrip.setFuel_trip(fuelComboBox.getValue());
                 newTrip.setPlateNumber(truckPlateNumberComboBox.getValue());
                 newTrip.setCost(0);
                 newTrip.setRevenue(0);

@@ -112,26 +112,8 @@ public class DriverHistoryInfoController implements Initializable {
         plateNumberTripColumn.setCellValueFactory   (new PropertyValueFactory<>("plateNumber"));
         tripCostColumn.setCellValueFactory          (new PropertyValueFactory<>("Cost"));
         tripRevenueColumn.setCellValueFactory       (new PropertyValueFactory<>("Revenue"));
-        beginTripColumn.setCellValueFactory(data->{
-            Trip trip = data.getValue();
-            String address = "";
-            try {
-                address = MapRequest.getInstance().getAddressFromCoordinate(trip.getBegin());
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-            return new SimpleStringProperty(address);
-        });
-        endTripColumn.setCellValueFactory(data -> {
-            Trip trip = data.getValue();
-            String address = "";
-            try {
-                address = MapRequest.getInstance().getAddressFromCoordinate(trip.getEnd());
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-            return new SimpleStringProperty(address);
-        });
+        beginTripColumn.setCellValueFactory(new PropertyValueFactory<Trip, String>("beginLocation"));
+        endTripColumn.setCellValueFactory(new PropertyValueFactory<Trip, String>("endLocation"));
 
         historyTripDriverTable.setItems(listTrip);
     }

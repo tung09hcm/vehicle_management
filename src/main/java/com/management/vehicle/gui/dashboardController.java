@@ -1,6 +1,8 @@
 package com.management.vehicle.gui;
 
 import com.jfoenix.controls.JFXButton;
+import com.management.vehicle.available.AvailableDriver;
+import com.management.vehicle.available.AvailableVehicle;
 import com.management.vehicle.driver.Driver;
 import com.management.vehicle.driver.DriverStatus;
 import com.management.vehicle.license.LicenseLevel;
@@ -29,6 +31,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 import tornadofx.control.DateTimePicker;
 
 import java.io.IOException;
@@ -124,6 +127,9 @@ public class dashboardController implements Initializable
     @FXML
     private TableColumn<Vehicle, String> driverofVehicleColumn;
 
+    @FXML
+    private AnchorPane BusVehicleField;
+
     private ObservableList<Vehicle> vehicleList = FXCollections.observableArrayList();
 
     @FXML
@@ -134,18 +140,6 @@ public class dashboardController implements Initializable
 
     @FXML
     private TextField plateNumberText;
-
-    @FXML
-    private ComboBox<LicenseLevel> licenseLevelComboBox;
-
-    @FXML
-    ObservableList<LicenseLevel> licenseLevelObservableList = FXCollections.observableArrayList(LicenseLevel.NONE,LicenseLevel.B1,LicenseLevel.B2,LicenseLevel.C,LicenseLevel.D,LicenseLevel.E,LicenseLevel.F);
-
-    @FXML
-    private ComboBox<VehicleStatus> vehicleStatusComboBox;
-
-    @FXML
-    ObservableList<VehicleStatus> vehicleStatusObservableList = FXCollections.observableArrayList(VehicleStatus.NONE,VehicleStatus.ON_DUTY,VehicleStatus.ON_LEAVE);
 
     @FXML
     private TextField lengthText;
@@ -160,13 +154,14 @@ public class dashboardController implements Initializable
     private TextField weightText;
 
     @FXML
-    private TextField distanceCoverText;
-
-    @FXML
-    private TextField driverofVehicleText;
-
-    @FXML
     private TextField searchVehicleText;
+
+    ObservableList<LicenseLevel> licenseLevelObservableList = FXCollections.observableArrayList(LicenseLevel.NONE,LicenseLevel.B1,LicenseLevel.B2,LicenseLevel.C,LicenseLevel.D,LicenseLevel.E,LicenseLevel.F);
+
+    @FXML
+    private ComboBox<fuel> typeFuelVehicleComboBox;
+
+    ObservableList<fuel> typeFuelVehicleObservableList = FXCollections.observableArrayList(fuel.DIESEL, fuel.RON95, fuel.RON97);
 
     @FXML
     private TextField truckGoodTypeText;
@@ -196,12 +191,6 @@ public class dashboardController implements Initializable
     private TextField carCustomerPhonenumText;
 
     @FXML
-    private DatePicker carRentalDatePicker;
-
-    @FXML
-    private DatePicker carReturnDatePicker;
-
-    @FXML
     private TextField containerGoodTypeText;
 
     @FXML
@@ -209,7 +198,13 @@ public class dashboardController implements Initializable
 
 /////////////////////////////////////////////////////////////////////////////////
     @FXML
-    private TextField plateNumberTripText;
+    private ComboBox<TypeVehicle> typeVehicleTripComboBox;
+
+    @FXML
+    private ComboBox<Vehicle> plateNumberTripComboBox;
+
+    @FXML
+    private ComboBox<Driver> driverIDTripComboBox;
 
     @FXML
     private TextField endTripText;
@@ -222,14 +217,6 @@ public class dashboardController implements Initializable
 
     @FXML
     private TextField beginTripText;
-
-    @FXML
-    private ComboBox<fuel> fuelTripComboBox;
-
-    ObservableList<fuel> fuelTripObservableList = FXCollections.observableArrayList(fuel.DIESEL,fuel.RON95,fuel.RON97);
-
-    @FXML
-    private TextField driverIDTripText;
 
     @FXML
     private TextField revenueText;
@@ -275,6 +262,12 @@ public class dashboardController implements Initializable
     private Hit selectedHitBegin;
 
     private Hit selectedHitEnd;
+
+    private String durationNow;
+
+    MapRequest mapRequest = MapRequest.getInstance();
+
+    RouteMatrix routeMatrix;
 /////////////////////////////////////////////////////////////////////////////////
 
     @FXML
@@ -305,6 +298,9 @@ public class dashboardController implements Initializable
     private TableColumn<Driver, String> licenseDriverCol;
 
     @FXML
+    private TableColumn<Driver, String> plateNumberDriverCol;
+
+    @FXML
     private ComboBox<LicenseLevel> licenseDriverComboBox;
 
     @FXML
@@ -326,9 +322,6 @@ public class dashboardController implements Initializable
     private TableColumn<Driver, DriverStatus> statusDriverCol;
 
     @FXML
-    private ComboBox<DriverStatus> statusDriverComboBox;
-
-    @FXML
     private JFXButton updateDriverButton;
 
     @FXML
@@ -337,8 +330,10 @@ public class dashboardController implements Initializable
     @FXML
     private TextField researchDriverText;
 
-    ObservableList<DriverStatus> statusDriverObservableList = FXCollections.observableArrayList(DriverStatus.NONE, DriverStatus.ON_DUTY, DriverStatus.ON_LEAVE);
     ObservableList<Driver> driverList = FXCollections.observableArrayList();
+
+    public dashboardController() throws Exception {
+    }
 
 /////////////////////////////////////////////////////////////////////////////////
 
@@ -350,12 +345,9 @@ public class dashboardController implements Initializable
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         typeVehicleComboBox.setItems(typeVehicleObservableList);
-        licenseLevelComboBox.setItems(licenseLevelObservableList);
-        vehicleStatusComboBox.setItems(vehicleStatusObservableList);
-        statusDriverComboBox.setItems(statusDriverObservableList);
         licenseDriverComboBox.setItems(licenseLevelObservableList);
-
-        fuelTripComboBox.setItems(fuelTripObservableList);
+        typeFuelVehicleComboBox.setItems(typeFuelVehicleObservableList);
+        typeVehicleTripComboBox.setItems(typeVehicleObservableList);
 
         this.mouseRightClicktoHistoryInfoVehicle();
         this.mouseRightClicktoHistoryInfoDriver();
@@ -437,29 +429,27 @@ public class dashboardController implements Initializable
     public void mouseSelectedVehicle() {
         Vehicle selected = vehicleTable.getSelectionModel().getSelectedItem();
         if (selected == null) return;
-        distanceCoverText.setText(String.valueOf(selected.getDistanceCover()));
         typeVehicleComboBox.getSelectionModel().select(selected.getType());
         lengthText.setText(String.valueOf(selected.getLength()));
         wideText.setText(String.valueOf(selected.getWide()));
         highText.setText(String.valueOf(selected.getHigh()));
         plateNumberText.setText(selected.getPlateNumber());
         weightText.setText(String.valueOf(selected.getWeight()));
-        licenseLevelComboBox.getSelectionModel().select(selected.getLicense());
-        vehicleStatusComboBox.getSelectionModel().select(selected.getStatus());
-        driverofVehicleText.setText(selected.getDriverID());
+        typeFuelVehicleComboBox.getSelectionModel().select(selected.getFuel_v());
+        if (selected instanceof Bus selectedBus) {
+            busPriceText.setText(String.valueOf(selectedBus.getPricePerSeat()));
+            busNumSeatText.setText(String.valueOf(selectedBus.getNumberOfSeat()));
+        }
     }
 
     public boolean warningBlankFieldVehicle() {
-        return distanceCoverText.getText().isEmpty()
-                || typeVehicleComboBox.getSelectionModel().getSelectedItem() == null
+        return typeVehicleComboBox.getSelectionModel().getSelectedItem() == null
                 || lengthText.getText().isEmpty()
                 || wideText.getText().isEmpty()
                 || highText.getText().isEmpty()
                 || plateNumberText.getText().isEmpty()
                 || weightText.getText().isEmpty()
-                || licenseLevelComboBox.getSelectionModel().getSelectedItem() == null
-                || vehicleStatusComboBox.getSelectionModel().getSelectedItem() == null
-                || driverofVehicleText.getText().isEmpty();
+                || typeFuelVehicleComboBox.getSelectionModel().getSelectedItem() == null;
     }
     public static void BlankFieldVehicleAlert() {
         Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -469,16 +459,13 @@ public class dashboardController implements Initializable
     }
 
     public void SetFieldtoVehicle(Vehicle newVehicle) {
-        newVehicle.setDistanceCover(Double.parseDouble(distanceCoverText.getText()));
         newVehicle.setType(typeVehicleComboBox.getValue());
         newVehicle.setLength(Double.parseDouble(lengthText.getText()));
         newVehicle.setWide(Double.parseDouble(wideText.getText()));
         newVehicle.setHigh(Double.parseDouble(highText.getText()));
         newVehicle.setPlateNumber(plateNumberText.getText());
         newVehicle.setWeight(Double.parseDouble(weightText.getText()));
-        newVehicle.setStatus(vehicleStatusComboBox.getValue());
-        newVehicle.setLicense(licenseLevelComboBox.getValue());
-        newVehicle.setDriverID(driverofVehicleText.getText());
+        newVehicle.setFuel_v(typeFuelVehicleComboBox.getValue());
     }
 
     public void addVehicle (ActionEvent e) throws Exception {
@@ -491,7 +478,10 @@ public class dashboardController implements Initializable
                 return;
             }
         }
-        if (warningBlankFieldVehicle()) BlankFieldAlert("Please fill all blank fields");
+        if (warningBlankFieldVehicle()) {
+            BlankFieldAlert("Please fill all blank fields");
+            return;
+        }
         switch (typeVehicleComboBox.getValue()) {
             case TypeVehicle.car -> {
                 Car newCar = new Car();
@@ -512,8 +502,14 @@ public class dashboardController implements Initializable
                 fireBase.addVehicle(newContainer);
             }
             case TypeVehicle.bus -> {
+                if (busNumSeatText.getText().isEmpty() || busPriceText.getText().isEmpty()) {
+                    BlankFieldAlert("Vui lòng điền thông tin xe buýt");
+                    return;
+                }
                 Bus newBus = new Bus();
                 SetFieldtoVehicle(newBus);
+                newBus.setNumberOfSeat(Integer.parseInt(busNumSeatText.getText()));
+                newBus.setPricePerSeat(Double.parseDouble(busPriceText.getText()));
                 FireBase fireBase = FireBase.getInstance();
                 fireBase.addVehicle(newBus);
             }
@@ -534,7 +530,10 @@ public class dashboardController implements Initializable
             alert.showAndWait();
             return;
         }
-
+        if (selected.getStatus() != VehicleStatus.NONE) {
+            BlankFieldAlert("Xe đang bận, không thể xóa");
+            return;
+        }
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setHeaderText("You will delete this vehicle");
         alert.setContentText("Are you sure to delete this vehicle information?");
@@ -567,21 +566,41 @@ public class dashboardController implements Initializable
         alert.getButtonTypes().setAll(ButtonType.YES, ButtonType.NO);
         alert.showAndWait().ifPresent(response -> {
             if (response == ButtonType.YES) {
-                switch (selected) {
-                    case Car selectedCar -> {
-                        SetFieldtoVehicle(selectedCar);
+                if(!Objects.equals(selected.getPlateNumber(), plateNumberText.getText()))
+                {
+                    BlankFieldAlert("Can't update Plate number");
+                    resetFieldDriver();
+                    return;
+                }
+                if(!Objects.equals(selected.getType(), typeVehicleComboBox.getSelectionModel().getSelectedItem()))
+                {
+                    BlankFieldAlert("Can't update type vehicle");
+                    resetFieldDriver();
+                    return;
+                }
+
+                if (selected instanceof Bus selectedBus) {
+                    SetFieldtoVehicle(selectedBus);
+                    selectedBus.setPricePerSeat(Double.parseDouble(busPriceText.getText()));
+                    selectedBus.setNumberOfSeat(Integer.parseInt(busNumSeatText.getText()));
+                    try {
+                        FireBase fireBase = FireBase.getInstance();
+                        fireBase.editVehicle(selectedBus.getPlateNumber(), selectedBus);
+                        showVehicleList();
+                        resetField();
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
                     }
-                    case Truck selectedTruck -> {
-                        SetFieldtoVehicle(selectedTruck);
-                    }
-                    case Container selectedContainer -> {
-                        SetFieldtoVehicle(selectedContainer);
-                    }
-                    case Bus selectedBus -> {
-                        SetFieldtoVehicle(selectedBus);
-                    }
-                    default -> {
-                        System.out.println("show default");
+                }
+                else {
+                    SetFieldtoVehicle(selected);
+                    try {
+                        FireBase fireBase = FireBase.getInstance();
+                        fireBase.editVehicle(selected.getPlateNumber(), selected);
+                        showVehicleList();
+                        resetField();
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
                     }
                 }
             }
@@ -620,17 +639,16 @@ public class dashboardController implements Initializable
 
 
     public void resetField() {
-        distanceCoverText.setText("");
         typeVehicleComboBox.getSelectionModel().select(null);
         lengthText.setText("");
         wideText.setText("");
         highText.setText("");
         plateNumberText.setText("");
         weightText.setText("");
-        licenseLevelComboBox.getSelectionModel().select(null);
-        vehicleStatusComboBox.getSelectionModel().select(null);
         vehicleTable.getSelectionModel().select(null);
-        driverofVehicleText.setText("");
+        typeFuelVehicleComboBox.getSelectionModel().select(null);
+        busPriceText.setText("");
+        busNumSeatText.setText("");
     }
 
 
@@ -638,6 +656,12 @@ public class dashboardController implements Initializable
         vehicleTable.getSelectionModel().select(null);
     }
 
+    public void typeBusChange() {
+        if (typeVehicleComboBox.getSelectionModel().getSelectedItem() == TypeVehicle.bus) {
+            BusVehicleField.setVisible(true);
+        }
+        else BusVehicleField.setVisible(false);
+    }
 
 ////////////////////////////////////////////////////////
 
@@ -652,6 +676,7 @@ public class dashboardController implements Initializable
         statusDriverCol.setCellValueFactory(new PropertyValueFactory<Driver, DriverStatus>("status"));
         phoneDriverCol.setCellValueFactory(new PropertyValueFactory<Driver, String>("phoneNumber"));
         addressDiverCol.setCellValueFactory(new PropertyValueFactory<Driver, String>("address"));
+        plateNumberDriverCol.setCellValueFactory(new PropertyValueFactory<Driver, String>("recentPlateNumber"));
         licenseDriverCol.setCellValueFactory( data->
                 new SimpleStringProperty(data.getValue().getLicense().getType().toString()));
         expireDateCol.setCellValueFactory(data->
@@ -691,7 +716,6 @@ public class dashboardController implements Initializable
         newDriver.setName(nameDriverText.getText());
         newDriver.setPhoneNumber(phoneDriverText.getText());
         newDriver.setAddress(addressDriverText.getText());
-        newDriver.setStatus(statusDriverComboBox.getValue());
 
         newDriver.getLicense().setType(licenseDriverComboBox.getValue());
 
@@ -720,6 +744,10 @@ public class dashboardController implements Initializable
             alert.showAndWait();
             return;
         }
+        if (seleted.getStatus() == DriverStatus.ON_DUTY) {
+            BlankFieldAlert("Tài xế đang trong chuyến đi, vui lòng không xóa");
+            return;
+        }
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setHeaderText("Delete this driver");
         alert.setContentText("You want to delete this driver");
@@ -734,7 +762,6 @@ public class dashboardController implements Initializable
                 }
             }
         });
-
 
         resetFieldDriver();
     }
@@ -777,7 +804,6 @@ public class dashboardController implements Initializable
                 seleted.setName(nameDriverText.getText());
                 seleted.setPhoneNumber(phoneDriverText.getText());
                 seleted.setAddress(addressDriverText.getText());
-                seleted.setStatus(statusDriverComboBox.getValue());
 
                 LocalDate localIssueDate = issueDatePicker.getValue();
                 LocalDate localExpiryDate = localIssueDate.plusYears(5);
@@ -831,7 +857,6 @@ public class dashboardController implements Initializable
         phoneDriverText.setText(null);
         addressDriverText.setText(null);
         issueDatePicker.setValue(null);
-        statusDriverComboBox.getSelectionModel().select(null);
         TableListDriver.getSelectionModel().select(null);
     }
 
@@ -878,7 +903,6 @@ public class dashboardController implements Initializable
         nameDriverText.setText(selected.getName());
         phoneDriverText.setText(selected.getPhoneNumber());
         addressDriverText.setText(selected.getAddress());
-        statusDriverComboBox.getSelectionModel().select(selected.getStatus());
 
         LocalDate localDate = LocalDate.parse(selected.getLicense().getIssueDate(), DateTimeFormatter.ofPattern("dd-MM-yyyy"));
         issueDatePicker.setValue(localDate);
@@ -890,7 +914,8 @@ public class dashboardController implements Initializable
                 || nameDriverText.getText().isEmpty()
                 || phoneDriverText.getText().isEmpty()
                 || addressDriverText.getText().isEmpty()
-                || statusDriverComboBox.getSelectionModel().getSelectedItem() == null;
+                || licenseDriverComboBox.getValue() == null
+                || issueDatePicker.getValue() == null;
     }
 
     public static void BlankFieldAlert(String errorStr) {
@@ -907,28 +932,8 @@ public class dashboardController implements Initializable
         tripList = connection.getOnDutyTrip();
         beginDateTripColumn.setCellValueFactory(new PropertyValueFactory<Trip, String>("begin_date"));
         endDateTripColumn.setCellValueFactory(new PropertyValueFactory<Trip, String>("end_date"));
-        beginTripColumn.setCellValueFactory(cellData -> {
-            Trip trip = cellData.getValue();
-            Coordinate coord = trip.getBegin();
-            String address = null;
-            try {
-                address = MapRequest.getInstance().getAddressFromCoordinate(coord);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-            return new SimpleObjectProperty<>(address);
-        });
-        endTripColumn.setCellValueFactory(cellData -> {
-            Trip trip = cellData.getValue();
-            Coordinate coord = trip.getEnd();
-            String address = null;
-            try {
-                address = MapRequest.getInstance().getAddressFromCoordinate(coord);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-            return new SimpleObjectProperty<>(address);
-        });
+        beginTripColumn.setCellValueFactory(new PropertyValueFactory<Trip, String>("beginLocation"));
+        endTripColumn.setCellValueFactory(new PropertyValueFactory<Trip, String>("endLocation"));
         driverIDTripColumn.setCellValueFactory(new PropertyValueFactory<Trip, String>("driverID"));
         plateNumberTripColumn.setCellValueFactory(new PropertyValueFactory<Trip, String>("plateNumber"));
         costTripColumn.setCellValueFactory(new PropertyValueFactory<Trip, String>("cost"));
@@ -937,15 +942,9 @@ public class dashboardController implements Initializable
     }
 
     public void typeVehicleChange() throws Exception {
-        Vehicle v = FireBase.getInstance().getVehicle(plateNumberTripText.getText());
-        if (plateNumberTripText.getText().isEmpty()) {
-            StandardField.setVisible(true);
-            TruckField.setVisible(false);
-            ContainerField.setVisible(false);
-            CarField.setVisible(false);
-            BusField.setVisible(false);
-        }
-        else if (v.getType() == TypeVehicle.truck) {
+        Vehicle v = plateNumberTripComboBox.getSelectionModel().getSelectedItem();
+        if (v == null) return;
+        if (v.getType() == TypeVehicle.truck) {
             StandardField.setVisible(false);
             TruckField.setVisible(true);
             ContainerField.setVisible(false);
@@ -990,14 +989,6 @@ public class dashboardController implements Initializable
         car.setCustomerid(carCustomerIDText.getText());
         car.setCustomeraddress(carCustomerAddressText.getText());
         car.setCustomerphoneNumber(carCustomerPhonenumText.getText());
-
-        LocalDate localDate = carRentalDatePicker.getValue();
-        String pattern = "dd-MM-yyyy";
-        String datePattern = localDate.format(DateTimeFormatter.ofPattern(pattern));
-        car.setRentalDate(datePattern);
-        localDate = carReturnDatePicker.getValue();
-        datePattern = localDate.format(DateTimeFormatter.ofPattern(pattern));
-        car.setReturnDate(datePattern);
     }
 
     public void setTruck(Truck truck) {
@@ -1010,125 +1001,78 @@ public class dashboardController implements Initializable
         container.setGoodsWeight(Double.parseDouble(containerGoodWeightText.getText()));
     }
 
-    public void setBus(Bus bus) {
-        bus.setNumberOfCustomer(Integer.parseInt(busNumCustomerText.getText()));
-        bus.setPricePerSeat(Double.parseDouble(busPriceText.getText()));
-        bus.setNumberOfCustomer(Integer.parseInt(busNumSeatText.getText()));
-    }
-
     public boolean warningBlankFieldTrip() {
-
-        System.out.println("signal");
-        if(beginTripText.getText().isEmpty())
-        {
-            System.out.println("begin null");
-            return true;
-        }
-        if(endTripText.getText().isEmpty())
-        {
-            System.out.println("end null");
-            return true;
-        }
-        if(plateNumberTripText.getText().isEmpty())
-        {
-            System.out.println("plate null");
-            return true;
-        }
-        if(driverIDTripText.getText().isEmpty())
-        {
-            System.out.println("driverid null");
-            return true;
-        }
-        if(fuelTripComboBox.getSelectionModel().getSelectedItem()== null)
-        {
-            System.out.println("fueltrip null");
-            return true;
-        }
-        else
-        {
-            System.out.println(" ko null j hết");
-            return false;
-        }
-
+        return beginTripText.getText().isEmpty()
+                || endTripText.getText().isEmpty()
+                || typeVehicleTripComboBox.getValue() == null
+                || driverIDTripComboBox.getValue() == null
+                || plateNumberTripComboBox.getValue() == null
+                || beginTripDatePicker.getValue() == null;
         //doanh thu
     }
 
     public void updateInforTrip() throws Exception {
         if (warningBlankFieldTrip()) {
-            System.out.println("??????");
             BlankFieldAlert("Please fill all blank fields");
             return;
         }
-
-        Vehicle v = FireBase.getInstance().getVehicle(plateNumberTripText.getText());
-        Driver d = FireBase.getInstance().getDriver(driverIDTripText.getText());
-
-        if (v == null || v.getStatus() == VehicleStatus.ON_DUTY) {
-            BlankFieldAlert("Không có tt xe hoặc xe đang bận");
+        Vehicle v = plateNumberTripComboBox.getSelectionModel().getSelectedItem();
+        if (v == null) {
+            BlankFieldAlert("Chưa chọn xe");
             return;
         }
-        if (d == null || d.getStatus() == DriverStatus.ON_DUTY) {
-            BlankFieldAlert("Không có tt tài xế hoặc tài xế đang bận");
-            return;
-        }
+        double cost = v.getFuel_v().getPricePerLiter() * v.getFuel_per_kilometer() * routeMatrix.getDistance() / 1000;
+        cost = Math.round(cost / 1000) * 1000;
+
+
         switch (v) {
             case Car ignored -> {
                 if (carCustomerIDText.getText().isEmpty()
                         || carCustomerPhonenumText.getText().isEmpty()
                         || carCustomerAddressText.getText().isEmpty()
-                        || carCustomerNameText.getText().isEmpty()
-                        || carRentalDatePicker.getValue() == null
-                        || carReturnDatePicker.getValue() == null
-                        || revenueText.getText().isEmpty()) {
+                        || carCustomerNameText.getText().isEmpty()) {
                     BlankFieldAlert("Please fill all blank fields");
                     return;
                 }
+                double rvnCar = cost * 1.2;
+                revenueText.setText(String.valueOf(rvnCar));
             }
             case Truck ignored -> {
                 if (truckGoodTypeText.getText().isEmpty()
-                        || truckGoodWeightText.getText().isEmpty()
-                        || revenueText.getText().isEmpty()) {
+                        || truckGoodWeightText.getText().isEmpty()) {
                     BlankFieldAlert("Please fill all blank fields");
                     return;
                 }
+                double rvnTruck = cost * 1.2 + Double.parseDouble(truckGoodWeightText.getText())*5000;
+                revenueText.setText(String.valueOf(rvnTruck));
             }
             case Container ignored -> {
                 if (containerGoodTypeText.getText().isEmpty()
-                        || containerGoodWeightText.getText().isEmpty()
-                        || revenueText.getText().isEmpty()) {
+                        || containerGoodWeightText.getText().isEmpty()) {
                     BlankFieldAlert("Please fill all blank fields");
                     return;
                 }
+                double rvnContainer = cost * 1.2 + Double.parseDouble(containerGoodWeightText.getText())*5000;
+                revenueText.setText(String.valueOf(rvnContainer));
             }
-            case Bus ignored -> {
+            case Bus selectedBus -> {
                 revenueText.setEditable(false);
-                if (busPriceText.getText().isEmpty()
-                        || busNumSeatText.getText().isEmpty()
-                        || busNumCustomerText.getText().isEmpty()) {
+                if (busNumCustomerText.getText().isEmpty()) {
                     BlankFieldAlert("Please fill all blank fields");
                     return;
                 }
-                double rvnBus = Double.parseDouble(busPriceText.getText()) * Integer.parseInt(busNumCustomerText.getText());
+                double rvnBus = selectedBus.getPricePerSeat() * Integer.parseInt(busNumCustomerText.getText());
                 revenueText.setText(String.valueOf(rvnBus));
             }
-            default -> {
-                BlankFieldAlert("Sau khi nhập biển số, nhấn Enter để cập nhật loại xe");
-                return;
-            }
+            default -> BlankFieldAlert("Sau khi nhập biển số, nhấn Enter để cập nhật loại xe");
         }
-        List begin = selectedHitBegin.getPoint().getList();
-        List end = selectedHitEnd.getPoint().getList();
-
-        MapRequest i = MapRequest.getInstance();
-        RouteMatrix routeMatrix = i.getDistanceMatrix(begin, end);
-
+        costText.setText(String.valueOf(cost));
+        distanceCoverTripText.setText(String.valueOf(routeMatrix.getDistance()/1000));
         LocalDateTime begin_dt = beginTripDatePicker.getDateTimeValue();
         LocalDateTime end_dt = begin_dt.plus(Duration.ofMillis(routeMatrix.getDuration()));
         endTripDatePicker.setText(dateTimetoString(end_dt));
-        double cost = fuelTripComboBox.getValue().getPricePerLiter()*v.getFuel_per_kilometer()*routeMatrix.getDistance()/1000;
-        cost = Math.round(cost / 1000) * 1000;
-        costText.setText(String.valueOf(cost));
-        distanceCoverTripText.setText(String.valueOf(routeMatrix.getDistance()/1000));
+
+        durationNow = String.valueOf(routeMatrix.getDuration());
     }
 
     public void addTrip() throws Exception {
@@ -1137,45 +1081,34 @@ public class dashboardController implements Initializable
             return;
         }
 
-        Vehicle v = FireBase.getInstance().getVehicle(plateNumberTripText.getText());
-        Driver d = FireBase.getInstance().getDriver(driverIDTripText.getText());
+        Vehicle v = plateNumberTripComboBox.getSelectionModel().getSelectedItem();
+        Driver d = driverIDTripComboBox.getSelectionModel().getSelectedItem();
 
         Trip newTrip = new Trip();
 
         UUID uuid = UUID.randomUUID();
-        newTrip.setTripID(uuid.toString());
+        newTrip.setTripID(durationNow + " " + uuid.toString());
+        durationNow = "";
 
         newTrip.setStatus(TripStatus.ON_DUTY);
-        newTrip.setFuel_trip(fuelTripComboBox.getValue());
-        newTrip.setDriverID(driverIDTripText.getText());
-        newTrip.setPlateNumber(plateNumberTripText.getText());
+        newTrip.setDriverID(d.getId());
+        newTrip.setPlateNumber(v.getPlateNumber());
         newTrip.setBegin(new Coordinate(selectedHitBegin.getPoint().getLng(), selectedHitBegin.getPoint().getLat()));
         newTrip.setEnd(new Coordinate(selectedHitEnd.getPoint().getLng(), selectedHitEnd.getPoint().getLat()));
+        newTrip.setBeginLocation(MapRequest.getInstance().getAddressFromCoordinate(newTrip.getBegin()));
+        newTrip.setEndLocation(MapRequest.getInstance().getAddressFromCoordinate(newTrip.getEnd()));
         newTrip.setBegin_date(dateTimetoString(beginTripDatePicker.getDateTimeValue()));
         newTrip.setEnd_date(endTripDatePicker.getText());
-        newTrip.setDistanceCover(Double.parseDouble(distanceCoverText.getText()));
+        newTrip.setDistanceCover(Double.parseDouble(distanceCoverTripText.getText()));
         newTrip.setCost(Double.parseDouble(costText.getText()));
         newTrip.setRevenue(Double.parseDouble(revenueText.getText()));
+        //đã xóa cập nhật khi xe và tài xế chưa đi
+        v.setDriverID(d.getId());
+        v.setStatus(VehicleStatus.ON_DUTY);
+        v.addTrip(newTrip.getTripID());
         switch (v) {
             case Car selectedCar -> {
                 setCar(selectedCar);
-                selectedCar.setStatus(VehicleStatus.ON_DUTY);
-                selectedCar.setDistanceCover(selectedCar.getDistanceCover() + Double.parseDouble(distanceCoverText.getText()));
-                selectedCar.setDistanceCoverFromLastRepair(selectedCar.getDistanceCoverFromLastRepair() + Double.parseDouble(distanceCoverText.getText()));
-
-                if(selectedCar.getDistanceCoverFromLastRepair() > selectedCar.getLimitKilometers())
-                {
-                    selectedCar.setStatus(VehicleStatus.NEED_REPAIR);
-                    try {
-                        FireBase fireBase = FireBase.getInstance();
-                        fireBase.editVehicle(v.getPlateNumber(), selectedCar);
-                        showVehicleList();
-                    } catch (Exception e) {
-                        throw new RuntimeException(e);
-                    }
-                    return;
-                }
-
                 try {
                     FireBase fireBase = FireBase.getInstance();
                     fireBase.editVehicle(v.getPlateNumber(), selectedCar);
@@ -1186,23 +1119,6 @@ public class dashboardController implements Initializable
             }
             case Truck selectedTruck -> {
                 setTruck(selectedTruck);
-                selectedTruck.setStatus(VehicleStatus.ON_DUTY);
-                selectedTruck.setDistanceCover(selectedTruck.getDistanceCover() + Double.parseDouble(distanceCoverText.getText()));
-                selectedTruck.setDistanceCoverFromLastRepair(selectedTruck.getDistanceCoverFromLastRepair() + Double.parseDouble(distanceCoverText.getText()));
-
-                if(selectedTruck.getDistanceCoverFromLastRepair() > selectedTruck.getLimitKilometers())
-                {
-                    selectedTruck.setStatus(VehicleStatus.NEED_REPAIR);
-                    try {
-                        FireBase fireBase = FireBase.getInstance();
-                        fireBase.editVehicle(v.getPlateNumber(), selectedTruck);
-                        showVehicleList();
-                    } catch (Exception e) {
-                        throw new RuntimeException(e);
-                    }
-                    return;
-                }
-
                 try {
                     FireBase fireBase = FireBase.getInstance();
                     fireBase.editVehicle(v.getPlateNumber(), selectedTruck);
@@ -1213,23 +1129,6 @@ public class dashboardController implements Initializable
             }
             case Container selectedContainer -> {
                 setContainer(selectedContainer);
-                selectedContainer.setStatus(VehicleStatus.ON_DUTY);
-                selectedContainer.setDistanceCover(selectedContainer.getDistanceCover() + Double.parseDouble(distanceCoverText.getText()));
-                selectedContainer.setDistanceCoverFromLastRepair(selectedContainer.getDistanceCoverFromLastRepair() + Double.parseDouble(distanceCoverText.getText()));
-
-                if(selectedContainer.getDistanceCoverFromLastRepair() > selectedContainer.getLimitKilometers())
-                {
-                    selectedContainer.setStatus(VehicleStatus.NEED_REPAIR);
-                    try {
-                        FireBase fireBase = FireBase.getInstance();
-                        fireBase.editVehicle(v.getPlateNumber(), selectedContainer);
-                        showVehicleList();
-                    } catch (Exception e) {
-                        throw new RuntimeException(e);
-                    }
-                    return;
-                }
-
                 try {
                     FireBase fireBase = FireBase.getInstance();
                     fireBase.editVehicle(v.getPlateNumber(), selectedContainer);
@@ -1239,24 +1138,7 @@ public class dashboardController implements Initializable
                 }
             }
             case Bus selectedBus -> {
-                setBus(selectedBus);
-                selectedBus.setStatus(VehicleStatus.ON_DUTY);
-                selectedBus.setDistanceCover(selectedBus.getDistanceCover() + Double.parseDouble(distanceCoverText.getText()));
-                selectedBus.setDistanceCoverFromLastRepair(selectedBus.getDistanceCoverFromLastRepair() + Double.parseDouble(distanceCoverText.getText()));
-
-                if(selectedBus.getDistanceCoverFromLastRepair() > selectedBus.getLimitKilometers())
-                {
-                    selectedBus.setStatus(VehicleStatus.NEED_REPAIR);
-                    try {
-                        FireBase fireBase = FireBase.getInstance();
-                        fireBase.editVehicle(v.getPlateNumber(), selectedBus);
-                        showVehicleList();
-                    } catch (Exception e) {
-                        throw new RuntimeException(e);
-                    }
-                    return;
-                }
-
+                selectedBus.setNumberOfCustomer(Integer.parseInt(busNumCustomerText.getText()));
                 try {
                     FireBase fireBase = FireBase.getInstance();
                     fireBase.editVehicle(v.getPlateNumber(), selectedBus);
@@ -1268,19 +1150,12 @@ public class dashboardController implements Initializable
             default ->
             {}
         }
+        d.addTrip(newTrip.getTripID());
         d.setStatus(DriverStatus.ON_DUTY);
-        d.setDistanceCoverAll(d.getDistanceCoverAll() + Double.parseDouble(distanceCoverText.getText()));
-        List<String> tmp = d.getHistory();
-        tmp.add(uuid.toString());
-        d.setHistory(tmp);
-
-        tmp = v.getHistory();
-        tmp.add(uuid.toString());
-        v.setHistory(tmp);
-
+        d.setRecentPlateNumber(v.getPlateNumber());
         try {
             FireBase fireBase = FireBase.getInstance();
-            fireBase.editDriverStatus(d.getId(), DriverStatus.ON_DUTY);
+            fireBase.editDriver(d);
             showDriverList();
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -1293,7 +1168,7 @@ public class dashboardController implements Initializable
 
 
     public void refreshTrip() throws Exception {
-        // chưa có cập nhật trip khi chuyến đi xong
+        // đã cập nhật trip khi chuyến đi xong
         FireBase fireBase = FireBase.getInstance();
         for (Trip trip : tripList) {
             LocalDateTime dateTime = stringtoDateTime(trip.getEnd_date());
@@ -1303,9 +1178,12 @@ public class dashboardController implements Initializable
                     BlankFieldAlert("null vehicle????????");
                     return;
                 }
-                v.addTrip(trip.getTripID());
+                v.setDriverID("");
+                v.setDistanceCover(v.getDistanceCover() + trip.getDistanceCover());
+                v.setDistanceCoverFromLastRepair(v.getDistanceCoverFromLastRepair() + trip.getDistanceCover());
+                if(v.getDistanceCoverFromLastRepair() > v.getLimitKilometers()) v.setStatus(VehicleStatus.NEED_REPAIR);
+                else v.setStatus(VehicleStatus.NONE);
                 fireBase.editVehicle(v.getPlateNumber(), v);
-                fireBase.editVehicleStatus(trip.getPlateNumber(), VehicleStatus.NONE);
                 showVehicleList();
 
                 Driver d = fireBase.getDriver(trip.getDriverID());
@@ -1313,9 +1191,10 @@ public class dashboardController implements Initializable
                     BlankFieldAlert("null driver????????");
                     return;
                 }
-                d.addTrip(trip.getTripID());
+                d.setRecentPlateNumber("");
+                d.setDistanceCoverAll(d.getDistanceCoverAll() + trip.getDistanceCover());
+                d.setStatus(DriverStatus.NONE);
                 fireBase.editDriver(d);
-                fireBase.editDriverStatus(trip.getDriverID(), DriverStatus.NONE);
                 showDriverList();
 
                 fireBase.editStatusTrip(trip.getTripID(), TripStatus.NONE);
@@ -1325,59 +1204,14 @@ public class dashboardController implements Initializable
         resetFieldTrip();
     }
 
-
-    public void mouseSelectedTrip() throws Exception {
-        Trip selected = TripTable.getSelectionModel().getSelectedItem();
-        if (selected == null) return;
-        MapRequest mapRequest = MapRequest.getInstance();
-        beginTripText.setText(mapRequest.getAddressFromCoordinate(selected.getBegin()));
-        endTripText.setText(mapRequest.getAddressFromCoordinate(selected.getEnd()));
-        beginTripDatePicker.setDateTimeValue(stringtoDateTime(selected.getBegin_date()));
-        endTripDatePicker.setText(selected.getEnd_date());
-        driverIDTripText.setText(selected.getDriverID());
-        plateNumberTripText.setText(selected.getPlateNumber());
-        typeVehicleChange();
-        fuelTripComboBox.getSelectionModel().select(selected.getFuel_trip());
-        revenueText.setText(String.valueOf(selected.getRevenue()));
-        costText.setText(String.valueOf(selected.getCost()));
-        distanceCoverTripText.setText(String.valueOf(selected.getDistanceCover()));
-        Vehicle v = FireBase.getInstance().getVehicle(selected.getPlateNumber());
-        switch (v) {
-            case Car selectedCar -> {
-                carCustomerNameText.setText(selectedCar.getCustomername());
-                carCustomerAddressText.setText(selectedCar.getCustomeraddress());
-                carCustomerIDText.setText(selectedCar.getCustomerid());
-                carCustomerPhonenumText.setText(selectedCar.getCustomerphoneNumber());
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-                carRentalDatePicker.setValue(LocalDate.parse(selectedCar.getRentalDate(), formatter));
-                carReturnDatePicker.setValue(LocalDate.parse(selectedCar.getReturnDate(), formatter));
-            }
-            case Truck selectedTruck -> {
-                truckGoodTypeText.setText(selectedTruck.getGoodsType());
-                truckGoodWeightText.setText(String.valueOf(selectedTruck.getGoodsWeight()));
-            }
-            case Container selectedContainer -> {
-                containerGoodTypeText.setText(selectedContainer.getGoodsType());
-                containerGoodWeightText.setText(String.valueOf(selectedContainer.getGoodsWeight()));
-            }
-            case Bus selectedBus -> {
-                busNumCustomerText.setText(String.valueOf(selectedBus.getNumberOfCustomer()));
-                busPriceText.setText(String.valueOf(selectedBus.getPricePerSeat()));
-                busNumSeatText.setText(String.valueOf(selectedBus.getNumberOfSeat()));
-            }
-            default -> {}
-        }
-    }
-
-
     public void resetFieldTrip() {
         beginTripText.setText("");
         endTripText.setText("");
         beginTripDatePicker.setValue(null);
         endTripDatePicker.setText("");
-        driverIDTripText.setText("");
-        plateNumberTripText.setText("");
-        fuelTripComboBox.getSelectionModel().select(null);
+        typeVehicleTripComboBox.getSelectionModel().select(null);
+        driverIDTripComboBox.getSelectionModel().select(null);
+        plateNumberTripComboBox.getSelectionModel().select(null);
         revenueText.setText("");
         costText.setText("");
         distanceCoverTripText.setText("");
@@ -1388,16 +1222,10 @@ public class dashboardController implements Initializable
         carCustomerAddressText.setText("");
         carCustomerIDText.setText("");
         carCustomerPhonenumText.setText("");
-        carRentalDatePicker.setValue(null);
-        carReturnDatePicker.setValue(null);
         containerGoodTypeText.setText("");
         containerGoodWeightText.setText("");
-        busNumCustomerText.setText("");
-        busPriceText.setText("");
         busNumSeatText.setText("");
     }
-
-
     public void mouseRightClickTriptoMap(){
         ContextMenu menuBegin = new ContextMenu();
         ContextMenu menuEnd = new ContextMenu();
@@ -1424,7 +1252,82 @@ public class dashboardController implements Initializable
         contextMenuTrip.getItems().add(menuItemTrip1);
         TripTable.setContextMenu(contextMenuTrip);
     }
+    public void warningBlankBeginEnd() {
+        if (beginTripText.getText().isEmpty() || endTripText.getText().isEmpty()) {
+            BlankFieldAlert("Vui lòng chọn điểm đi và đến trước khi chọn loại xe");
+        }
+    }
+    public void warningBlankTypeVehicle() {
+        if (typeVehicleTripComboBox.getValue() == null) {
+            BlankFieldAlert("Vui lòng chọn loại xe để chúng tôi có thể đề xuất");
+        }
+    }
+    public void formatComboBox() {
+        plateNumberTripComboBox.setCellFactory(lv -> new ListCell<Vehicle>() {
+            @Override
+            protected void updateItem(Vehicle item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                } else {
+                    setText(item.getType().toString() + " - " + item.getPlateNumber());
+                }
+            }
+        });
+        // Custom cell for displaying the selected item
+        plateNumberTripComboBox.setButtonCell(new ListCell<Vehicle>() {
+            @Override
+            protected void updateItem(Vehicle item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                } else {
+                    setText(item.getType().toString() + " - " + item.getPlateNumber());
+                }
+            }
+        });
+        driverIDTripComboBox.setCellFactory(lv -> new ListCell<Driver>() {
+            @Override
+            protected void updateItem(Driver item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                } else {
+                    setText(item.getName() + " - " + item.getId());
+                }
+            }
+        });
+        // Custom cell for displaying the selected item
+        driverIDTripComboBox.setButtonCell(new ListCell<Driver>() {
+            @Override
+            protected void updateItem(Driver item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                } else {
+                    setText(item.getName() + " - " + item.getId());
+                }
+            }
+        });
+    }
+    public void initDriverandVehicleComboBox() throws Exception {
+        List begin = selectedHitBegin.getPoint().getList();
+        List end = selectedHitEnd.getPoint().getList();
 
+        routeMatrix = mapRequest.getDistanceMatrix(begin, end);
+
+        formatComboBox();
+        ObservableList<Driver> driverObservableList = AvailableDriver.getDriver(routeMatrix.getDistance()/1000);
+        driverIDTripComboBox.setItems(driverObservableList);
+        ObservableList<Vehicle> vehicleObservableList = AvailableVehicle.getVehicle(typeVehicleTripComboBox.getSelectionModel().getSelectedItem());
+        plateNumberTripComboBox.setItems(vehicleObservableList);
+
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Information Dialog");
+        alert.setHeaderText("");
+        alert.setContentText("Đã đề xuất tài xế và xe, vui lòng chọn tài xế, xe và các trường còn lại của xe và ấn tính toán để hoàn tất");
+        alert.showAndWait();
+    }
 
 
 

@@ -4,7 +4,7 @@ import com.management.vehicle.driver.Driver;
 import com.management.vehicle.request.FireBase;
 import com.management.vehicle.trip.Trip;
 import com.management.vehicle.trip.TripStatus;
-import com.management.vehicle.vehicle.Vehicle;
+import com.management.vehicle.vehicle.*;
 import javafx.beans.InvalidationListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
@@ -14,7 +14,6 @@ import java.util.*;
 
 public class connection {
     FireBase instance = null;
-
     public static ObservableList<Driver> getDriver() throws Exception {
         FireBase firebase = FireBase.getInstance();
         // System.out.println("SIGNAL on showDriverList() - 2.1");
@@ -55,7 +54,6 @@ public class connection {
         }
         return vehiclelist_conn;
     }
-
     public static ObservableList<Trip> getOnDutyTrip() throws Exception {
         FireBase firebase = FireBase.getInstance();
         ObservableList<Trip> triplist_conn = FXCollections.observableArrayList();

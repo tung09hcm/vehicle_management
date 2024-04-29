@@ -108,7 +108,7 @@ public class vehicleHistoryInfoController implements Initializable {
         lengthVehicleLabel.setText(String.valueOf(selected.getLength()));
         wideVehicleLabel.setText(String.valueOf(selected.getWide()));
         hightVehicleLabel.setText(String.valueOf(selected.getHigh()));
-        distanceCoverVehicleLabel.setText(String.valueOf(selected.getDistanceCover()));
+        distanceCoverVehicleLabel.setText(String.valueOf(selected.getDistanceCoverFromLastRepair()));
     }
 
     void setHistoryTripVehicle(){

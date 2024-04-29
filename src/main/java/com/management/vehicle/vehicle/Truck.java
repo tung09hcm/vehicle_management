@@ -35,6 +35,7 @@ public class Truck extends Vehicle{
         setMaintenanceCycleInKilometers(8000);
         setLimitKilometers(9000);
         setFuel_per_kilometer(0.08);
+        setFuel_v(fuel.RON97);
     }
 
 

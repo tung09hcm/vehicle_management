@@ -55,6 +55,7 @@ public class Car extends Vehicle {
         setMaintenanceCycleInKilometers(5000);
         setLimitKilometers(6000);
         setFuel_per_kilometer(0.05);
+        setFuel_v(fuel.RON95);
     }
 
 }

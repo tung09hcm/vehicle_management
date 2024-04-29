@@ -390,7 +390,7 @@ public class dashboardController implements Initializable
         vehicleList = connection.getVehicle();
 
         driverofVehicleColumn.setCellValueFactory(new PropertyValueFactory<>("driverID"));
-        distanceCoverColumn.setCellValueFactory(new PropertyValueFactory<>("distanceCover"));
+        distanceCoverColumn.setCellValueFactory(new PropertyValueFactory<>("distanceCoverFromLastRepair"));
         typeVehicleColumn.setCellValueFactory(new PropertyValueFactory<>("type"));
         lengthColumn.setCellValueFactory(new PropertyValueFactory<>("length"));
         wideColumn.setCellValueFactory(new PropertyValueFactory<>("wide"));
@@ -1179,7 +1179,6 @@ public class dashboardController implements Initializable
                     return;
                 }
                 v.setDriverID("");
-                v.setDistanceCover(v.getDistanceCover() + trip.getDistanceCover());
                 v.setDistanceCoverFromLastRepair(v.getDistanceCoverFromLastRepair() + trip.getDistanceCover());
                 if(v.getDistanceCoverFromLastRepair() > v.getLimitKilometers()) v.setStatus(VehicleStatus.NEED_REPAIR);
                 else v.setStatus(VehicleStatus.NONE);

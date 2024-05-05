@@ -323,11 +323,11 @@ public class driverController implements Initializable  {
             return;
         }
         if (beginLocationText.getText().isEmpty() || endLocationText.getText().isEmpty() ||
-revenueText.getText().isEmpty() || vehicleTypeComboBox.getSelectionModel().getSelectedItem() == null)
+                revenueText.getText().isEmpty() || vehicleTypeComboBox.getSelectionModel().getSelectedItem() == null)
             BlankFieldAlert("Please fill all blank fields");
         else if (vehicleTypeComboBox.getValue() == TypeVehicle.bus) {
             if (busPlateNumberComboBox.getSelectionModel().getSelectedItem() == null ||
-busNumChairText.getText().isEmpty() || busTicketPriceText.getText().isEmpty() || busNumCustomerText.getText().isEmpty())
+                    busNumChairText.getText().isEmpty() || busTicketPriceText.getText().isEmpty() || busNumCustomerText.getText().isEmpty())
                 BlankFieldAlert("Please fill all blank fields");
             else {
                 Trip newTrip = new Trip();
@@ -352,7 +352,7 @@ busNumChairText.getText().isEmpty() || busTicketPriceText.getText().isEmpty() ||
                 newTrip.setBegin_date(dateTimetoString(begin_dt));
                 LocalDateTime end_dt = begin_dt.plus(Duration.ofMillis(routeMatrix.getDuration()));
                 newTrip.setEnd_date(dateTimetoString(end_dt));
-                double cost = v.getFuelType().getPricePerLiter()*v.getFuel_per_kilometer()*routeMatrix.getDistance()/1000;
+                double cost = v.getFuel_v().getPricePerLiter()*v.getFuel_per_kilometer()*routeMatrix.getDistance()/1000;
                 cost = Math.round(cost / 1000) * 1000;
                 newTrip.setCost(cost);
                 newTrip.setDistanceCover(routeMatrix.getDistance()/1000);
@@ -374,8 +374,8 @@ busNumChairText.getText().isEmpty() || busTicketPriceText.getText().isEmpty() ||
         }
         else if (vehicleTypeComboBox.getValue() == TypeVehicle.car) {
             if (carPlateNumberComboBox.getSelectionModel().getSelectedItem() == null || carCustomerNameText.getText().isEmpty()
-|| carPhoneNumberText.getText().isEmpty() || carCustomerIDText.getText().isEmpty() || carCustomerAddressText.getText().isEmpty()
-|| carHireDatePicker.getValue() == null || carReturnDatePicker.getValue() == null)
+                    || carPhoneNumberText.getText().isEmpty() || carCustomerIDText.getText().isEmpty() || carCustomerAddressText.getText().isEmpty()
+                    || carHireDatePicker.getValue() == null || carReturnDatePicker.getValue() == null)
                 BlankFieldAlert("Please fill all blank fields");
             else {
                 Trip newTrip = new Trip();
@@ -400,7 +400,7 @@ busNumChairText.getText().isEmpty() || busTicketPriceText.getText().isEmpty() ||
                 newTrip.setBegin_date(dateTimetoString(begin_dt));
                 LocalDateTime end_dt = begin_dt.plus(Duration.ofMillis(routeMatrix.getDuration()));
                 newTrip.setEnd_date(dateTimetoString(end_dt));
-                double cost = v.getFuelType().getPricePerLiter()*v.getFuel_per_kilometer()*routeMatrix.getDistance()/1000;
+                double cost = v.getFuel_v().getPricePerLiter()*v.getFuel_per_kilometer()*routeMatrix.getDistance()/1000;
                 cost = Math.round(cost / 1000) * 1000;
                 newTrip.setCost(cost);
                 newTrip.setDistanceCover(routeMatrix.getDistance()/1000);
@@ -422,7 +422,7 @@ busNumChairText.getText().isEmpty() || busTicketPriceText.getText().isEmpty() ||
         }
         else if (vehicleTypeComboBox.getValue() == TypeVehicle.container) {
             if (containerPlateNumberComboBox.getSelectionModel().getSelectedItem() == null || containerGoodsTypeText.getText().isEmpty()
-|| containerGoodsWeightText.getText().isEmpty())
+                    || containerGoodsWeightText.getText().isEmpty())
                 BlankFieldAlert("Please fill all blank fields");
             else {
                 Trip newTrip = new Trip();
@@ -447,7 +447,7 @@ busNumChairText.getText().isEmpty() || busTicketPriceText.getText().isEmpty() ||
                 newTrip.setBegin_date(dateTimetoString(begin_dt));
                 LocalDateTime end_dt = begin_dt.plus(Duration.ofMillis(routeMatrix.getDuration()));
                 newTrip.setEnd_date(dateTimetoString(end_dt));
-                double cost = v.getFuelType().getPricePerLiter()*v.getFuel_per_kilometer()*routeMatrix.getDistance()/1000;
+                double cost = v.getFuel_v().getPricePerLiter()*v.getFuel_per_kilometer()*routeMatrix.getDistance()/1000;
                 cost = Math.round(cost / 1000) * 1000;
                 newTrip.setCost(cost);
                 newTrip.setDistanceCover(routeMatrix.getDistance()/1000);
@@ -469,7 +469,7 @@ busNumChairText.getText().isEmpty() || busTicketPriceText.getText().isEmpty() ||
         }
         else if (vehicleTypeComboBox.getValue() == TypeVehicle.truck) {
             if (truckPlateNumberComboBox.getSelectionModel().getSelectedItem() == null || truckGoodsTypeText.getText().isEmpty()
-|| truckGoodsWeightText.getText().isEmpty())
+                    || truckGoodsWeightText.getText().isEmpty())
                 BlankFieldAlert("Please fill all blank fields");
             else {
                 Trip newTrip = new Trip();
@@ -494,7 +494,7 @@ busNumChairText.getText().isEmpty() || busTicketPriceText.getText().isEmpty() ||
                 newTrip.setBegin_date(dateTimetoString(begin_dt));
                 LocalDateTime end_dt = begin_dt.plus(Duration.ofMillis(routeMatrix.getDuration()));
                 newTrip.setEnd_date(dateTimetoString(end_dt));
-                double cost = v.getFuelType().getPricePerLiter()*v.getFuel_per_kilometer()*routeMatrix.getDistance()/1000;
+                double cost = v.getFuel_v().getPricePerLiter()*v.getFuel_per_kilometer()*routeMatrix.getDistance()/1000;
                 cost = Math.round(cost / 1000) * 1000;
                 newTrip.setCost(cost);
                 newTrip.setDistanceCover(routeMatrix.getDistance()/1000);

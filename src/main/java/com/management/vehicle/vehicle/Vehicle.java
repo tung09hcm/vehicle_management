@@ -59,16 +59,8 @@ public class Vehicle {
     private double revenue;  // currency: đ
     private fuel fuel_v = fuel.NONE;
     private double fuel_per_kilometer = 0;
-    private fuel fuelType = fuel.NONE;
 
 
-    public void setLimitKilometers(double limitKilometers) {
-        this.limitKilometers = limitKilometers;
-    }
-
-    public void setMaintenanceCycleInKilometers(double maintenanceCycleInKilometers) {
-        this.maintenanceCycleInKilometers = maintenanceCycleInKilometers;
-    }
 
     public int getMaintain_period() {
         return maintain_period;
@@ -76,14 +68,6 @@ public class Vehicle {
 
     public void setMaintain_period(int maintain_period) {
         this.maintain_period = maintain_period;
-    }
-
-    public fuel getFuelType() {
-        return fuelType;
-    }
-
-    public void setFuelType(fuel fuelType) {
-        this.fuelType = fuelType;
     }
 
     public double getFuel_per_kilometer() {

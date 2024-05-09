@@ -60,7 +60,13 @@ public class Vehicle {
     private fuel fuel_v = fuel.NONE;
     private double fuel_per_kilometer = 0;
 
+    public List<String> getMaintenanceHistory() {
+        return maintenanceHistory;
+    }
 
+    public void setMaintenanceHistory(List<String> maintenanceHistory) {
+        this.maintenanceHistory = maintenanceHistory;
+    }
 
     public int getMaintain_period() {
         return maintain_period;
@@ -77,7 +83,6 @@ public class Vehicle {
     public void setFuel_per_kilometer(double fuel_per_kilometer) {
         this.fuel_per_kilometer = fuel_per_kilometer;
     }
-
     public fuel getFuel_v() {
         return fuel_v;
     }
@@ -90,7 +95,7 @@ public class Vehicle {
         return limitKilometers;
     }
 
-    public void setLimitKilometers(int limitKilometers) {
+    public void setLimitKilometers(double limitKilometers) {
         this.limitKilometers = limitKilometers;
     }
 
@@ -98,7 +103,7 @@ public class Vehicle {
         return maintenanceCycleInKilometers;
     }
 
-    public void setMaintenanceCycleInKilometers(int maintenanceCycleInKilometers) {
+    public void setMaintenanceCycleInKilometers(double maintenanceCycleInKilometers) {
         this.maintenanceCycleInKilometers = maintenanceCycleInKilometers;
     }
 

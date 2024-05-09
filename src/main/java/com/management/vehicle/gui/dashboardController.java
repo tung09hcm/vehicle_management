@@ -121,8 +121,7 @@ public class dashboardController implements Initializable
     @FXML
     private TableColumn<Vehicle, Double> weightColumn;
 
-    @FXML
-    private TableColumn<Vehicle, Double> distanceCoverColumn;
+
 
     @FXML
     private TableColumn<Vehicle, String> driverofVehicleColumn;
@@ -158,8 +157,7 @@ public class dashboardController implements Initializable
 
     ObservableList<LicenseLevel> licenseLevelObservableList = FXCollections.observableArrayList(LicenseLevel.NONE,LicenseLevel.B1,LicenseLevel.B2,LicenseLevel.C,LicenseLevel.D,LicenseLevel.E,LicenseLevel.F);
 
-    @FXML
-    private ComboBox<fuel> typeFuelVehicleComboBox;
+
 
     ObservableList<fuel> typeFuelVehicleObservableList = FXCollections.observableArrayList(fuel.DIESEL, fuel.RON95, fuel.RON97);
 
@@ -346,7 +344,7 @@ public class dashboardController implements Initializable
     public void initialize(URL url, ResourceBundle resourceBundle) {
         typeVehicleComboBox.setItems(typeVehicleObservableList);
         licenseDriverComboBox.setItems(licenseLevelObservableList);
-        typeFuelVehicleComboBox.setItems(typeFuelVehicleObservableList);
+        //typeFuelVehicleComboBox.setItems(typeFuelVehicleObservableList);
         typeVehicleTripComboBox.setItems(typeVehicleObservableList);
 
         this.mouseRightClicktoHistoryInfoVehicle();
@@ -390,7 +388,7 @@ public class dashboardController implements Initializable
         vehicleList = connection.getVehicle();
 
         driverofVehicleColumn.setCellValueFactory(new PropertyValueFactory<>("driverID"));
-        distanceCoverColumn.setCellValueFactory(new PropertyValueFactory<>("distanceCoverFromLastRepair"));
+        // distanceCoverColumn.setCellValueFactory(new PropertyValueFactory<>("distanceCoverFromLastRepair"));
         typeVehicleColumn.setCellValueFactory(new PropertyValueFactory<>("type"));
         lengthColumn.setCellValueFactory(new PropertyValueFactory<>("length"));
         wideColumn.setCellValueFactory(new PropertyValueFactory<>("wide"));
@@ -435,7 +433,7 @@ public class dashboardController implements Initializable
         highText.setText(String.valueOf(selected.getHigh()));
         plateNumberText.setText(selected.getPlateNumber());
         weightText.setText(String.valueOf(selected.getWeight()));
-        typeFuelVehicleComboBox.getSelectionModel().select(selected.getFuel_v());
+        //typeFuelVehicleComboBox.getSelectionModel().select(selected.getFuel_v());
         if (selected instanceof Bus selectedBus) {
             busPriceText.setText(String.valueOf(selectedBus.getPricePerSeat()));
             busNumSeatText.setText(String.valueOf(selectedBus.getNumberOfSeat()));
@@ -448,8 +446,8 @@ public class dashboardController implements Initializable
                 || wideText.getText().isEmpty()
                 || highText.getText().isEmpty()
                 || plateNumberText.getText().isEmpty()
-                || weightText.getText().isEmpty()
-                || typeFuelVehicleComboBox.getSelectionModel().getSelectedItem() == null;
+                || weightText.getText().isEmpty();
+                //|| typeFuelVehicleComboBox.getSelectionModel().getSelectedItem() == null;
     }
     public static void BlankFieldVehicleAlert() {
         Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -465,7 +463,7 @@ public class dashboardController implements Initializable
         newVehicle.setHigh(Double.parseDouble(highText.getText()));
         newVehicle.setPlateNumber(plateNumberText.getText());
         newVehicle.setWeight(Double.parseDouble(weightText.getText()));
-        newVehicle.setFuel_v(typeFuelVehicleComboBox.getValue());
+        //newVehicle.setFuel_v(typeFuelVehicleComboBox.getValue());
     }
 
     public void addVehicle (ActionEvent e) throws Exception {
@@ -646,7 +644,7 @@ public class dashboardController implements Initializable
         plateNumberText.setText("");
         weightText.setText("");
         vehicleTable.getSelectionModel().select(null);
-        typeFuelVehicleComboBox.getSelectionModel().select(null);
+        //typeFuelVehicleComboBox.getSelectionModel().select(null);
         busPriceText.setText("");
         busNumSeatText.setText("");
     }

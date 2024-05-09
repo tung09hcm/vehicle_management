@@ -1,6 +1,5 @@
 package com.management.vehicle.gui;
 
-import com.management.vehicle.available.AvailableVehicle;
 import com.management.vehicle.driver.Driver;
 import com.jfoenix.controls.JFXButton;
 import com.management.vehicle.driver.DriverStatus;
@@ -12,10 +11,8 @@ import com.management.vehicle.trip.Coordinate;
 import com.management.vehicle.trip.Trip;
 import com.management.vehicle.trip.TripStatus;
 import com.management.vehicle.vehicle.TypeVehicle;
-import com.management.vehicle.vehicle.Vehicle;
+import com.management.vehicle.vehicle.*;
 import com.management.vehicle.vehicle.VehicleStatus;
-import com.management.vehicle.vehicle.fuel;
-import javafx.application.Platform;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -31,9 +28,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
-import java.awt.event.MouseEvent;
 import java.net.URL;
-import java.text.SimpleDateFormat;
 import java.time.DayOfWeek;
 import java.time.Duration;
 import java.time.LocalDate;
@@ -70,12 +65,9 @@ public class driverController implements Initializable  {
     @FXML private TableColumn<Trip, String> homeRevenue;
     @FXML private TextField beginLocationText;
     @FXML private TextField endLocationText;
-    @FXML private TextField revenueText;
     @FXML private ComboBox<TypeVehicle> vehicleTypeComboBox;
     @FXML private AnchorPane busPane;
     @FXML private ComboBox<String> busPlateNumberComboBox;
-    @FXML private TextField busNumChairText;
-    @FXML private TextField busTicketPriceText;
     @FXML private TextField busNumCustomerText;
     @FXML private AnchorPane carPane;
     @FXML private ComboBox<String> carPlateNumberComboBox;
@@ -150,7 +142,7 @@ public class driverController implements Initializable  {
         return driver;
     }
 
-    public static void setDriver(Driver d) {
+    public static void setDriver(com.management.vehicle.driver.Driver d) {
         driver = d;
     }
     public void updateTrip() throws Exception {
@@ -323,11 +315,13 @@ public class driverController implements Initializable  {
             return;
         }
         if (beginLocationText.getText().isEmpty() || endLocationText.getText().isEmpty() ||
-                revenueText.getText().isEmpty() || vehicleTypeComboBox.getSelectionModel().getSelectedItem() == null)
+                vehicleTypeComboBox.getSelectionModel().getSelectedItem() == null) {
             BlankFieldAlert("Please fill all blank fields");
+            return;
+        }
         else if (vehicleTypeComboBox.getValue() == TypeVehicle.bus) {
             if (busPlateNumberComboBox.getSelectionModel().getSelectedItem() == null ||
-                    busNumChairText.getText().isEmpty() || busTicketPriceText.getText().isEmpty() || busNumCustomerText.getText().isEmpty())
+                    busNumCustomerText.getText().isEmpty())
                 BlankFieldAlert("Please fill all blank fields");
             else {
                 Trip newTrip = new Trip();
@@ -337,9 +331,7 @@ public class driverController implements Initializable  {
                 newTrip.setEndLocation(endLocationText.getText());
                 newTrip.setBegin(new Coordinate(selectedHitBegin.getPoint().getLng(), selectedHitBegin.getPoint().getLat()));
                 newTrip.setEnd(new Coordinate(selectedHitEnd.getPoint().getLng(), selectedHitEnd.getPoint().getLat()));
-                newTrip.setRevenue(Double.parseDouble(revenueText.getText()));
                 newTrip.setDriverID(driver.getId());
-
                 newTrip.setBegin_date(dateTimetoString(LocalDateTime.now()));
                 newTrip.setPlateNumber(busPlateNumberComboBox.getValue());
                 newTrip.setStatus(TripStatus.ON_DUTY);
@@ -352,10 +344,16 @@ public class driverController implements Initializable  {
                 newTrip.setBegin_date(dateTimetoString(begin_dt));
                 LocalDateTime end_dt = begin_dt.plus(Duration.ofMillis(routeMatrix.getDuration()));
                 newTrip.setEnd_date(dateTimetoString(end_dt));
-                double cost = v.getFuel_v().getPricePerLiter()*v.getFuel_per_kilometer()*routeMatrix.getDistance()/1000;
-                cost = Math.round(cost / 1000) * 1000;
-                newTrip.setCost(cost);
-                newTrip.setDistanceCover(routeMatrix.getDistance()/1000);
+                switch (v) {
+                    case Bus ignored -> {
+                        double cost = ignored.getFuel_v().getPricePerLiter()*ignored.getFuel_per_kilometer()*routeMatrix.getDistance()/1000;
+                        cost = Math.round(cost / 1000) * 1000;
+                        newTrip.setRevenue(ignored.getPricePerSeat() * Integer.parseInt(busNumCustomerText.getText()));
+                        newTrip.setCost(cost);
+                        newTrip.setDistanceCover(routeMatrix.getDistance()/1000);
+                    }
+                    default -> {}
+                }
                 try {
                     FireBase fireBase = FireBase.getInstance();
                     fireBase.editDriverStatus(driver.getId(), DriverStatus.ON_DUTY);
@@ -385,9 +383,7 @@ public class driverController implements Initializable  {
                 newTrip.setEndLocation(endLocationText.getText());
                 newTrip.setBegin(new Coordinate(selectedHitBegin.getPoint().getLng(), selectedHitBegin.getPoint().getLat()));
                 newTrip.setEnd(new Coordinate(selectedHitEnd.getPoint().getLng(), selectedHitEnd.getPoint().getLat()));
-                newTrip.setRevenue(Double.parseDouble(revenueText.getText()));
                 newTrip.setDriverID(driver.getId());
-
                 newTrip.setBegin_date(dateTimetoString(LocalDateTime.now()));
                 newTrip.setPlateNumber(carPlateNumberComboBox.getValue());
                 newTrip.setStatus(TripStatus.ON_DUTY);
@@ -400,10 +396,16 @@ public class driverController implements Initializable  {
                 newTrip.setBegin_date(dateTimetoString(begin_dt));
                 LocalDateTime end_dt = begin_dt.plus(Duration.ofMillis(routeMatrix.getDuration()));
                 newTrip.setEnd_date(dateTimetoString(end_dt));
-                double cost = v.getFuel_v().getPricePerLiter()*v.getFuel_per_kilometer()*routeMatrix.getDistance()/1000;
-                cost = Math.round(cost / 1000) * 1000;
-                newTrip.setCost(cost);
-                newTrip.setDistanceCover(routeMatrix.getDistance()/1000);
+                switch (v) {
+                    case Car ignored -> {
+                        double cost = ignored.getFuel_v().getPricePerLiter()*ignored.getFuel_per_kilometer()*routeMatrix.getDistance()/1000;
+                        cost = Math.round(cost / 1000) * 1000;
+                        newTrip.setRevenue(cost * 1.2);
+                        newTrip.setCost(cost);
+                        newTrip.setDistanceCover(routeMatrix.getDistance()/1000);
+                    }
+                    default -> {}
+                }
                 try {
                     FireBase fireBase = FireBase.getInstance();
                     fireBase.editDriverStatus(driver.getId(), DriverStatus.ON_DUTY);
@@ -432,9 +434,7 @@ public class driverController implements Initializable  {
                 newTrip.setEndLocation(endLocationText.getText());
                 newTrip.setBegin(new Coordinate(selectedHitBegin.getPoint().getLng(), selectedHitBegin.getPoint().getLat()));
                 newTrip.setEnd(new Coordinate(selectedHitEnd.getPoint().getLng(), selectedHitEnd.getPoint().getLat()));
-                newTrip.setRevenue(Double.parseDouble(revenueText.getText()));
                 newTrip.setDriverID(driver.getId());
-
                 newTrip.setBegin_date(dateTimetoString(LocalDateTime.now()));
                 newTrip.setPlateNumber(containerPlateNumberComboBox.getValue());
                 newTrip.setStatus(TripStatus.ON_DUTY);
@@ -447,10 +447,16 @@ public class driverController implements Initializable  {
                 newTrip.setBegin_date(dateTimetoString(begin_dt));
                 LocalDateTime end_dt = begin_dt.plus(Duration.ofMillis(routeMatrix.getDuration()));
                 newTrip.setEnd_date(dateTimetoString(end_dt));
-                double cost = v.getFuel_v().getPricePerLiter()*v.getFuel_per_kilometer()*routeMatrix.getDistance()/1000;
-                cost = Math.round(cost / 1000) * 1000;
-                newTrip.setCost(cost);
-                newTrip.setDistanceCover(routeMatrix.getDistance()/1000);
+                switch (v) {
+                    case Container ignored -> {
+                        double cost = ignored.getFuel_v().getPricePerLiter()*ignored.getFuel_per_kilometer()*routeMatrix.getDistance()/1000;
+                        cost = Math.round(cost / 1000) * 1000;
+                        newTrip.setRevenue(cost * 1.2 + Double.parseDouble(containerGoodsWeightText.getText()) * 5000);
+                        newTrip.setCost(cost);
+                        newTrip.setDistanceCover(routeMatrix.getDistance()/1000);
+                    }
+                    default -> {}
+                }
                 try {
                     FireBase fireBase = FireBase.getInstance();
                     fireBase.editDriverStatus(driver.getId(), DriverStatus.ON_DUTY);
@@ -479,9 +485,7 @@ public class driverController implements Initializable  {
                 newTrip.setEndLocation(endLocationText.getText());
                 newTrip.setBegin(new Coordinate(selectedHitBegin.getPoint().getLng(), selectedHitBegin.getPoint().getLat()));
                 newTrip.setEnd(new Coordinate(selectedHitEnd.getPoint().getLng(), selectedHitEnd.getPoint().getLat()));
-                newTrip.setRevenue(Double.parseDouble(revenueText.getText()));
                 newTrip.setDriverID(driver.getId());
-
                 newTrip.setBegin_date(dateTimetoString(LocalDateTime.now()));
                 newTrip.setPlateNumber(truckPlateNumberComboBox.getValue());
                 newTrip.setStatus(TripStatus.ON_DUTY);
@@ -494,10 +498,16 @@ public class driverController implements Initializable  {
                 newTrip.setBegin_date(dateTimetoString(begin_dt));
                 LocalDateTime end_dt = begin_dt.plus(Duration.ofMillis(routeMatrix.getDuration()));
                 newTrip.setEnd_date(dateTimetoString(end_dt));
-                double cost = v.getFuel_v().getPricePerLiter()*v.getFuel_per_kilometer()*routeMatrix.getDistance()/1000;
-                cost = Math.round(cost / 1000) * 1000;
-                newTrip.setCost(cost);
-                newTrip.setDistanceCover(routeMatrix.getDistance()/1000);
+                switch (v) {
+                    case Truck ignored -> {
+                        double cost = ignored.getFuel_v().getPricePerLiter()*ignored.getFuel_per_kilometer()*routeMatrix.getDistance()/1000;
+                        cost = Math.round(cost / 1000) * 1000;
+                        newTrip.setRevenue(cost * 1.2 + Double.parseDouble(containerGoodsWeightText.getText()) * 5000);
+                        newTrip.setCost(cost);
+                        newTrip.setDistanceCover(routeMatrix.getDistance()/1000);
+                    }
+                    default -> {}
+                }
                 try {
                     FireBase fireBase = FireBase.getInstance();
                     fireBase.editDriverStatus(driver.getId(), DriverStatus.ON_DUTY);
@@ -666,13 +676,9 @@ public class driverController implements Initializable  {
             updateTrip();
             homeShowTrip();
             requestShowTrip();
-        } catch (Exception e) {
-            System.out.println("error on loading trip");
-            throw new RuntimeException(e);
-        }
-        try {
             setInfo();
         } catch (Exception e) {
+            System.out.println("error on loading trip");
             throw new RuntimeException(e);
         }
         this.mouseRightClickTriptoMap();

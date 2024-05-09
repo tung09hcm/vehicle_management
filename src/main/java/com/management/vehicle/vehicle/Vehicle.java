@@ -60,7 +60,9 @@ public class Vehicle {
     private fuel fuel_v = fuel.NONE;
     private double fuel_per_kilometer = 0;
 
-
+    public List<String>getMaintenanceHistory() {
+        return maintenanceHistory;
+    }
 
     public int getMaintain_period() {
         return maintain_period;

@@ -451,12 +451,6 @@ public class dashboardController implements Initializable
                 || weightText.getText().isEmpty()
                 || typeFuelVehicleComboBox.getSelectionModel().getSelectedItem() == null;
     }
-    public static void BlankFieldVehicleAlert() {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setHeaderText(null);
-        alert.setContentText("Please fill all blank fields");
-        alert.showAndWait();
-    }
 
     public void SetFieldtoVehicle(Vehicle newVehicle) {
         newVehicle.setType(typeVehicleComboBox.getValue());
@@ -471,15 +465,12 @@ public class dashboardController implements Initializable
     public void addVehicle (ActionEvent e) throws Exception {
         for (Vehicle v : vehicleList) {
             if (Objects.equals(plateNumberText.getText(), v.getPlateNumber())) {
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setHeaderText(null);
-                alert.setContentText("Same plate number error");
-                alert.showAndWait();
+                BlankFieldAlert("Biển số xe trùng, vui lòng nhập lại");
                 return;
             }
         }
         if (warningBlankFieldVehicle()) {
-            BlankFieldAlert("Please fill all blank fields");
+            BlankFieldAlert("Hãy điền tất cả các trường trống");
             return;
         }
         switch (typeVehicleComboBox.getValue()) {
@@ -524,10 +515,7 @@ public class dashboardController implements Initializable
     public void deleteVehicle (ActionEvent e) {
         Vehicle selected = vehicleTable.getSelectionModel().getSelectedItem();
         if (selected == null) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setHeaderText(null);
-            alert.setContentText("Please select vehicle to delete");
-            alert.showAndWait();
+            BlankFieldAlert("Vui lòng chọn xe để xóa");
             return;
         }
         if (selected.getStatus() != VehicleStatus.NONE) {
@@ -535,8 +523,8 @@ public class dashboardController implements Initializable
             return;
         }
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setHeaderText("You will delete this vehicle");
-        alert.setContentText("Are you sure to delete this vehicle information?");
+        alert.setHeaderText("Bạn sẽ xóa xe này");
+        alert.setContentText("Bạn có chắn chắn muốn xóa xe không?");
         alert.getButtonTypes().setAll(ButtonType.YES, ButtonType.NO);
         alert.showAndWait().ifPresent(response -> {
             if (response == ButtonType.YES) {
@@ -553,28 +541,25 @@ public class dashboardController implements Initializable
     public void updateVehicle() {
         Vehicle selected = vehicleTable.getSelectionModel().getSelectedItem();
         if (selected == null) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setHeaderText(null);
-            alert.setContentText("Please select vehicle to update");
-            alert.showAndWait();
+            BlankFieldAlert("Vui lòng chọn xe để cập nhật");
             return;
         }
 
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setHeaderText(null);
-        alert.setContentText("Are you sure to update this vehicle information?");
+        alert.setContentText("Bạn có chắn chắn muốn cập nhật xe không?");
         alert.getButtonTypes().setAll(ButtonType.YES, ButtonType.NO);
         alert.showAndWait().ifPresent(response -> {
             if (response == ButtonType.YES) {
                 if(!Objects.equals(selected.getPlateNumber(), plateNumberText.getText()))
                 {
-                    BlankFieldAlert("Can't update Plate number");
+                    BlankFieldAlert("Không thể cập nhật biển số, vui lòng thử lại");
                     resetFieldDriver();
                     return;
                 }
                 if(!Objects.equals(selected.getType(), typeVehicleComboBox.getSelectionModel().getSelectedItem()))
                 {
-                    BlankFieldAlert("Can't update type vehicle");
+                    BlankFieldAlert("Không thể cập nhật loại xe, vui lòng thử lại");
                     resetFieldDriver();
                     return;
                 }
@@ -692,7 +677,7 @@ public class dashboardController implements Initializable
         if (warningBlankFieldDriver()) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setHeaderText(null);
-            alert.setContentText("Please fill all blank fields");
+            alert.setContentText("Hãy điền tất cả các trường trống");
             alert.showAndWait();
             return;
         }
@@ -701,12 +686,12 @@ public class dashboardController implements Initializable
             System.out.println("-----------------------------------");
             if(Objects.equals(driver.getId(), driverIDText.getText()) )
             {
-                BlankFieldAlert("Same ID of driver error");
+                BlankFieldAlert("Trùng mã tài xế, vui lòng thử lại");
                 return;
             }
             if(Objects.equals(driver.getPhoneNumber(), phoneDriverText.getText()))
             {
-                BlankFieldAlert("Same phoneNumber of driver error");
+                BlankFieldAlert("Trùng số điện thoại, vui lòng thử lại");
                 return;
             }
         }
@@ -740,7 +725,7 @@ public class dashboardController implements Initializable
         if(seleted==null) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setHeaderText(null);
-            alert.setContentText("please select driver to delete");
+            alert.setContentText("Vui lòng chọn tài xế để xóa");
             alert.showAndWait();
             return;
         }
@@ -749,8 +734,8 @@ public class dashboardController implements Initializable
             return;
         }
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setHeaderText("Delete this driver");
-        alert.setContentText("You want to delete this driver");
+        alert.setHeaderText("Bạn sẽ xóa tài xế này");
+        alert.setContentText("Bạn có chắn chắn muốn xóa tài xế không?");
         alert.getButtonTypes().setAll(ButtonType.YES, ButtonType.NO);
         alert.showAndWait().ifPresent(response-> {
             if(response == ButtonType.YES) {
@@ -772,31 +757,31 @@ public class dashboardController implements Initializable
         if(seleted==null){
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setHeaderText(null);
-            alert.setContentText("Please seleted driver to update");
+            alert.setContentText("Vui lòng chọn tài xế để cập nhật");
             alert.showAndWait();
             return;
         }
 
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setHeaderText("Update to driver");
-        alert.setContentText("You want to update driver");
+        alert.setHeaderText("Bạn sẽ cập nhật tài xế này");
+        alert.setContentText("Bạn có chắn chắn muốn cập nhật tài xế không");
         alert.getButtonTypes().setAll(ButtonType.YES, ButtonType.NO);
         alert.showAndWait().ifPresent(respone->{
             if(respone==ButtonType.YES) {
                 if (warningBlankFieldDriver()) {
-                    BlankFieldAlert("Please fill all blank fields");
+                    BlankFieldAlert("Hãy điền tất cả các trường trống");
                     resetFieldDriver();
                     return;
                 }
                 if(!Objects.equals(seleted.getId(), driverIDText.getText()) )
                 {
-                    BlankFieldAlert("Can't update ID of Driver");
+                    BlankFieldAlert("Không thể cập nhật mã tài xế, vui lòng thử lại");
                     resetFieldDriver();
                     return;
                 }
                 if(!Objects.equals(seleted.getPhoneNumber(), phoneDriverText.getText()))
                 {
-                    BlankFieldAlert("Can't update phoneNumber of Driver");
+                    BlankFieldAlert("Không thể cập nhật số điện thoại, vui lòng thử lại");
                     resetFieldDriver();
                     return;
                 }
@@ -1013,7 +998,7 @@ public class dashboardController implements Initializable
 
     public void updateInforTrip() throws Exception {
         if (warningBlankFieldTrip()) {
-            BlankFieldAlert("Please fill all blank fields");
+            BlankFieldAlert("Hãy điền tất cả các trường trống");
             return;
         }
         Vehicle v = plateNumberTripComboBox.getSelectionModel().getSelectedItem();
@@ -1031,7 +1016,7 @@ public class dashboardController implements Initializable
                         || carCustomerPhonenumText.getText().isEmpty()
                         || carCustomerAddressText.getText().isEmpty()
                         || carCustomerNameText.getText().isEmpty()) {
-                    BlankFieldAlert("Please fill all blank fields");
+                    BlankFieldAlert("Hãy điền tất cả các trường trống");
                     return;
                 }
                 double rvnCar = cost * 1.2;
@@ -1040,7 +1025,7 @@ public class dashboardController implements Initializable
             case Truck ignored -> {
                 if (truckGoodTypeText.getText().isEmpty()
                         || truckGoodWeightText.getText().isEmpty()) {
-                    BlankFieldAlert("Please fill all blank fields");
+                    BlankFieldAlert("Hãy điền tất cả các trường trống");
                     return;
                 }
                 double rvnTruck = cost * 1.2 + Double.parseDouble(truckGoodWeightText.getText())*5000;
@@ -1049,16 +1034,22 @@ public class dashboardController implements Initializable
             case Container ignored -> {
                 if (containerGoodTypeText.getText().isEmpty()
                         || containerGoodWeightText.getText().isEmpty()) {
-                    BlankFieldAlert("Please fill all blank fields");
+                    BlankFieldAlert("Hãy điền tất cả các trường trống");
                     return;
                 }
                 double rvnContainer = cost * 1.2 + Double.parseDouble(containerGoodWeightText.getText())*5000;
                 revenueText.setText(String.valueOf(rvnContainer));
             }
             case Bus selectedBus -> {
-                revenueText.setEditable(false);
                 if (busNumCustomerText.getText().isEmpty()) {
-                    BlankFieldAlert("Please fill all blank fields");
+                    BlankFieldAlert("Hãy điền tất cả các trường trống");
+                    return;
+                }
+                if (Integer.parseInt(busNumCustomerText.getText()) > selectedBus.getNumberOfSeat()) {
+                    String err = "Số lượng khách đang lớn hơn số lượng ghế ngồi "
+                            + busNumCustomerText.getText() + " > " + selectedBus.getNumberOfSeat() + ", vui lòng nhập lại";
+                    BlankFieldAlert(err);
+                    busNumCustomerText.setText("");
                     return;
                 }
                 double rvnBus = selectedBus.getPricePerSeat() * Integer.parseInt(busNumCustomerText.getText());
@@ -1320,12 +1311,6 @@ public class dashboardController implements Initializable
         driverIDTripComboBox.setItems(driverObservableList);
         ObservableList<Vehicle> vehicleObservableList = AvailableVehicle.getVehicle(typeVehicleTripComboBox.getSelectionModel().getSelectedItem());
         plateNumberTripComboBox.setItems(vehicleObservableList);
-
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Information Dialog");
-        alert.setHeaderText("");
-        alert.setContentText("Đã đề xuất tài xế và xe, vui lòng chọn tài xế, xe và các trường còn lại của xe và ấn tính toán để hoàn tất");
-        alert.showAndWait();
     }
 
 
@@ -1409,7 +1394,7 @@ public class dashboardController implements Initializable
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Xác nhận thông tin");
         alert.setHeaderText(null);
-        alert.setContentText("Are you want to logOut?");
+        alert.setContentText("Bạn có chắn chắn muốn logOut?");
         Optional<ButtonType> option = alert.showAndWait();
         try {
             if(option.get().equals(ButtonType.OK)) {
@@ -1417,7 +1402,7 @@ public class dashboardController implements Initializable
 
                 Stage stage = new Stage();
                 Parent root1 = FXMLLoader.load(getClass().getResource("/login.fxml"));
-                stage.setTitle("Hello FX");
+                stage.setTitle("Vehicle Management");
                 stage.setScene(new Scene(root1));
                 stage.setResizable(false);
                 stage.show();

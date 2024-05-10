@@ -705,7 +705,7 @@ public class FireBase {
     }
 
     /**
-     * This method is used to update the status of a trip in Firebase.
+     * This method is used to update the status of a trip on Firebase.
      * It creates a reference to the status of the specified trip in Firebase and updates it with the provided status.
      *
      * @param tripID The ID of the trip whose status is to be updated.

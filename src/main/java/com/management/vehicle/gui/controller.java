@@ -64,14 +64,7 @@ public class controller {
                         break;
                     }
                     case ADMIN -> {
-                        FireBase instance = null;
-                        try {
-                            instance = FireBase.getInstance();
-                            instance.getAllDriver();
-                            instance.getAllVehicle();
-                        } catch (Exception e) {
-                            throw new RuntimeException(e);
-                        }
+
                         alert = new Alert(Alert.AlertType.INFORMATION);
                         alert.setHeaderText(null);
                         alert.setContentText("Successfully Login!");
@@ -94,20 +87,21 @@ public class controller {
                         break;
                     }
                     case USER -> {
-                        FireBase instance = null;
-                        try {
-                            instance = FireBase.getInstance();
-                            instance.getAllDriver();
-                            instance.getAllVehicle();
-                        } catch (Exception e) {
-                            throw new RuntimeException(e);
-                        }
+
                         alert = new Alert(Alert.AlertType.INFORMATION);
                         alert.setHeaderText(null);
                         alert.setContentText("Successfully Login!");
+
                         alert.showAndWait();
+
                         Driver driver = connection.getDriver(username.getText());
+
+                        if(driver == null)
+                        {
+                            System.out.println("driver null");
+                        }
                         if (driver != null) {
+
                             driverController.setDriver(driver);
                             // HIDE YOUR LOGIN FORM
                             loginBtn.getScene().getWindow().hide();

@@ -27,12 +27,7 @@
                   <Font name="Arial" size="15.0" />
                </font>
             </Label>
-            <Label fx:id="weightVehcleLable" layoutX="438.0" layoutY="108.0" text="Label">
-               <font>
-                  <Font name="Arial" size="15.0" />
-               </font>
-            </Label>
-            <Label fx:id="DriverIDLabel" layoutX="170.0" layoutY="190.0" text="Label">
+            <Label fx:id="weightVehicleLable" layoutX="438.0" layoutY="108.0" text="Label">
                <font>
                   <Font name="Arial" size="15.0" />
                </font>
@@ -48,11 +43,6 @@
                </font>
             </Text>
             <Text layoutX="287.0" layoutY="124.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Trọng tải (kg):">
-               <font>
-                  <Font name="Arial" size="15.0" />
-               </font>
-            </Text>
-            <Text layoutX="61.0" layoutY="204.0" strokeType="OUTSIDE" strokeWidth="0.0" text="ID tài xế:">
                <font>
                   <Font name="Arial" size="15.0" />
                </font>
@@ -92,16 +82,6 @@
                   <Font name="Arial" size="16.0" />
                </font>
             </Label>
-            <Label fx:id="distanceCoverVehicleLabel" layoutX="439.0" layoutY="188.0" text="Label">
-               <font>
-                  <Font name="Arial" size="15.0" />
-               </font>
-            </Label>
-            <Text layoutX="287.0" layoutY="204.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Quãng đường (km):">
-               <font>
-                  <Font name="Arial" size="15.0" />
-               </font>
-            </Text>
             <Label fx:id="lengthVehicleLabel" layoutX="438.0" layoutY="148.0" text="Dài">
                <font>
                   <Font name="Arial" size="15.0" />
@@ -120,9 +100,9 @@
                <columns>
                   <TableColumn fx:id="beginTripColumn" prefWidth="184.79998779296875" resizable="false" text="Địa điểm đi" />
                   <TableColumn fx:id="endTripColumn" prefWidth="183.1999969482422" resizable="false" text="Địa điểm đến" />
-                  <TableColumn fx:id="beginDateTripColumn" prefWidth="108.79998779296875" resizable="false" text="Thời gian đi" />
-                  <TableColumn fx:id="endDateTripColumn" prefWidth="104.800048828125" resizable="false" text="Thời gian đến" />
-                  <TableColumn fx:id="distanceCoverTripColumn" prefWidth="85.599853515625" resizable="false" text="Quãng đường" />
+                  <TableColumn fx:id="beginDateTripColumn" prefWidth="108.79998779296875" resizable="false" text="Ngày bắt đầu" />
+                  <TableColumn fx:id="endDateTripColumn" prefWidth="104.800048828125" resizable="false" text="Ngày kết thúc" />
+                  <TableColumn fx:id="IDDriverTripColumn" prefWidth="85.599853515625" resizable="false" text="CCCD Tãi xế" />
                   <TableColumn fx:id="tripCostColumn" minWidth="0.0" prefWidth="67.2000732421875" resizable="false" text="Chi phí" />
                   <TableColumn fx:id="tripRevenueColumn" prefWidth="70.4000122070313" resizable="false" text="Doanh thu" />
                </columns>

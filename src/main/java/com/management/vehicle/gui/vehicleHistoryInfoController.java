@@ -1,17 +1,10 @@
 package com.management.vehicle.gui;
 
-import com.management.vehicle.driver.Driver;
 import com.management.vehicle.request.FireBase;
-import com.management.vehicle.request.MapRequest;
 import com.management.vehicle.trip.Trip;
 import com.management.vehicle.vehicle.Vehicle;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.collections.transformation.FilteredList;
-import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -20,8 +13,6 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.ResourceBundle;
 
 public class vehicleHistoryInfoController implements Initializable {
@@ -37,7 +28,7 @@ public class vehicleHistoryInfoController implements Initializable {
     private TableColumn<Trip, String> beginTripColumn;
 
     @FXML
-    private TableColumn<Trip, String> distanceCoverTripColumn;
+    private TableColumn<Trip, String> IDDriverTripColumn;
 
     @FXML
     private TableColumn<Trip, String> endDateTripColumn;
@@ -54,9 +45,6 @@ public class vehicleHistoryInfoController implements Initializable {
     @FXML
     private TableColumn<Trip, String> tripRevenueColumn;
 
-
-    @FXML
-    private Label distanceCoverVehicleLabel;
 
     @FXML
     private Label hightVehicleLabel;
@@ -77,13 +65,10 @@ public class vehicleHistoryInfoController implements Initializable {
     private Label typeVehicleLabel;
 
     @FXML
-    private Label weightVehcleLable;
+    private Label weightVehicleLable;
 
     @FXML
     private Label wideVehicleLabel;
-
-    @FXML
-    private Label DriverIDLabel;
 
 
     public static Vehicle selected;
@@ -102,13 +87,11 @@ public class vehicleHistoryInfoController implements Initializable {
         typeVehicleLabel.setText(selected.getType().toString());
         plateNumberVehicleLabel.setText(selected.getPlateNumber());
         statusVehicleLabel.setText(selected.getStatus().toString());
-        DriverIDLabel.setText(selected.getDriverID());
         licenseVehicleLabel.setText(selected.getLicense().toString());
-        weightVehcleLable.setText(String.valueOf(selected.getWeight()));
+        weightVehicleLable.setText(String.valueOf(selected.getWeight()));
         lengthVehicleLabel.setText(String.valueOf(selected.getLength()));
         wideVehicleLabel.setText(String.valueOf(selected.getWide()));
         hightVehicleLabel.setText(String.valueOf(selected.getHigh()));
-        distanceCoverVehicleLabel.setText(String.valueOf(selected.getDistanceCoverFromLastRepair()));
     }
 
     void setHistoryTripVehicle(){
@@ -119,7 +102,7 @@ public class vehicleHistoryInfoController implements Initializable {
         for(String tripID : selected.getHistory())
         {
             System.out.println(tripID);
-            Trip trip = null;
+            Trip trip;
             try {
                 trip = FireBase.getInstance().getTrip(tripID);
             } catch (Exception e) {
@@ -132,9 +115,9 @@ public class vehicleHistoryInfoController implements Initializable {
         endDateTripColumn.setCellValueFactory       (new PropertyValueFactory<>("end_date"));
         tripCostColumn.setCellValueFactory          (new PropertyValueFactory<>("Cost"));
         tripRevenueColumn.setCellValueFactory       (new PropertyValueFactory<>("Revenue"));
-        distanceCoverTripColumn.setCellValueFactory (new PropertyValueFactory<>("distanceCover"));
-        beginTripColumn.setCellValueFactory(new PropertyValueFactory<Trip, String>("beginLocation"));
-        endTripColumn.setCellValueFactory(new PropertyValueFactory<Trip, String>("endLocation"));
+        IDDriverTripColumn.setCellValueFactory      (new PropertyValueFactory<>("driverID"));
+        beginTripColumn.setCellValueFactory         (new PropertyValueFactory<>("beginLocation"));
+        endTripColumn.setCellValueFactory           (new PropertyValueFactory<>("endLocation"));
 
         historyTripVehicleTable.setItems(listTrip);
 

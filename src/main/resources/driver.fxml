@@ -132,25 +132,19 @@
             </Label>
             <AnchorPane layoutX="100.0" layoutY="75.0" prefHeight="200.0" prefWidth="1000.0" style="-fx-background-color: LightGray;">
                <children>
-                  <Label layoutX="100.0" layoutY="25.0" text="Địa điểm bắt đầu: ">
+                  <Label layoutX="100.0" layoutY="50.0" text="Địa điểm bắt đầu: ">
                      <font>
                         <Font name="Arial" size="18.0" />
                      </font>
                   </Label>
-                  <TextField fx:id="beginLocationText" layoutX="275.0" layoutY="25.0" />
-                  <Label layoutX="100.0" layoutY="55.0" text="Địa điểm kết thúc: ">
+                  <TextField fx:id="beginLocationText" layoutX="275.0" layoutY="50.0" />
+                  <Label layoutX="100.0" layoutY="80.0" text="Địa điểm kết thúc: ">
                      <font>
                         <Font name="Arial" size="18.0" />
                      </font>
                   </Label>
-                  <TextField fx:id="endLocationText" layoutX="275.0" layoutY="55.0" />
-                  <Label layoutX="100.0" layoutY="85.0" text="Doanh thu: ">
-                     <font>
-                        <Font name="Arial" size="18.0" />
-                     </font>
-                  </Label>
-                  <TextField fx:id="revenueText" layoutX="275.0" layoutY="85.0" />
-                  <Label layoutX="100.0" layoutY="115.0" text="Loại xe: ">
+                  <TextField fx:id="endLocationText" layoutX="275.0" layoutY="80.0" />
+                  <Label layoutX="100.0" layoutY="110.0" text="Loại xe: ">
                      <font>
                         <Font name="Arial" size="18.0" />
                      </font>
@@ -160,20 +154,10 @@
                         <Font name="Arial Bold" size="18.0" />
                      </font>
                   </JFXButton>
-                  <ComboBox fx:id="vehicleTypeComboBox" layoutX="275.0" layoutY="115.0" onAction="#vehicleSelection" prefWidth="150.0" />
-                  <AnchorPane fx:id="busPane" layoutX="608.0" prefHeight="200.0" prefWidth="367.0" style="-fx-background-color: LightGrey;" visible="false">
+                  <ComboBox fx:id="vehicleTypeComboBox" layoutX="275.0" layoutY="110.0" onAction="#vehicleSelection" prefWidth="150.0" />
+                  <AnchorPane fx:id="busPane" layoutX="608.0" prefHeight="200.0" prefWidth="367.0" style="-fx-background-color: LightGrey;">
                      <children>
-                        <Label layoutX="10.0" layoutY="10.0" text="Biển số xe: ">
-                           <font>
-                              <Font name="Arial" size="18.0" />
-                           </font>
-                        </Label>
-                        <Label layoutX="10.0" layoutY="40.0" text="Số lượng ghế: ">
-                           <font>
-                              <Font name="Arial" size="18.0" />
-                           </font>
-                        </Label>
-                        <Label layoutX="10.0" layoutY="70.0" text="Giá vé: ">
+                        <Label layoutX="10.0" layoutY="70.0" text="Biển số xe: ">
                            <font>
                               <Font name="Arial" size="18.0" />
                            </font>
@@ -183,9 +167,7 @@
                               <Font name="Arial" size="18.0" />
                            </font>
                         </Label>
-                        <ComboBox fx:id="busPlateNumberComboBox" layoutX="185.0" layoutY="10.0" prefWidth="150.0" />
-                        <TextField fx:id="busNumChairText" layoutX="185.0" layoutY="40.0" />
-                        <TextField fx:id="busTicketPriceText" layoutX="185.0" layoutY="70.0" />
+                        <ComboBox fx:id="busPlateNumberComboBox" layoutX="185.0" layoutY="70.0" prefWidth="150.0" />
                         <TextField fx:id="busNumCustomerText" layoutX="185.0" layoutY="100.0" />
                      </children></AnchorPane>
                   <AnchorPane fx:id="carPane" layoutX="475.0" prefHeight="160.0" prefWidth="475.0" style="-fx-background-color: LightGrey;" visible="false">
@@ -246,7 +228,7 @@
                         <TextField fx:id="containerGoodsWeightText" layoutX="185.0" layoutY="100.0" />
                      </children>
                   </AnchorPane>
-                  <AnchorPane fx:id="truckPane" layoutX="608.0" prefHeight="200.0" prefWidth="367.0">
+                  <AnchorPane fx:id="truckPane" layoutX="608.0" prefHeight="200.0" prefWidth="367.0" visible="false">
                      <children>
                         <Label layoutX="10.0" layoutY="40.0" text="Biển số xe: ">
                            <font>

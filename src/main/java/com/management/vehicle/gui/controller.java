@@ -249,6 +249,7 @@ public class controller {
                         stage.setTitle("New Window");
                         stage.setScene(scene);
                         stage.show();
+                        stage.setResizable(false);
                         stage.setOnCloseRequest(event -> {
                             event.consume();
                             logOut(stage);

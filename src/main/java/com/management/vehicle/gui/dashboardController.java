@@ -39,6 +39,7 @@ import java.net.URL;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
@@ -121,8 +122,7 @@ public class dashboardController implements Initializable
     @FXML
     private TableColumn<Vehicle, Double> weightColumn;
 
-    @FXML
-    private TableColumn<Vehicle, Double> distanceCoverColumn;
+
 
     @FXML
     private TableColumn<Vehicle, String> driverofVehicleColumn;
@@ -158,8 +158,7 @@ public class dashboardController implements Initializable
 
     ObservableList<LicenseLevel> licenseLevelObservableList = FXCollections.observableArrayList(LicenseLevel.NONE,LicenseLevel.B1,LicenseLevel.B2,LicenseLevel.C,LicenseLevel.D,LicenseLevel.E,LicenseLevel.F);
 
-    @FXML
-    private ComboBox<fuel> typeFuelVehicleComboBox;
+
 
     ObservableList<fuel> typeFuelVehicleObservableList = FXCollections.observableArrayList(fuel.DIESEL, fuel.RON95, fuel.RON97);
 
@@ -346,7 +345,7 @@ public class dashboardController implements Initializable
     public void initialize(URL url, ResourceBundle resourceBundle) {
         typeVehicleComboBox.setItems(typeVehicleObservableList);
         licenseDriverComboBox.setItems(licenseLevelObservableList);
-        typeFuelVehicleComboBox.setItems(typeFuelVehicleObservableList);
+        //typeFuelVehicleComboBox.setItems(typeFuelVehicleObservableList);
         typeVehicleTripComboBox.setItems(typeVehicleObservableList);
 
         this.mouseRightClicktoHistoryInfoVehicle();
@@ -380,8 +379,8 @@ public class dashboardController implements Initializable
         DriverPane.setVisible(false);
         TripPane.setVisible(false);
 
-        this.researchVehicle();
-        this.researchDriver();
+
+
     }
 
 
@@ -389,8 +388,26 @@ public class dashboardController implements Initializable
         vehicleList.clear();
         vehicleList = connection.getVehicle();
 
+        /// check vehicle completely maintenance
+        for(Vehicle vehicle: vehicleList) {
+            if(vehicle.getStatus()==VehicleStatus.ON_LEAVE) {
+                LocalDate lastRepairDate = LocalDate.parse(vehicle.getLast_repair_date(), DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+                LocalDate currentDate = LocalDate.now(); // Ngày hiện tại
+
+                Period period = Period.between(lastRepairDate, currentDate);
+                int years = period.getYears();
+                int months = period.getMonths();
+                int days = period.getDays();
+
+                if(days>=2 || months>0 || years>0) {    /// Maintenance within 2 days
+                    vehicle.setStatus(VehicleStatus.NONE);
+                    vehicle.AddMaintance(vehicle.getLast_repair_date());
+                    FireBase.getInstance().editVehicle(vehicle.getPlateNumber(), vehicle);
+                }
+            }
+        }
+
         driverofVehicleColumn.setCellValueFactory(new PropertyValueFactory<>("driverID"));
-        distanceCoverColumn.setCellValueFactory(new PropertyValueFactory<>("distanceCoverFromLastRepair"));
         typeVehicleColumn.setCellValueFactory(new PropertyValueFactory<>("type"));
         lengthColumn.setCellValueFactory(new PropertyValueFactory<>("length"));
         wideColumn.setCellValueFactory(new PropertyValueFactory<>("wide"));
@@ -401,6 +418,7 @@ public class dashboardController implements Initializable
         licenseLevelColumn.setCellValueFactory(new PropertyValueFactory<>("license"));
 
         vehicleTable.setItems(vehicleList);
+        this.researchVehicle();
     }
 
 
@@ -435,7 +453,7 @@ public class dashboardController implements Initializable
         highText.setText(String.valueOf(selected.getHigh()));
         plateNumberText.setText(selected.getPlateNumber());
         weightText.setText(String.valueOf(selected.getWeight()));
-        typeFuelVehicleComboBox.getSelectionModel().select(selected.getFuel_v());
+        //typeFuelVehicleComboBox.getSelectionModel().select(selected.getFuel_v());
         if (selected instanceof Bus selectedBus) {
             busPriceText.setText(String.valueOf(selectedBus.getPricePerSeat()));
             busNumSeatText.setText(String.valueOf(selectedBus.getNumberOfSeat()));
@@ -448,8 +466,8 @@ public class dashboardController implements Initializable
                 || wideText.getText().isEmpty()
                 || highText.getText().isEmpty()
                 || plateNumberText.getText().isEmpty()
-                || weightText.getText().isEmpty()
-                || typeFuelVehicleComboBox.getSelectionModel().getSelectedItem() == null;
+                || weightText.getText().isEmpty();
+                //|| typeFuelVehicleComboBox.getSelectionModel().getSelectedItem() == null;
     }
 
     public void SetFieldtoVehicle(Vehicle newVehicle) {
@@ -459,7 +477,7 @@ public class dashboardController implements Initializable
         newVehicle.setHigh(Double.parseDouble(highText.getText()));
         newVehicle.setPlateNumber(plateNumberText.getText());
         newVehicle.setWeight(Double.parseDouble(weightText.getText()));
-        newVehicle.setFuel_v(typeFuelVehicleComboBox.getValue());
+        //newVehicle.setFuel_v(typeFuelVehicleComboBox.getValue());
     }
 
     public void addVehicle (ActionEvent e) throws Exception {
@@ -606,17 +624,44 @@ public class dashboardController implements Initializable
                 }
             }
         });
+
+        MenuItem menuItem2 = new MenuItem("Xem lịch sử bảo dưỡng");
+        menuItem2.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                try {
+                    viewMaintenanceHistoryVehicle();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+
         contextMenu.getItems().add(menuItem1);
+        contextMenu.getItems().add(menuItem2);
         vehicleTable.setContextMenu(contextMenu);
     }
 
 
     public void viewDetailInforVehicle() throws IOException {
         Vehicle selected = vehicleTable.getSelectionModel().getSelectedItem();
+        if(selected == null) return;
         vehicleHistoryInfoController.selected = selected;
         Stage newStage = new Stage();
         newStage.setTitle("History of vehicle with plate number: " + selected.getPlateNumber());
         Parent root = FXMLLoader.load(getClass().getResource("/vehicleHistoryInfo.fxml"));
+        newStage.setScene(new Scene(root));
+        newStage.setResizable(false);
+        newStage.show();
+    }
+
+    public void viewMaintenanceHistoryVehicle() throws IOException {
+        Vehicle selected = vehicleTable.getSelectionModel().getSelectedItem();
+        if (selected==null) return;
+        VehicleMaintenanceController.selected = selected;
+        Stage newStage = new Stage();
+        newStage.setTitle("Maintenance History Of Vehicle With Plate Number: " + selected.getPlateNumber());
+        Parent root = FXMLLoader.load(getClass().getResource("/vehicleMaintenance.fxml"));
         newStage.setScene(new Scene(root));
         newStage.setResizable(false);
         newStage.show();
@@ -631,7 +676,7 @@ public class dashboardController implements Initializable
         plateNumberText.setText("");
         weightText.setText("");
         vehicleTable.getSelectionModel().select(null);
-        typeFuelVehicleComboBox.getSelectionModel().select(null);
+        //typeFuelVehicleComboBox.getSelectionModel().select(null);
         busPriceText.setText("");
         busNumSeatText.setText("");
     }
@@ -652,7 +697,6 @@ public class dashboardController implements Initializable
 
     public void showDriverList() throws Exception {
         driverList.clear();
-        //System.out.println("SIGNAL on showDriverList()");
 
         driverList = connection.getDriver();
 
@@ -667,9 +711,9 @@ public class dashboardController implements Initializable
         expireDateCol.setCellValueFactory(data->
                 new SimpleStringProperty(data.getValue().getLicense().getExpiryDate()));
 
-        //System.out.println("SIGNAL on showDriverList() - 3");
         TableListDriver.setItems(driverList);
-        //System.out.println("SIGNAL on showDriverList() - 4");
+
+        this.researchDriver();
     }
 
 
@@ -717,6 +761,7 @@ public class dashboardController implements Initializable
         showDriverList();
 
         resetFieldDriver();
+
     }
 
 
@@ -1367,12 +1412,22 @@ public class dashboardController implements Initializable
             TripPane.setVisible(false);
         }
         else if (e.getSource()==VehicleButton) {
+            try {
+                showVehicleList();
+            } catch (Exception ex) {
+                throw new RuntimeException(ex);
+            }
             HomePane.setVisible(false);
             VehiclePane.setVisible(true);
             DriverPane.setVisible(false);
             TripPane.setVisible(false);
         }
         else if(e.getSource()==DriverButton) {
+            try {
+                showDriverList();
+            } catch (Exception ex) {
+                throw new RuntimeException(ex);
+            }
             HomePane.setVisible(false);
             VehiclePane.setVisible(false);
             DriverPane.setVisible(true);
@@ -1382,6 +1437,11 @@ public class dashboardController implements Initializable
             logOut();
         }
         else if(e.getSource()==TripButton){
+            try {
+                showTrip();
+            } catch (Exception ex) {
+                throw new RuntimeException(ex);
+            }
             HomePane.setVisible(false);
             VehiclePane.setVisible(false);
             DriverPane.setVisible(false);
@@ -1412,20 +1472,5 @@ public class dashboardController implements Initializable
     }
 
 
-//    public void Timenow() {
-//        Thread thread = new Thread( () ->{
-//            SimpleDateFormat sdf = new SimpleDateFormat("hh:mm:ss");
-//            while(!stopTime) {
-//                try {
-//                    Thread.sleep(1000);
-//                } catch (Exception e) {e.printStackTrace();}
-//                final String timenow = sdf.format(new Date());
-//                Platform.runLater( ()-> {
-//                    timeLabel.setText(timenow);
-//                });
-//            }
-//        });
-//        thread.start();
-//    }
 
 }

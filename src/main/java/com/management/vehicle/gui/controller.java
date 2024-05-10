@@ -54,177 +54,6 @@ public class controller {
                 alert.setContentText("Please fill all blank fields");
                 alert.showAndWait();
             } else {
-//                if((Objects.equals(username.getText(), "admin")) && (Objects.equals(password.getText(), "123456"))) {
-//                    alert = new Alert(Alert.AlertType.INFORMATION);
-//                    alert.setHeaderText(null);
-//                    alert.setContentText("Successfully Login!");
-//                    alert.showAndWait();
-//                    // HIDE YOUR LOGIN FORM
-//                    loginBtn.getScene().getWindow().hide();
-//
-//                    // LINK YOUR DASHBOARD FORM
-//                    Parent root = FXMLLoader.load(getClass().getResource("/dashboard.fxml"));
-//                    Stage stage = new Stage();
-//                    Scene scene = new Scene(root);
-//                    stage.setTitle("New Window");
-//                    stage.setScene(scene);
-//                    stage.show();
-//                    stage.setOnCloseRequest(event -> {
-//                        event.consume();
-//                        logOut(stage);
-//                    });
-//
-////                root.setOnMousePressed((MouseEvent e) ->{
-////                    x = e.getSceneX();
-////                    y = e.getSceneY();
-////                });
-////
-////                root.setOnMouseDragged((MouseEvent e) ->{
-////                    stage.setX(e.getScreenX() - x);
-////                    stage.setY(e.getScreenY() - y);
-////                });
-//
-//                }
-//                else {
-////                    connection.getAllDriver();
-////                    List<Driver> driverList = connection.getDriverList();
-////                    int index = indexOf(driverList, username.getText());
-////                    if (index >= 0) {
-////                        if (password.getText().equals(driverList.get(index).getPassword())) {
-////                            alert = new Alert(Alert.AlertType.INFORMATION);
-////                            alert.setHeaderText(null);
-////                            alert.setContentText("Successfully Login!");
-////                            alert.showAndWait();
-////                            // HIDE YOUR LOGIN FORM
-////                            loginBtn.getScene().getWindow().hide();
-////
-////                            // LINK YOUR DASHBOARD FORM
-////                            Parent root = FXMLLoader.load(getClass().getResource("/driver.fxml"));
-////                            Stage stage = new Stage();
-////                            Scene scene = new Scene(root);
-////                            stage.setTitle("New Window");
-////                            stage.setScene(scene);
-////                            stage.setResizable(false);
-////                            stage.show();
-////                            stage.setOnCloseRequest(event -> {
-////                                event.consume();
-////                                logOut(stage);
-////                            });
-////                        }
-////                        else {
-////                            alert = new Alert(Alert.AlertType.ERROR);
-////                            alert.setHeaderText(null);
-////                            alert.setContentText("Wrong Username/Password");
-////                            alert.showAndWait();
-////                        }
-////                    }
-////                    else {
-////                        alert = new Alert(Alert.AlertType.ERROR);
-////                        alert.setHeaderText(null);
-////                        alert.setContentText("Wrong Username/Password");
-////                        alert.showAndWait();
-////                    }
-//                    Role role = connection.login(username.getText(), password.getText());
-//                    switch (role) {
-//                        case null -> {
-//                            alert = new Alert(Alert.AlertType.ERROR);
-//                            alert.setHeaderText(null);
-//                            alert.setContentText("Wrong Username/Password");
-//                            alert.showAndWait();
-//                        }
-//                        case ADMIN -> {
-//                            alert = new Alert(Alert.AlertType.INFORMATION);
-//                            alert.setHeaderText(null);
-//                            alert.setContentText("Successfully Login!");
-//                            alert.showAndWait();
-//                            // HIDE YOUR LOGIN FORM
-//                            loginBtn.getScene().getWindow().hide();
-//
-//                            // LINK YOUR DASHBOARD FORM
-//                            Parent root = FXMLLoader.load(getClass().getResource("/dashboard.fxml"));
-//                            Stage stage = new Stage();
-//                            Scene scene = new Scene(root);
-//                            stage.setTitle("New Window");
-//                            stage.setScene(scene);
-//                            stage.show();
-//                            stage.setOnCloseRequest(event -> {
-//                                event.consume();
-//                                logOut(stage);
-//                            });
-//                            break;
-//                        }
-//                        case USER -> {
-//                            alert = new Alert(Alert.AlertType.INFORMATION);
-//                            alert.setHeaderText(null);
-//                            alert.setContentText("Successfully Login!");
-//                            alert.showAndWait();
-//                            // HIDE YOUR LOGIN FORM
-//                            loginBtn.getScene().getWindow().hide();
-//
-//                            // LINK YOUR DASHBOARD FORM
-//                            Parent root = FXMLLoader.load(getClass().getResource("/driver.fxml"));
-//                            Stage stage = new Stage();
-//                            Scene scene = new Scene(root);
-//                            stage.setTitle("New Window");
-//                            stage.setScene(scene);
-//                            stage.setResizable(false);
-//                            stage.show();
-//                            stage.setOnCloseRequest(event -> {
-//                                event.consume();
-//                                logOut(stage);
-//                            });
-//                            break;
-//                        }
-//                        default -> {
-//                            alert = new Alert(Alert.AlertType.ERROR);
-//                            alert.setHeaderText(null);
-//                            alert.setContentText("Wrong Username/Password");
-//                            alert.showAndWait();
-//                        }
-//                    }
-//                }
-//
-////                else if ((Objects.equals(username.getText(), "driver")) && (Objects.equals(password.getText(), "123456"))) {
-////                    alert = new Alert(Alert.AlertType.INFORMATION);
-////                    alert.setHeaderText(null);
-////                    alert.setContentText("Successfully Login!");
-////                    alert.showAndWait();
-////                    // HIDE YOUR LOGIN FORM
-////                    loginBtn.getScene().getWindow().hide();
-////
-////                    // LINK YOUR DASHBOARD FORM
-////                    Parent root = FXMLLoader.load(getClass().getResource("/driver.fxml"));
-////                    Stage stage = new Stage();
-////                    Scene scene = new Scene(root);
-////                    stage.setTitle("New Window");
-////                    stage.setScene(scene);
-////                    stage.setResizable(false);
-////                    stage.show();
-////                    stage.setOnCloseRequest(event -> {
-////                        event.consume();
-////                        logOut(stage);
-////                    });
-////
-//////                root.setOnMousePressed((MouseEvent e) ->{
-//////                    x = e.getSceneX();
-//////                    y = e.getSceneY();
-//////                });
-//////
-//////                root.setOnMouseDragged((MouseEvent e) ->{
-//////                    stage.setX(e.getScreenX() - x);
-//////                    stage.setY(e.getScreenY() - y);
-//////                });
-////
-////                }
-////                else {
-////                    alert = new Alert(Alert.AlertType.ERROR);
-////                    alert.setHeaderText(null);
-////                    alert.setContentText("Wrong Username/Password");
-////                    alert.showAndWait();
-////                }
-//            }
-//        } catch(Exception e){e.printStackTrace();}
-
                 Role role = connection.login(username.getText(), password.getText());
                 switch (role) {
                     case null -> {
@@ -235,6 +64,14 @@ public class controller {
                         break;
                     }
                     case ADMIN -> {
+                        FireBase instance = null;
+                        try {
+                            instance = FireBase.getInstance();
+                            instance.getAllDriver();
+                            instance.getAllVehicle();
+                        } catch (Exception e) {
+                            throw new RuntimeException(e);
+                        }
                         alert = new Alert(Alert.AlertType.INFORMATION);
                         alert.setHeaderText(null);
                         alert.setContentText("Successfully Login!");
@@ -257,6 +94,14 @@ public class controller {
                         break;
                     }
                     case USER -> {
+                        FireBase instance = null;
+                        try {
+                            instance = FireBase.getInstance();
+                            instance.getAllDriver();
+                            instance.getAllVehicle();
+                        } catch (Exception e) {
+                            throw new RuntimeException(e);
+                        }
                         alert = new Alert(Alert.AlertType.INFORMATION);
                         alert.setHeaderText(null);
                         alert.setContentText("Successfully Login!");

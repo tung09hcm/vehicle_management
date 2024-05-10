@@ -1142,6 +1142,7 @@ public class dashboardController implements Initializable
         v.setDriverID(d.getId());
         v.setStatus(VehicleStatus.ON_DUTY);
         v.addTrip(newTrip.getTripID());
+        v.setDistanceCoverFromLastRepair(v.getDistanceCoverFromLastRepair() + Double.parseDouble(distanceCoverTripText.getText())/1000);
         switch (v) {
             case Car selectedCar -> {
                 setCar(selectedCar);
@@ -1189,6 +1190,7 @@ public class dashboardController implements Initializable
         d.addTrip(newTrip.getTripID());
         d.setStatus(DriverStatus.ON_DUTY);
         d.setRecentPlateNumber(v.getPlateNumber());
+        d.setDistanceCoverAll(d.getDistanceCoverAll() + Double.parseDouble(distanceCoverTripText.getText())/1000);
         try {
             FireBase fireBase = FireBase.getInstance();
             fireBase.editDriver(d);

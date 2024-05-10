@@ -344,6 +344,8 @@ public class driverController implements Initializable  {
                 newTrip.setBegin_date(dateTimetoString(begin_dt));
                 LocalDateTime end_dt = begin_dt.plus(Duration.ofMillis(routeMatrix.getDuration()));
                 newTrip.setEnd_date(dateTimetoString(end_dt));
+                //v.setDistanceCoverFromLastRepair(v.getDistanceCoverFromLastRepair() + routeMatrix.getDistance());
+
                 switch (v) {
                     case Bus ignored -> {
                         double cost = ignored.getFuel_v().getPricePerLiter()*ignored.getFuel_per_kilometer()*routeMatrix.getDistance()/1000;
@@ -357,6 +359,7 @@ public class driverController implements Initializable  {
                 try {
                     FireBase fireBase = FireBase.getInstance();
                     fireBase.editDriverStatus(driver.getId(), DriverStatus.ON_DUTY);
+                    driver.setDistanceCoverAll(driver.getDistanceCoverAll() + routeMatrix.getDistance()/1000);
                     driver.setStatus(DriverStatus.ON_DUTY);
                     fireBase.editVehicleStatus(v.getPlateNumber(), VehicleStatus.ON_DUTY);
                 } catch (Exception e) {
@@ -409,6 +412,7 @@ public class driverController implements Initializable  {
                 try {
                     FireBase fireBase = FireBase.getInstance();
                     fireBase.editDriverStatus(driver.getId(), DriverStatus.ON_DUTY);
+                    driver.setDistanceCoverAll(driver.getDistanceCoverAll() + routeMatrix.getDistance()/1000);
                     driver.setStatus(DriverStatus.ON_DUTY);
                     fireBase.editVehicleStatus(v.getPlateNumber(), VehicleStatus.ON_DUTY);
                 } catch (Exception e) {
@@ -460,6 +464,8 @@ public class driverController implements Initializable  {
                 try {
                     FireBase fireBase = FireBase.getInstance();
                     fireBase.editDriverStatus(driver.getId(), DriverStatus.ON_DUTY);
+
+                    driver.setDistanceCoverAll(driver.getDistanceCoverAll() + routeMatrix.getDistance()/1000);
                     driver.setStatus(DriverStatus.ON_DUTY);
                     fireBase.editVehicleStatus(v.getPlateNumber(), VehicleStatus.ON_DUTY);
                 } catch (Exception e) {
@@ -505,13 +511,16 @@ public class driverController implements Initializable  {
                         newTrip.setRevenue(cost * 1.2 + Double.parseDouble(containerGoodsWeightText.getText()) * 5000);
                         newTrip.setCost(cost);
                         newTrip.setDistanceCover(routeMatrix.getDistance()/1000);
+                        v.setDistanceCoverFromLastRepair(v.getDistanceCoverFromLastRepair() + routeMatrix.getDistance()/1000);
                     }
                     default -> {}
                 }
                 try {
                     FireBase fireBase = FireBase.getInstance();
                     fireBase.editDriverStatus(driver.getId(), DriverStatus.ON_DUTY);
+                    driver.setDistanceCoverAll(driver.getDistanceCoverAll() + routeMatrix.getDistance()/1000);
                     driver.setStatus(DriverStatus.ON_DUTY);
+                    fireBase.editDriver(driver);
                     fireBase.editVehicleStatus(v.getPlateNumber(), VehicleStatus.ON_DUTY);
                 } catch (Exception e) {
                     throw new RuntimeException(e);
@@ -525,6 +534,7 @@ public class driverController implements Initializable  {
             }
         }
         else return;
+
     }
     public void vehicleSelection() {
         if (vehicleTypeComboBox.getValue() == TypeVehicle.bus) {

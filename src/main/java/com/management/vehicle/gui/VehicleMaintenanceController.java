@@ -83,7 +83,7 @@ public class VehicleMaintenanceController implements Initializable {
             alert.showAndWait().ifPresent(respone -> {
                 if (respone == ButtonType.YES) {
                     selected.setStatus(VehicleStatus.ON_LEAVE);
-
+                    selected.setDistanceCoverFromLastRepair(0);
                     LocalDate localDate = LocalDate.now();
                     String beginDayMaintenance = localDate.format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
                     selected.setLast_repair_date(beginDayMaintenance);

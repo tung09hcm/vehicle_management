@@ -2,7 +2,9 @@ package com.management.vehicle.available;
 
 import com.management.vehicle.driver.Driver;
 import com.management.vehicle.driver.DriverStatus;
+import com.management.vehicle.license.LicenseLevel;
 import com.management.vehicle.request.FireBase;
+import com.management.vehicle.vehicle.Vehicle;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
@@ -12,15 +14,14 @@ import java.util.List;
 
 public class AvailableDriver {
     // trip distance đơn vị km
-    public static List<Driver> getAvailableDriver(double tripdistance) throws Exception
-    {
+    public static List<Driver> getAvailableDriver(double tripdistance) throws Exception{
         FireBase fireBase = FireBase.getInstance();
         List<Driver> driverlist = fireBase.getDriverList();
         List<Driver> result = new ArrayList<>();
         List<Driver> subresult = new ArrayList<>();
         for(Driver x: driverlist)
         {
-            if(x.getStatus() == DriverStatus.NONE)
+            if(x.getStatus() == DriverStatus.NONE )
             {
                 if(tripdistance <= 500)
                 {

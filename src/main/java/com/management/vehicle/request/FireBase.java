@@ -34,7 +34,7 @@ public class FireBase {
      * @throws Exception if there's an error during the decryption or Firebase initialization.
      */
     private FireBase() throws Exception {
-        byte[] token = readFromFile("src/main/java/com/management/vehicle/request/token");
+        byte[] token = readFromFile(getClass().getResource("/token").getFile());
         byte[] decrypted = security.decrypt(token);
         GoogleCredentials credentials = GoogleCredentials.fromStream(new ByteArrayInputStream(decrypted));
 

@@ -26,6 +26,7 @@ import javafx.stage.Stage;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Objects;
 
 public class Main extends Application {
     public static void main(String[] args) {
@@ -34,7 +35,7 @@ public class Main extends Application {
     @Override
     public void start(Stage stage) throws Exception {
 
-        Parent root1 = FXMLLoader.load(getClass().getResource("/login.fxml"));
+        Parent root1 = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/login.fxml")));
         stage.setTitle("Hello FX");
         stage.setScene(new Scene(root1));
         stage.setResizable(false);

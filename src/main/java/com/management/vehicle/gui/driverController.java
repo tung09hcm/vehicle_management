@@ -336,6 +336,7 @@ public class driverController implements Initializable  {
                 newTrip.setPlateNumber(busPlateNumberComboBox.getValue());
                 newTrip.setStatus(TripStatus.ON_DUTY);
                 Vehicle v = FireBase.getInstance().getVehicle(busPlateNumberComboBox.getValue());
+                v.setDriverID(driver.getId());
                 List begin = selectedHitBegin.getPoint().getList();
                 List end = selectedHitEnd.getPoint().getList();
                 MapRequest i = MapRequest.getInstance();
@@ -358,7 +359,9 @@ public class driverController implements Initializable  {
                 }
                 try {
                     FireBase fireBase = FireBase.getInstance();
+                    fireBase.editVehicleDriverID(v.getPlateNumber(), driver.getId());
                     fireBase.editDriverStatus(driver.getId(), DriverStatus.ON_DUTY);
+                    fireBase.editDriverRecentPlateNumber(driver.getId(), v.getPlateNumber());
                     driver.setDistanceCoverAll(driver.getDistanceCoverAll() + routeMatrix.getDistance()/1000);
                     driver.setStatus(DriverStatus.ON_DUTY);
                     fireBase.editVehicleStatus(v.getPlateNumber(), VehicleStatus.ON_DUTY);
@@ -391,6 +394,7 @@ public class driverController implements Initializable  {
                 newTrip.setPlateNumber(carPlateNumberComboBox.getValue());
                 newTrip.setStatus(TripStatus.ON_DUTY);
                 Vehicle v = FireBase.getInstance().getVehicle(carPlateNumberComboBox.getValue());
+                v.setDriverID(driver.getId());
                 List begin = selectedHitBegin.getPoint().getList();
                 List end = selectedHitEnd.getPoint().getList();
                 MapRequest i = MapRequest.getInstance();
@@ -411,7 +415,9 @@ public class driverController implements Initializable  {
                 }
                 try {
                     FireBase fireBase = FireBase.getInstance();
+                    fireBase.editVehicleDriverID(v.getPlateNumber(), driver.getId());
                     fireBase.editDriverStatus(driver.getId(), DriverStatus.ON_DUTY);
+                    fireBase.editDriverRecentPlateNumber(driver.getId(), v.getPlateNumber());
                     driver.setDistanceCoverAll(driver.getDistanceCoverAll() + routeMatrix.getDistance()/1000);
                     driver.setStatus(DriverStatus.ON_DUTY);
                     fireBase.editVehicleStatus(v.getPlateNumber(), VehicleStatus.ON_DUTY);
@@ -443,6 +449,7 @@ public class driverController implements Initializable  {
                 newTrip.setPlateNumber(containerPlateNumberComboBox.getValue());
                 newTrip.setStatus(TripStatus.ON_DUTY);
                 Vehicle v = FireBase.getInstance().getVehicle(containerPlateNumberComboBox.getValue());
+                v.setDriverID(driver.getId());
                 List begin = selectedHitBegin.getPoint().getList();
                 List end = selectedHitEnd.getPoint().getList();
                 MapRequest i = MapRequest.getInstance();
@@ -463,8 +470,9 @@ public class driverController implements Initializable  {
                 }
                 try {
                     FireBase fireBase = FireBase.getInstance();
+                    fireBase.editVehicleDriverID(v.getPlateNumber(), driver.getId());
                     fireBase.editDriverStatus(driver.getId(), DriverStatus.ON_DUTY);
-
+                    fireBase.editDriverRecentPlateNumber(driver.getId(), v.getPlateNumber());
                     driver.setDistanceCoverAll(driver.getDistanceCoverAll() + routeMatrix.getDistance()/1000);
                     driver.setStatus(DriverStatus.ON_DUTY);
                     fireBase.editVehicleStatus(v.getPlateNumber(), VehicleStatus.ON_DUTY);
@@ -496,6 +504,7 @@ public class driverController implements Initializable  {
                 newTrip.setPlateNumber(truckPlateNumberComboBox.getValue());
                 newTrip.setStatus(TripStatus.ON_DUTY);
                 Vehicle v = FireBase.getInstance().getVehicle(truckPlateNumberComboBox.getValue());
+                v.setDriverID(driver.getId());
                 List begin = selectedHitBegin.getPoint().getList();
                 List end = selectedHitEnd.getPoint().getList();
                 MapRequest i = MapRequest.getInstance();
@@ -517,7 +526,9 @@ public class driverController implements Initializable  {
                 }
                 try {
                     FireBase fireBase = FireBase.getInstance();
+                    fireBase.editVehicleDriverID(v.getPlateNumber(), driver.getId());
                     fireBase.editDriverStatus(driver.getId(), DriverStatus.ON_DUTY);
+                    fireBase.editDriverRecentPlateNumber(driver.getId(), v.getPlateNumber());
                     driver.setDistanceCoverAll(driver.getDistanceCoverAll() + routeMatrix.getDistance()/1000);
                     driver.setStatus(DriverStatus.ON_DUTY);
                     fireBase.editDriver(driver);

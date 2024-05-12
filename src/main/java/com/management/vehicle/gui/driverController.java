@@ -360,6 +360,7 @@ public class driverController implements Initializable  {
                 try {
                     FireBase fireBase = FireBase.getInstance();
                     fireBase.editVehicleDriverID(v.getPlateNumber(), driver.getId());
+                    driver.setRecentPlateNumber(v.getPlateNumber());
                     fireBase.editDriverStatus(driver.getId(), DriverStatus.ON_DUTY);
                     fireBase.editDriverRecentPlateNumber(driver.getId(), v.getPlateNumber());
                     driver.setDistanceCoverAll(driver.getDistanceCoverAll() + routeMatrix.getDistance()/1000);
@@ -416,6 +417,7 @@ public class driverController implements Initializable  {
                 try {
                     FireBase fireBase = FireBase.getInstance();
                     fireBase.editVehicleDriverID(v.getPlateNumber(), driver.getId());
+                    driver.setRecentPlateNumber(v.getPlateNumber());
                     fireBase.editDriverStatus(driver.getId(), DriverStatus.ON_DUTY);
                     fireBase.editDriverRecentPlateNumber(driver.getId(), v.getPlateNumber());
                     driver.setDistanceCoverAll(driver.getDistanceCoverAll() + routeMatrix.getDistance()/1000);
@@ -471,10 +473,12 @@ public class driverController implements Initializable  {
                 try {
                     FireBase fireBase = FireBase.getInstance();
                     fireBase.editVehicleDriverID(v.getPlateNumber(), driver.getId());
+                    driver.setRecentPlateNumber(v.getPlateNumber());
                     fireBase.editDriverStatus(driver.getId(), DriverStatus.ON_DUTY);
                     fireBase.editDriverRecentPlateNumber(driver.getId(), v.getPlateNumber());
                     driver.setDistanceCoverAll(driver.getDistanceCoverAll() + routeMatrix.getDistance()/1000);
                     driver.setStatus(DriverStatus.ON_DUTY);
+
                     fireBase.editVehicleStatus(v.getPlateNumber(), VehicleStatus.ON_DUTY);
                 } catch (Exception e) {
                     throw new RuntimeException(e);
@@ -527,6 +531,7 @@ public class driverController implements Initializable  {
                 try {
                     FireBase fireBase = FireBase.getInstance();
                     fireBase.editVehicleDriverID(v.getPlateNumber(), driver.getId());
+                    driver.setRecentPlateNumber(v.getPlateNumber());
                     fireBase.editDriverStatus(driver.getId(), DriverStatus.ON_DUTY);
                     fireBase.editDriverRecentPlateNumber(driver.getId(), v.getPlateNumber());
                     driver.setDistanceCoverAll(driver.getDistanceCoverAll() + routeMatrix.getDistance()/1000);

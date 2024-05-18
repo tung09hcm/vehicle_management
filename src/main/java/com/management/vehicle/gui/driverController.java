@@ -521,7 +521,7 @@ public class driverController implements Initializable  {
                     case Truck ignored -> {
                         double cost = ignored.getFuel_v().getPricePerLiter()*ignored.getFuel_per_kilometer()*routeMatrix.getDistance()/1000;
                         cost = Math.round(cost / 1000) * 1000;
-                        newTrip.setRevenue(cost * 1.2 + Double.parseDouble(containerGoodsWeightText.getText()) * 5000);
+                        newTrip.setRevenue(cost * 1.2 + Double.parseDouble(truckGoodsWeightText.getText()) * 5000);
                         newTrip.setCost(cost);
                         newTrip.setDistanceCover(routeMatrix.getDistance()/1000);
                         v.setDistanceCoverFromLastRepair(v.getDistanceCoverFromLastRepair() + routeMatrix.getDistance()/1000);

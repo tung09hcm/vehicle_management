@@ -371,7 +371,6 @@ public class driverController implements Initializable  {
                 }
                 FireBase.getInstance().addTrip(newTrip);
                 homeTripList.add(newTrip);
-                requestTripList.add(newTrip);
                 homeShowTrip();
                 requestShowTrip();
                 setInfo();
@@ -428,7 +427,6 @@ public class driverController implements Initializable  {
                 }
                 FireBase.getInstance().addTrip(newTrip);
                 homeTripList.add(newTrip);
-                requestTripList.add(newTrip);
                 homeShowTrip();
                 requestShowTrip();
                 setInfo();
@@ -485,7 +483,6 @@ public class driverController implements Initializable  {
                 }
                 FireBase.getInstance().addTrip(newTrip);
                 homeTripList.add(newTrip);
-                requestTripList.add(newTrip);
                 homeShowTrip();
                 requestShowTrip();
                 setInfo();
@@ -543,7 +540,6 @@ public class driverController implements Initializable  {
                 }
                 FireBase.getInstance().addTrip(newTrip);
                 homeTripList.add(newTrip);
-                requestTripList.add(newTrip);
                 homeShowTrip();
                 requestShowTrip();
                 setInfo();
